@@ -11,66 +11,69 @@
     --border:#e5e7eb; --shadow:0 10px 28px rgba(0,0,0,.06);
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
   body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","Helvetica Neue",Arial,sans-serif}
   a{color:var(--brand-dark);text-decoration:none}
   .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
 
   /* Hero */
-  .hero{position:relative;min-height:58vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center}
+  .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center}
+  @media(max-width:560px){.hero{min-height:44vh}}
   .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.38));z-index:0;pointer-events:none}
-  .hero-inner{position:relative;z-index:1;text-align:center;padding:64px 16px}
-  .logo{width:120px;height:120px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:12px}
+  .hero-inner{position:relative;z-index:1;text-align:center;padding:56px 16px}
+  .logo{width:110px;height:110px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:10px}
   .logo img{max-width:100%;max-height:100%}
-  .hero h1{font-size:clamp(26px,4vw,44px);margin:6px 0 8px}
-  .hero p{font-size:clamp(14px,2.2vw,18px);opacity:.98;margin:0}
+  .hero h1{font-size:clamp(22px,5vw,38px);margin:4px 0 6px}
+  .hero p{font-size:clamp(13px,3.3vw,17px);opacity:.98;margin:0}
   .pill{display:inline-block;background:#fff3;backdrop-filter:blur(4px);border:1px solid #fff7;color:#fff;border-radius:999px;padding:6px 10px;font-weight:700}
 
-  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:12px 18px;background:var(--brand);color:#111;font-weight:700;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 20px rgba(245,158,11,.25);cursor:pointer}
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:10px 14px;background:var(--brand);color:#111;font-weight:700;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 20px rgba(245,158,11,.25);cursor:pointer;font-size:clamp(13px,3.2vw,15px)}
   .btn:hover{background:var(--brand-dark)}
 
-  .section{padding:42px 0}
-  .section h2{font-size:clamp(22px,3vw,28px);margin:0 0 14px}
+  .section{padding:40px 0}
+  .section h2{font-size:clamp(18px,4.2vw,26px);margin:0 0 10px}
   .muted{color:var(--muted)}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
-  .grid{display:grid;gap:18px}
+  .grid{display:grid;gap:16px}
   @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}}
-
-  /* 內文排版 */
-  .content{padding:18px}
-  .content p{margin:0 0 12px;line-height:1.85}
-  .content ul{margin:0;padding-left:1.2em;line-height:1.85}
+  .content{padding:16px}
+  .content p{margin:0 0 10px;line-height:1.8;font-size:clamp(14px,3.6vw,16px)}
+  .content ul{margin:0;padding-left:1.2em;line-height:1.8}
   .content li{margin:4px 0}
   .note{font-size:13px;color:var(--muted)}
 
-  /* 類別錨點（頂部分類列） */
+  /* 分類籤：單排橫向滑動 */
   .subnav{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 6px 20px rgba(0,0,0,.04)}
-  .subnav .wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;padding:10px 16px}
-  .chip{background:#fef3c7;border:1px solid #fde68a;color:#7c2d12;padding:10px 14px;border-radius:12px;font-weight:800;cursor:pointer}
+  .subnav .rail{display:flex;gap:8px;align-items:center;padding:10px 4px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  .subnav .rail::-webkit-scrollbar{height:6px}
+  .subnav .rail::-webkit-scrollbar-thumb{background:#e6e6e6;border-radius:999px}
+  .chip{flex:0 0 auto;background:#fef3c7;border:1px solid #fde68a;color:#7c2d12;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer;scroll-snap-align:center;font-size:clamp(13px,3.3vw,14px)}
   .chip:hover{background:#fde68a}
 
-  /* 規格比較圖（縮小置中） */
+  /* 規格比較圖 */
   .spec-figure{display:flex;justify-content:center;padding:6px 0 0}
   .spec-figure img{max-width:min(860px,92%);height:auto;border-radius:12px;box-shadow:var(--shadow)}
 
   /* 產品網格（兩欄） */
-  .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  @media(min-width:960px){.product-grid{gap:14px}}
   .product{display:flex;flex-direction:column}
-  .product img{width:100%;height:190px;object-fit:cover;border-radius:14px 14px 0 0}
-  .product .body{padding:14px}
-  .price{font-weight:800;font-size:20px}
+  .product img{width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;border-radius:14px 14px 0 0}
+  .product .body{padding:10px 12px}
+  .title{margin:0;font-weight:700;font-size:clamp(14px,3.8vw,16px);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
+  .price{font-weight:800;font-size:clamp(16px,4.2vw,18px)}
   .row-between{display:flex;align-items:center;justify-content:space-between}
-  .tag-hot{display:inline-block;background:#22c55e;color:#053; border:1px solid #16a34a;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:800}
-  @media(max-width:520px){
-    .product img{height:34vw}
+  .tag-hot{display:inline-block;background:#22c55e;color:#053;border:1px solid #16a34a;border-radius:10px;padding:2px 6px;font-size:12px;font-weight:800}
+  @media(max-width:360px){
+    .product-grid{gap:10px}
   }
 
   /* 抽屜購物車 */
   .drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,96%);background:var(--surface);border-left:1px solid var(--border);
     transform:translateX(105%);transition:.28s;z-index:50;display:flex;flex-direction:column}
   .drawer.open{transform:none}
-  .drawer header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-  .drawer main{padding:14px 16px;overflow:auto;flex:1}
+  .drawer header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .drawer main{padding:12px 14px;overflow:auto;flex:1}
   .line{height:1px;background:var(--border);margin:10px 0}
   .cart-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0}
   .qty{display:flex;align-items:center;border:1px solid var(--border);border-radius:10px}
@@ -79,11 +82,12 @@
   .summary{background:#f9fafb;border:1px dashed var(--border);border-radius:12px;padding:12px}
   .badge{display:inline-block;background:#fff0d6;color:#7c2d12;border:1px solid #fed7aa;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:700}
 
-  /* 表單 */
+  /* 表單（避免 iOS 放大） */
   .form .row{display:grid;gap:10px}
   @media(min-width:720px){.form .row{grid-template-columns:1fr 1fr}}
   .label{font-weight:700;margin:8px 0 6px}
-  .input, select, textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff}
+  .input, select, textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:16px}
+  input, select, textarea{touch-action:manipulation}
 
   /* 警示卡片 */
   .warn{background:#fff1f2;border:1px solid #fecdd3;color:#7f1d1d}
@@ -93,7 +97,7 @@
     padding:12px 16px;border-radius:999px;box-shadow:0 10px 18px rgba(245,158,11,.35);display:flex;align-items:center;gap:8px;font-weight:800;cursor:pointer}
   .fab-badge{display:inline-block;min-width:22px;height:22px;border-radius:999px;background:#111;color:#fff;font-size:12px;line-height:22px;text-align:center;padding:0 6px}
 
-  footer{padding:36px 0 56px;color:#6b7280;text-align:center}
+  footer{padding:34px 0 56px;color:#6b7280;text-align:center}
 </style>
 </head>
 <body>
@@ -127,7 +131,7 @@
         <div>
           <div class="label">物流方式</div>
           <select name="ship" class="input" required>
-            <option value="黑貓常溫宅配">黑貓常溫宅配</option>
+            <option value="新竹貨運常溫宅配">新竹貨運常溫宅配</option>
             <option value="自取（台中市石岡區石岡街61號）">自取（台中市石岡區石岡街61號）</option>
           </select>
         </div>
@@ -161,19 +165,21 @@
     <span class="pill">豐原・東勢｜在地傳承</span>
     <h1>柑心果園｜用心種柑，與你柑心相伴</h1>
     <p>公老坪椪柑（50年）與東勢茂谷（30年），現採分級直送。10 / 25 台斤多規格可選，匯款後立即安排出貨；到貨請開箱錄影，保障運損理賠。</p>
-    <div style="margin-top:16px">
+    <div style="margin-top:14px">
       <a id="shopNowBtn" class="btn" href="#hot" onclick="go(event,'hot')">馬上選購</a>
     </div>
   </div>
 </section>
 
-<!-- 分類錨點 -->
+<!-- 分類錨點（單排） -->
 <nav class="subnav">
   <div class="wrap">
-    <button class="chip" onclick="go(event,'hot')">🔥 熱銷（25A）</button>
-    <button class="chip" onclick="go(event,'pongan')">公老坪椪柑</button>
-    <button class="chip" onclick="go(event,'maogao')">東勢茂谷</button>
-    <button class="chip" onclick="go(event,'query')">訂單查詢</button>
+    <div class="rail">
+      <button class="chip" onclick="go(event,'hot')">🔥 熱銷（25A）</button>
+      <button class="chip" onclick="go(event,'pongan')">公老坪椪柑</button>
+      <button class="chip" onclick="go(event,'maogao')">東勢茂谷</button>
+      <button class="chip" onclick="go(event,'query')">訂單查詢</button>
+    </div>
   </div>
 </nav>
 
@@ -200,8 +206,8 @@
       <h2>🔥 熱銷推薦（25A）</h2>
       <p class="muted" style="margin-top:-6px">快速帶你看最熱門的 25A 規格</p>
     </div>
-    <div class="card" style="padding:0 18px 18px">
-      <div id="hotGrid" class="product-grid"><!-- JS 注入 --></div>
+    <div class="card" style="padding:0 14px 14px">
+      <div id="hotGrid" class="product-grid"></div>
     </div>
   </div>
 </section>
@@ -213,10 +219,9 @@
       <h2>公老坪椪柑（50年）</h2>
       <p class="muted" style="margin-top:-6px">現採分級｜皮薄多汁｜酸甜平衡</p>
     </div>
-    <!-- 規格比較圖（縮小置中） -->
     <div class="spec-figure"><img id="specImg" src="" alt="椪柑規格比較"></div>
-    <div class="card" style="padding:0 18px 18px">
-      <div id="ponganGrid" class="product-grid"><!-- JS 注入 --></div>
+    <div class="card" style="padding:0 14px 14px">
+      <div id="ponganGrid" class="product-grid"></div>
     </div>
   </div>
 </section>
@@ -228,8 +233,8 @@
       <h2>東勢茂谷（30年）</h2>
       <p class="muted" style="margin-top:-6px">香氣清甜｜纖維細緻｜入口化開</p>
     </div>
-    <div class="card" style="padding:0 18px 18px">
-      <div id="maogaoGrid" class="product-grid"><!-- JS 注入 --></div>
+    <div class="card" style="padding:0 14px 14px">
+      <div id="maogaoGrid" class="product-grid"></div>
     </div>
   </div>
 </section>
@@ -253,7 +258,7 @@
       <h2>物流與出貨</h2>
       <ul class="muted">
         <li>入帳後 1–3 個工作天內出貨（週末與節慶量大時順延）。</li>
-        <li>宅配：黑貓常溫。到貨請「全程開箱錄影」；若有運損，48 小時內提供影片與照片，協助向物流申請理賠。</li>
+        <li>宅配：新竹貨運（常溫）。到貨請「全程開箱錄影」；若有運損，48 小時內提供影片與照片，協助向物流申請理賠。</li>
         <li>自取：可於豐原或公老坪自取，請於備註填寫自取點與時間。</li>
       </ul>
       <div class="badge">貼心提醒</div>
@@ -290,7 +295,7 @@
 
 <script>
 /** =========================
- *  設定（價格 / 匯款 / 運費 / 影像URL / GAS）
+ *  設定
  *  ========================= */
 const CONFIG = {
   PRICES: {
@@ -331,10 +336,10 @@ const CONFIG = {
   BRAND_TAG: "柑心果園"
 };
 
-// 轉 raw.githubusercontent 以便 <img>/<video> 顯示
+// 轉 raw.githubusercontent
 function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
 
-// 匯款資訊填入 / Hero / 比較圖 / 免運金額
+// 匯款資訊與圖片
 document.getElementById('bankName').textContent   = CONFIG.BANK.name;
 document.getElementById('bankHolder').textContent = CONFIG.BANK.holder;
 document.getElementById('bankNo').textContent     = CONFIG.BANK.no;
@@ -343,12 +348,13 @@ document.getElementById('logoImg').src = CONFIG.IMAGES.LOGO;
 document.getElementById('specImg').src = CONFIG.IMAGES.SPEC;
 document.getElementById('freeShipText').textContent = 'NT$ ' + CONFIG.FREE_SHIP_THRESHOLD.toLocaleString();
 
-// 錨點平滑捲動（補扣 70px 方便看標題）
+// 平滑捲動（扣掉 subnav 高度）
 function go(e,id){
   if(e) e.preventDefault();
   const el = document.getElementById(id);
   if(!el) return;
-  const y = el.getBoundingClientRect().top + window.scrollY - 70;
+  const navH = document.querySelector('.subnav')?.offsetHeight || 0;
+  const y = el.getBoundingClientRect().top + window.scrollY - navH - 6;
   window.scrollTo({top:y,behavior:'smooth'});
 }
 
@@ -374,10 +380,10 @@ const MAOGAO = [
   { id:"MAO25-30A", section:"MAOGAO", title:"茂谷｜25台斤｜30A", weight:"25台斤", size:"30A" },
 ];
 
-const cart = []; // {id,title,price,qty,weight,size,section}
+const cart = [];
 const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size] ?? 0;
 const currency = n => "NT$ "+(n||0).toLocaleString();
-const imgFor = (section,weight,size)=> CONFIG.IMAGES[section]?.[`${weight}-${size}`] || 'https://via.placeholder.com/800x500?text=No+Image';
+const imgFor = (section,weight,size)=> CONFIG.IMAGES[section]?.[`${weight}-${size}`] || 'https://via.placeholder.com/800x600?text=Image';
 
 /* 渲染產品卡片（兩欄） */
 function renderGrid(elId, items){
@@ -391,7 +397,7 @@ function renderGrid(elId, items){
         <img src="${img}" alt="${p.title}">
         <div class="body">
           <div class="row-between" style="gap:8px">
-            <h3 style="margin:0;font-size:18px;line-height:1.3">${p.title}</h3>
+            <h3 class="title">${p.title}</h3>
             ${isHot ? '<span class="tag-hot" aria-label="熱銷">🔥 熱銷</span>' : ''}
           </div>
           <div class="row-between" style="margin-top:8px">
@@ -403,15 +409,15 @@ function renderGrid(elId, items){
   }).join('');
 }
 
-/* 熱銷區：自動抓所有 25A */
+/* 熱銷：所有 25A */
 const HOT = [...PONGAN, ...MAOGAO].filter(p=>p.size==='25A');
 
-/* 初始化三個區塊 */
+/* 初始化 */
 renderGrid('hotGrid', HOT);
 renderGrid('ponganGrid', PONGAN);
 renderGrid('maogaoGrid', MAOGAO);
 
-/* 購物車邏輯 */
+/* 購物車 */
 function addToCart(pid){
   const src = [...PONGAN, ...MAOGAO].find(x=>x.id===pid);
   if(!src) return;
@@ -453,10 +459,7 @@ function renderCart(){
   document.getElementById('subtotal').textContent = currency(subtotal);
   document.getElementById('shipping').textContent = currency(shipping);
   document.getElementById('total').textContent = currency(total);
-
-  // 浮動按鈕件數
-  const count = cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('fabCount').textContent = count;
+  document.getElementById('fabCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
 }
 function toggleDrawer(open){ document.getElementById('drawer').classList.toggle('open', !!open); }
 
@@ -465,7 +468,6 @@ async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length){ alert("購物車是空的"); return; }
   const f = new FormData(ev.target);
-  // 二次檢查必填（瀏覽器層已 required）
   for (const key of ['name','phone','email','addr','ship','remark']){
     if(!f.get(key)){ alert('請完整填寫訂單資料'); return; }
   }
@@ -493,7 +495,7 @@ async function submitOrder(ev){
   }
 }
 
-/* 訂單查詢（GET ?orderNo=...；需 GAS doGet） */
+/* 訂單查詢（HCT 新竹貨運追蹤） */
 async function queryOrder(ev){
   ev.preventDefault();
   const no = ev.target.orderNo.value.trim();
@@ -507,10 +509,10 @@ async function queryOrder(ev){
     if(data.ok){
       const s = data.status || '（未提供狀態）';
       const total = data.total ? `，金額 ${currency(data.total)}` : '';
-      const track = data.trackingNo ? `<br>物流單號：<b>${data.trackingNo}</b>` : '';
-      const trackLink = data.trackingNo ? `<br><a href="https://www.t-cat.com.tw/ec/timesheetsearch.aspx?no=${encodeURIComponent(data.trackingNo)}" target="_blank">黑貓查詢連結</a>` : '';
-      const items = Array.isArray(data.items) ? data.items.map(i=>`${i.title}×${i.qty}`).join('、') : '';
       const shipDate = data.shipDate ? `<br>出貨日期：${data.shipDate}` : '';
+      const track = data.trackingNo ? `<br>物流單號：<b>${data.trackingNo}</b>` : '';
+      const trackLink = data.trackingNo ? `<br><a href="https://www.hct.com.tw/searchWaybill.aspx?no=${encodeURIComponent(data.trackingNo)}" target="_blank">新竹貨運查詢連結</a>` : '';
+      const items = Array.isArray(data.items) ? data.items.map(i=>`${i.title}×${i.qty}`).join('、') : '';
       box.innerHTML = `📦 訂單 <b>${no}</b> 狀態：<b>${s}</b>${total}${shipDate}${track}${trackLink}${items?`<br>品項：${items}`:''}`;
     }else{
       box.textContent = '查無此訂單編號';
@@ -520,7 +522,7 @@ async function queryOrder(ev){
   }
 }
 
-/* 首次渲染購物車 */
+/* 初始購物車 */
 renderCart();
 </script>
 </body>
