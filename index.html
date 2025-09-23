@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>豐原公老坪椪柑｜在地50年・山頂最甜的橘子</title>
-<meta name="description" content="豐原公老坪山頂在地50年椪柑。現採直送，10台斤/25台斤多規格，匯款立即安排出貨。到貨請開箱錄影保障理賠。">
+<title>柑心果園｜公老坪椪柑・東勢茂谷｜在地傳承的好滋味</title>
+<meta name="description" content="柑心果園：用心種柑，與你柑心相伴。公老坪山頂在地50年椪柑、東勢在地30年茂谷。現採分級直送，10/25台斤多規格，匯款立即安排出貨。到貨請開箱錄影保障理賠。">
 <style>
   :root{
     --bg:#faf7f2; --surface:#ffffff; --text:#1f2937; --muted:#6b7280; --brand:#f59e0b; --brand-dark:#d97706;
@@ -14,25 +14,30 @@
   body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","Helvetica Neue",Arial,sans-serif}
   a{color:var(--brand-dark);text-decoration:none}
   .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-  .hero{
-    position:relative;min-height:56vh;display:grid;place-items:center;color:#fff;
-    background:url('assets/hero.jpg') center/cover no-repeat; /* 放你的公老坪風景圖 */
-  }
-  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.35))}
+
+  /* Hero */
+  .hero{position:relative;min-height:58vh;display:grid;place-items:center;color:#fff;
+    background:url('assets/hero.jpg') center/cover no-repeat;}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.38))}
   .hero-inner{position:relative;text-align:center;padding:64px 16px}
-  .hero h1{font-size:clamp(28px,4vw,46px);margin:0 0 8px}
-  .hero p{font-size:clamp(14px,2.2vw,18px);opacity:.95;margin:0}
-  .btn{
-    display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:12px 18px;background:var(--brand);color:#111;font-weight:700;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 20px rgba(245,158,11,.25);cursor:pointer
-  }
+  .logo{width:120px;height:120px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:12px}
+  .logo img{max-width:100%;max-height:100%}
+  .hero h1{font-size:clamp(26px,4vw,44px);margin:6px 0 8px}
+  .hero p{font-size:clamp(14px,2.2vw,18px);opacity:.98;margin:0}
+  .pill{display:inline-block;background:#fff3;backdrop-filter:blur(4px);border:1px solid #fff7;color:#fff;border-radius:999px;padding:6px 10px;font-weight:700}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:12px 18px;background:var(--brand);color:#111;
+    font-weight:700;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 20px rgba(245,158,11,.25);cursor:pointer}
   .btn:hover{background:var(--brand-dark)}
+
   .section{padding:42px 0}
   .section h2{font-size:clamp(22px,3vw,28px);margin:0 0 14px}
   .muted{color:var(--muted)}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
   .grid{display:grid;gap:18px}
   @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}}
-  /* 產品輪播 */
+
+  /* 輪播 */
   .carousel{display:flex;gap:14px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
   .carousel::-webkit-scrollbar{height:8px}
   .carousel::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px}
@@ -40,9 +45,10 @@
   .product img{width:100%;height:190px;object-fit:cover;border-radius:14px 14px 0 0}
   .product .body{padding:14px}
   .price{font-weight:800;font-size:20px}
-  .pill{display:inline-block;background:#fff3;backdrop-filter:blur(4px);border:1px solid #fff7;color:#fff;border-radius:999px;padding:6px 10px;font-weight:700}
-  /* 購物車抽屜 */
-  .drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,96%);background:var(--surface);border-left:1px solid var(--border);transform:translateX(105%);transition:.28s;z-index:50;display:flex;flex-direction:column}
+
+  /* 抽屜購物車 */
+  .drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,96%);background:var(--surface);border-left:1px solid var(--border);
+    transform:translateX(105%);transition:.28s;z-index:50;display:flex;flex-direction:column}
   .drawer.open{transform:none}
   .drawer header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
   .drawer main{padding:14px 16px;overflow:auto;flex:1}
@@ -53,20 +59,23 @@
   .qty span{display:inline-block;width:32px;text-align:center}
   .summary{background:#f9fafb;border:1px dashed var(--border);border-radius:12px;padding:12px}
   .badge{display:inline-block;background:#fff0d6;color:#7c2d12;border:1px solid #fed7aa;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:700}
+
   /* 表單 */
   .form .row{display:grid;gap:10px}
   @media(min-width:720px){.form .row{grid-template-columns:1fr 1fr}}
   .label{font-weight:700;margin:8px 0 6px}
   .input, select, textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff}
   .note{font-size:13px;color:var(--muted)}
-  /* 不良退貨說明卡片 */
+
+  /* 退貨說明卡片 */
   .warn{background:#fff1f2;border:1px solid #fecdd3;color:#7f1d1d}
+
   footer{padding:36px 0 56px;color:#6b7280;text-align:center}
 </style>
 </head>
 <body>
 
-<!-- 抽屜：購物車 -->
+<!-- 抽屜購物車 -->
 <aside id="drawer" class="drawer" aria-hidden="true">
   <header>
     <strong>購物車</strong>
@@ -80,32 +89,23 @@
       <div style="display:flex;justify-content:space-between"><span>運費（常溫宅配）</span><strong id="shipping">$0</strong></div>
       <div class="line"></div>
       <div style="display:flex;justify-content:space-between;font-size:18px"><span>應付金額</span><strong id="total">$0</strong></div>
-      <div style="margin-top:8px" class="note">滿額1500原即達免運。</div>
+      <div style="margin-top:8px" class="note">滿額 1500 即免運。</div>
     </div>
 
     <div class="line"></div>
     <!-- 下單表單 -->
     <form id="orderForm" class="form" onsubmit="submitOrder(event)">
       <div class="row">
-        <div>
-          <div class="label">姓名</div>
-          <input class="input" name="name" required>
-        </div>
-        <div>
-          <div class="label">手機</div>
-          <input class="input" name="phone" required>
-        </div>
+        <div><div class="label">姓名</div><input class="input" name="name" required></div>
+        <div><div class="label">手機</div><input class="input" name="phone" required></div>
       </div>
       <div class="row">
-        <div>
-          <div class="label">Email（寄送出貨通知）</div>
-          <input class="input" type="email" name="email" required>
-        </div>
+        <div><div class="label">Email（寄送出貨通知）</div><input class="input" type="email" name="email" required></div>
         <div>
           <div class="label">物流方式</div>
           <select name="ship" class="input">
-            <option value="常溫宅配">宅配</option>
-            <option value="自取（地址:台中市石岡區石岡街61號）">自取（地址:台中市石岡區石岡街61號）</option>
+            <option value="常溫宅配">常溫宅配</option>
+            <option value="自取（台中市石岡區石岡街61號）">自取（台中市石岡區石岡街61號）</option>
           </select>
         </div>
       </div>
@@ -129,12 +129,11 @@
 <!-- Hero -->
 <section class="hero">
   <div class="hero-inner wrap">
-    <span class="pill">豐原・公老坪山頂｜在地 50 年</span>
-    <h1>椪柑現採直送．甜度高・酸香平衡・皮薄多汁</h1>
-    <p>10 台斤 / 25 台斤 多規格挑選，匯款後立即安排出貨。到貨請開箱錄影，保障運損理賠。</p>
-    <div style="margin-top:16px">
-      <a class="btn" href="#products">馬上選購</a>
-    </div>
+    <div class="logo"><img src="assets/logo.png" alt="柑心果園 Logo"></div>
+    <span class="pill">豐原・東勢｜在地傳承</span>
+    <h1>柑心果園｜用心種柑，與你柑心相伴</h1>
+    <p>公老坪椪柑（50年）與東勢茂谷（30年），現採分級直送。10 / 25 台斤多規格可選，匯款後立即安排出貨；到貨請開箱錄影，保障運損理賠。</p>
+    <div style="margin-top:16px"><a class="btn" href="#products">馬上選購</a></div>
   </div>
 </section>
 
@@ -142,8 +141,14 @@
 <section class="section">
   <div class="wrap grid grid-2">
     <div class="card" style="padding:18px">
-      <h2>關於公老坪椪柑</h2>
-      <p class="muted">公老坪位處豐原山頂，日照充足、早晚溫差大，造就皮薄多汁、香氣明亮的在地椪柑。我們堅持自然熟成、當日採收分級，50 年來專心只做一件事：把最好吃的橘子送到你手上。</p>
+      <h2>關於「柑心果園」</h2>
+      <p class="muted">
+        我們相信，好的水果，來自長年的堅持與土地的回應。<br>
+        <b>公老坪椪柑</b>承載著家族在山頂的 <b>50 年</b>耕作記憶：日照充足、早晚溫差大，讓果皮薄、汁水足、酸甜平衡。<br>
+        <b>東勢茂谷</b>則是一路相伴的 <b>30 年</b>老友：香氣清甜、纖維細緻、入口化開。<br><br>
+        從採收、分級到裝箱，我們做的每一步只有一個目的——把最好吃的柑橘，完好送到你手上。<br>
+        <b>用心種柑，與你柑心相伴。</b>
+      </p>
       <ul class="muted">
         <li>分級規格：23A／25A／27A／30A（整齊度與果徑）</li>
         <li>包裝重量：10 台斤箱、25 台斤箱</li>
@@ -151,19 +156,17 @@
       </ul>
     </div>
     <div class="card" style="overflow:hidden">
-      <!-- 放你想要的介紹影片（可先放圖片占位） -->
-      <video src="assets/intro.mp4" controls style="width:100%;height:100%;display:block" poster="assets/box25.jpg"></video>
+      <!-- 介紹影片（可先放圖片占位） -->
+      <video src="https://github.com/s9000721-cloud/gonglaoping/blob/main/780323577.063367.mp4" controls style="width:100%;height:100%;display:block" poster="assets/box25.jpg"></video>
     </div>
   </div>
 </section>
 
-<!-- 產品區：卡片式橫向輪播 -->
+<!-- 產品區：卡片式橫向輪播（椪柑＋茂谷） -->
 <section id="products" class="section" style="padding-top:0">
   <div class="wrap">
     <h2>熱賣規格</h2>
-    <div class="carousel" id="carousel">
-      <!-- JS 會注入產品卡片 -->
-    </div>
+    <div class="carousel" id="carousel"><!-- JS 注入 --></div>
   </div>
 </section>
 
@@ -184,7 +187,7 @@
       <h2>退貨與售後說明</h2>
       <ul>
         <li>生鮮水果依法不適用 7 日猶豫期。</li>
-        <li>非人為挑選之自然果斑、糖瓤差異、輕微外觀色澤差異，屬正常範圍，恕不退換。</li>
+        <li>自然果斑、色澤差異、糖瓤與甜度落差屬正常範圍，恕不退換。</li>
         <li>運損請於 48 小時內提供「完整開箱錄影＋照片」，我們會協助向物流理賠。</li>
       </ul>
     </div>
@@ -204,8 +207,8 @@
 <section class="section">
   <div class="wrap grid grid-2">
     <div class="card" style="padding:16px">
-      <h2>為什麼同規格價格不同？</h2>
-      <p class="muted">售價依「重量（10/25 台斤）」與「分級（23A/25A/27A/30A）」而定，A 值越大代表果實越大、外觀越整齊。</p>
+      <h2>椪柑與茂谷差在哪？</h2>
+      <p class="muted">椪柑酸甜平衡、香氣明亮；茂谷甜味更高、纖維細緻、口感柔和。兩者皆為隨季現採，當令最甜最好吃。</p>
     </div>
     <div class="card" style="padding:16px">
       <h2>可以指定到貨日嗎？</h2>
@@ -215,9 +218,7 @@
 </section>
 
 <footer>
-  <div class="wrap">
-    <div class="note">© 豐原公老坪椪柑｜在地 50 年．山頂最頂的橘子</div>
-  </div>
+  <div class="wrap"><div class="note">© 柑心果園｜公老坪椪柑・東勢茂谷</div></div>
 </footer>
 
 <script>
@@ -226,39 +227,49 @@
  *  ========================= */
 const CONFIG = {
   PRICES: {
-    // 售價：NTD（可依需求調整）
+    // 售價（可依實際調整）
     "10台斤":  { "23A": 750, "25A": 780, "27A": 820, "30A": 880 },
     "25台斤":  { "23A": 1600,"25A": 1680,"27A": 1780,"30A": 1880 }
   },
   SHIPPING: 160,              // 常溫運費（單箱）
   FREE_SHIP_THRESHOLD: 1500,  // 滿額免運（整筆）
   BANK: {
-    name: "連線銀行(824)", // ← 改成你的
-    holder: "張鈞泓",           // ← 改成你的
-    no: "11101-37823-13"           // ← 改成你的
+    name: "連線銀行(824)",    // ← 你的銀行
+    holder: "張鈞泓",          // ← 戶名
+    no: "11101-37823-13"      // ← 帳號
   },
   GAS_ENDPOINT: "https://script.google.com/macros/s/你的WebAppID/exec", // ← 貼上 Apps Script 發佈網址
-  BRAND_TAG: "豐原公老坪椪柑"
+  BRAND_TAG: "柑心果園"
 };
 
-// 初始化匯款區塊
+// 匯款資訊填入
 document.getElementById('bankName').textContent   = CONFIG.BANK.name;
 document.getElementById('bankHolder').textContent = CONFIG.BANK.holder;
 document.getElementById('bankNo').textContent     = CONFIG.BANK.no;
 
-// 產品資料（圖片請放 assets/ 裡）
+/** 產品清單
+ *  - type: '椪柑' 或 '茂谷'（僅供前台顯示）
+ *  - 圖片檔名可自行更換，放在 assets/ 目錄
+ */
 const PRODUCTS = [
-  { id:"10-23A", title:"10台斤｜23A", size:"23A", weight:"10台斤", img:"assets/23A.jpg" },
-  { id:"10-25A", title:"10台斤｜25A", size:"25A", weight:"10台斤", img:"assets/25A.jpg" },
-  { id:"10-27A", title:"10台斤｜27A", size:"27A", weight:"10台斤", img:"assets/27A.jpg" },
-  { id:"10-30A", title:"10台斤｜30A", size:"30A", weight:"10台斤", img:"assets/30A.jpg" },
-  { id:"25-23A", title:"25台斤｜23A", size:"23A", weight:"25台斤", img:"assets/box25.jpg" },
-  { id:"25-25A", title:"25台斤｜25A", size:"25A", weight:"25台斤", img:"assets/box25.jpg" },
-  { id:"25-27A", title:"25台斤｜27A", size:"27A", weight:"25台斤", img:"assets/box25.jpg" },
-  { id:"25-30A", title:"25台斤｜30A", size:"30A", weight:"25台斤", img:"assets/box25.jpg" },
+  // 公老坪 椪柑（50年）
+  { id:"PON10-23A", type:"椪柑", origin:"公老坪", title:"椪柑｜10台斤｜23A", size:"23A", weight:"10台斤", img:"assets/pongan_23A.jpg" },
+  { id:"PON10-25A", type:"椪柑", origin:"公老坪", title:"椪柑｜10台斤｜25A", size:"25A", weight:"10台斤", img:"assets/pongan_25A.jpg" },
+  { id:"PON10-27A", type:"椪柑", origin:"公老坪", title:"椪柑｜10台斤｜27A", size:"27A", weight:"10台斤", img:"assets/pongan_27A.jpg" },
+  { id:"PON10-30A", type:"椪柑", origin:"公老坪", title:"椪柑｜10台斤｜30A", size:"30A", weight:"10台斤", img:"assets/pongan_30A.jpg" },
+  { id:"PON25-23A", type:"椪柑", origin:"公老坪", title:"椪柑｜25台斤｜23A", size:"23A", weight:"25台斤", img:"assets/pongan_box25.jpg" },
+  { id:"PON25-25A", type:"椪柑", origin:"公老坪", title:"椪柑｜25台斤｜25A", size:"25A", weight:"25台斤", img:"assets/pongan_box25.jpg" },
+  { id:"PON25-27A", type:"椪柑", origin:"公老坪", title:"椪柑｜25台斤｜27A", size:"27A", weight:"25台斤", img:"assets/pongan_box25.jpg" },
+  { id:"PON25-30A", type:"椪柑", origin:"公老坪", title:"椪柑｜25台斤｜30A", size:"30A", weight:"25台斤", img:"assets/pongan_box25.jpg" },
+
+  // 東勢 茂谷（30年）
+  { id:"MAO10-23A", type:"茂谷", origin:"東勢", title:"茂谷｜10台斤｜23A", size:"23A", weight:"10台斤", img:"assets/maogao_23A.jpg" },
+  { id:"MAO10-25A", type:"茂谷", origin:"東勢", title:"茂谷｜10台斤｜25A", size:"25A", weight:"10台斤", img:"assets/maogao_25A.jpg" },
+  { id:"MAO25-23A", type:"茂谷", origin:"東勢", title:"茂谷｜25台斤｜23A", size:"23A", weight:"25台斤", img:"assets/maogao_box25.jpg" },
+  { id:"MAO25-25A", type:"茂谷", origin:"東勢", title:"茂谷｜25台斤｜25A", size:"25A", weight:"25台斤", img:"assets/maogao_box25.jpg" },
 ];
 
-const cart = []; // {id,title,price,qty,weight,size}
+const cart = []; // {id,title,price,qty,weight,size,type,origin}
 
 function priceOf(weight,size){ return CONFIG.PRICES[weight][size]; }
 
@@ -274,7 +285,7 @@ function renderProducts(){
           <h3 style="margin:0;font-size:18px">${p.title}</h3>
           <div class="price">NT$ ${price.toLocaleString()}</div>
         </div>
-        <p class="muted" style="margin:6px 0 12px">在地 50 年・當日採收分級｜甜度高、皮薄多汁。</p>
+        <p class="muted" style="margin:6px 0 12px">${p.origin}在地${p.type==='椪柑'?'50':'30'}年，當日採收分級｜甜度高、皮薄多汁。</p>
         <button class="btn" onclick="addToCart('${p.id}')">加入購物車</button>
       </div>
     </article>`;
@@ -286,9 +297,8 @@ function addToCart(pid){
   const price = priceOf(p.weight,p.size);
   const existed = cart.find(x=>x.id===pid);
   if(existed){ existed.qty++; }
-  else{ cart.push({ id:p.id, title:p.title, price, qty:1, weight:p.weight, size:p.size }); }
-  renderCart();
-  toggleDrawer(true);
+  else{ cart.push({ id:p.id, title:p.title, price, qty:1, weight:p.weight, size:p.size, type:p.type, origin:p.origin }); }
+  renderCart(); toggleDrawer(true);
 }
 
 function mutateQty(i,delta){
@@ -296,8 +306,7 @@ function mutateQty(i,delta){
   if(cart[i].qty<=0) cart.splice(i,1);
   renderCart();
 }
-
-function currency(n){ return "NT$ "+(n||0).toLocaleString(); }
+const currency = n => "NT$ "+(n||0).toLocaleString();
 
 function calc(){
   const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
@@ -307,8 +316,9 @@ function calc(){
 
 function renderCart(){
   const list = document.getElementById('cartList');
-  if(!cart.length){ list.innerHTML = `<div class="muted">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>`; }
-  else{
+  if(!cart.length){
+    list.innerHTML = `<div class="muted">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>`;
+  }else{
     list.innerHTML = cart.map((c,i)=>`
       <div class="cart-row">
         <div>
@@ -339,7 +349,7 @@ async function submitOrder(ev){
     ts: new Date().toISOString(),
     name: f.get('name'), phone: f.get('phone'), email: f.get('email'),
     addr: f.get('addr'), ship: f.get('ship'), remark: f.get('remark'),
-    items: cart.map(c=>({title:c.title, weight:c.weight, size:c.size, price:c.price, qty:c.qty})),
+    items: cart.map(c=>({title:c.title, weight:c.weight, size:c.size, price:c.price, qty:c.qty, type:c.type, origin:c.origin})),
     summary: calc(),
     brand: CONFIG.BRAND_TAG
   };
@@ -350,8 +360,7 @@ async function submitOrder(ev){
       document.getElementById('result').innerHTML =
         `✅ 訂單已建立（編號：<b>${data.order_no}</b>）。<br>
          已將匯款資訊寄至 <b>${payload.email}</b>，請於 24 小時內完成匯款以保留庫存。`;
-      cart.length = 0; renderCart();
-      ev.target.reset();
+      cart.length = 0; renderCart(); ev.target.reset();
     }else{
       document.getElementById('result').textContent = '送出失敗：'+(data.msg||'未知錯誤');
     }
@@ -360,8 +369,7 @@ async function submitOrder(ev){
   }
 }
 
-renderProducts();
-renderCart();
+renderProducts(); renderCart();
 </script>
 </body>
 </html>
