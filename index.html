@@ -104,8 +104,8 @@
         <div>
           <div class="label">物流方式</div>
           <select name="ship" class="input">
-            <option value="黑貓常溫宅配">黑貓常溫宅配</option>
-            <option value="自取（豐原/公老坪）">自取（豐原/公老坪）</option>
+            <option value="常溫宅配">宅配</option>
+            <option value="自取（地址:台中市石岡區石岡街61號）">自取（地址:台中市石岡區石岡街61號）</option>
           </select>
         </div>
       </div>
@@ -231,11 +231,11 @@ const CONFIG = {
     "25台斤":  { "23A": 1600,"25A": 1680,"27A": 1780,"30A": 1880 }
   },
   SHIPPING: 160,              // 常溫運費（單箱）
-  FREE_SHIP_THRESHOLD: 2500,  // 滿額免運（整筆）
+  FREE_SHIP_THRESHOLD: 1500,  // 滿額免運（整筆）
   BANK: {
-    name: "台灣銀行 豐原分行(004)", // ← 改成你的
-    holder: "酥味香企業社",           // ← 改成你的
-    no: "0123-456-789012"           // ← 改成你的
+    name: "連線銀行(824)", // ← 改成你的
+    holder: "張鈞泓",           // ← 改成你的
+    no: "11101-37823-13"           // ← 改成你的
   },
   GAS_ENDPOINT: "https://script.google.com/macros/s/你的WebAppID/exec", // ← 貼上 Apps Script 發佈網址
   BRAND_TAG: "豐原公老坪椪柑"
