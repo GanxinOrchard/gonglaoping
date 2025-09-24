@@ -1,1092 +1,315 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>柑心果園｜公老坪椪柑・東勢茂谷｜在地傳承的好滋味</title>
-<meta name="description" content="柑心果園：用心種柑，與你柑心相伴。公老坪山頂在地50年椪柑、東勢在地30年茂谷。現採分級直送，10/25 台斤多規格，匯款立即安排出貨。到貨請開箱錄影保障理賠。">
-<style>
-  :root{
-    --bg:#faf7f2; --surface:#ffffff; --text:#1f2937; --muted:#6b7280; --brand:#f59e0b; --brand-dark:#d97706;
-    --border:#e5e7eb; --shadow:0 10px 28px rgba(0,0,0,.06);
-    --hot:#ef4444; --hot-dark:#dc2626;
-    --pongan-surface:#fff7d6; --maogao-surface:#eef9f0;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","Helvetica Neue",Arial,sans-serif}
-  a{color:var(--brand-dark);text-decoration:none}
-  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>柑心果園｜公老坪椪柑・東勢茂谷｜在地傳承的好滋味</title>
+  <meta name="description" content="柑心果園：用心種柑，與你柑心相伴。公老坪山頂在地50年椪柑、東勢在地30年茂谷。現採分級直送，10/25 台斤多規格，匯款立即安排出貨。到貨請開箱錄影保障理賠。">
+  <style>
+    :root{
+      --bg:#faf7f2; --surface:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --brand:#f59e0b; --brand-dark:#d97706; --border:#e5e7eb;
+      --shadow:0 10px 28px rgba(0,0,0,.06);
+      --hot:#ef4444; --hot-dark:#dc2626;
+      --pongan-surface:#fff7d6; --maogao-surface:#eef9f0;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Helvetica Neue",Arial,sans-serif}
+    a{color:var(--brand-dark);text-decoration:none}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
 
-  /* Hero */
-  .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center}
-  @media(max-width:560px){.hero{min-height:44vh}}
-  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.38));z-index:0;pointer-events:none}
-  .hero-inner{position:relative;z-index:1;text-align:center;padding:56px 16px}
-  .logo{width:110px;height:110px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:10px}
-  .logo img{max-width:100%;max-height:100%}
-  .hero h1{font-size:clamp(21px,4.8vw,36px);margin:4px 0 6px} /* ← 可改：手機字級 */
-  .hero p{font-size:clamp(12.5px,3.2vw,15px);opacity:.98;margin:0}
-  .pill{display:inline-block;background:#fff3;backdrop-filter:blur(4px);border:1px solid #fff7;color:#fff;border-radius:999px;padding:6px 10px;font-weight:700}
+    /* ===== Hero 區塊 ===== */
+    .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center}
+    @media(max-width:560px){.hero{min-height:44vh}}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.38));z-index:0;pointer-events:none}
+    .hero-inner{position:relative;z-index:1;text-align:center;padding:56px 16px}
+    .logo{width:110px;height:110px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:10px}
+    .logo img{max-width:100%;max-height:100%}
+    .hero h1{font-size:clamp(21px,4.8vw,36px);margin:4px 0 6px}
+    .hero p{font-size:clamp(12.5px,3.2vw,15px);opacity:.98;margin:0}
+    .pill{display:inline-block;background:#fff3;backdrop-filter:blur(4px);border:1px solid #fff7;color:#fff;border-radius:999px;padding:6px 10px;font-weight:700}
 
-  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:10px 14px;background:var(--brand);color:#111;font-weight:700;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 20px rgba(245,158,11,.25);cursor:pointer;font-size:clamp(12.5px,3vw,15px)}
-  .btn:hover{background:var(--brand-dark)}
-  .btn-ghost{background:#f9fafb;border:1px solid var(--border);color:var(--text);box-shadow:none}
-  .btn-ghost:hover{background:#f3f4f6}
-  .btn-red{background:var(--hot);color:#fff;border-color:#ef4444;box-shadow:0 10px 20px rgba(239,68,68,.25)}
-  .btn-red:hover{background:var(--hot-dark)}
-  .btn-block{width:100%;justify-content:center}
+    /* ===== 按鈕 ===== */
+    .btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:10px 14px;background:var(--brand);color:#111;font-weight:700;border:1px solid rgba(0,0,0,.05);box-shadow:0 10px 20px rgba(245,158,11,.25);cursor:pointer;font-size:clamp(12.5px,3vw,15px)}
+    .btn:hover{background:var(--brand-dark)}
+    .btn-ghost{background:#f9fafb;border:1px solid var(--border);color:var(--text);box-shadow:none}
+    .btn-ghost:hover{background:#f3f4f6}
+    .btn-red{background:var(--hot);color:#fff;border-color:#ef4444;box-shadow:0 10px 20px rgba(239,68,68,.25)}
+    .btn-red:hover{background:var(--hot-dark)}
+    .btn-block{width:100%;justify-content:center}
 
-  .section{padding:34px 0}
-  .section h2{font-size:clamp(17px,3.8vw,25px);margin:0 0 10px}
-  .muted{color:var(--muted)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
-  .grid{display:grid;gap:16px}
-  @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}}
-  .content{padding:16px}
-  .content p{margin:0 0 10px;line-height:1.8;font-size:clamp(13.5px,3.2vw,15px)}
-  .content ul{margin:0;padding-left:1.2em;line-height:1.8}
-  .content li{margin:4px 0}
-  .note{font-size:12.5px;color:var(--muted)}
+    /* ===== 卡片 ===== */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
+    .content{padding:16px}
+    .content p{margin:0 0 10px;line-height:1.8;font-size:clamp(13.5px,3.2vw,15px)}
 
-  /* 分類籤：單排橫向滑動 */
-  .subnav{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 6px 20px rgba(0,0,0,.04)}
-  .subnav .rail{display:flex;gap:8px;align-items:center;padding:10px 4px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
-  .subnav .rail::-webkit-scrollbar{height:6px}
-  .subnav .rail::-webkit-scrollbar-thumb{background:#e6e6e6;border-radius:999px}
-  .chip{flex:0 0 auto;background:#fef3c7;border:1px solid #fde68a;color:#7c2d12;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer;scroll-snap-align:center;font-size:clamp(12.5px,3vw,14px)}
-  .chip:hover{background:#fde68a}
+    /* ===== 抽屜（共用） ===== */
+    .drawer{position:fixed;right:0;top:0;bottom:0;width:min(480px,96%);background:var(--surface);border-left:1px solid var(--border);transform:translateX(105%);transition:.28s;z-index:60;display:flex;flex-direction:column}
+    .drawer.open{transform:none}
+    .drawer header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .drawer main{padding:12px 14px;overflow:auto;flex:1}
 
-  /* 橫向滑動卡片（新聞/規格共用） */
-  .rail-cards{display:flex;gap:12px;overflow:auto;padding:10px 4px}
-  .rail-cards::-webkit-scrollbar{height:6px}
-  .rail-cards::-webkit-scrollbar-thumb{background:#e6e6e6;border-radius:999px}
-  .rail-cards .card{flex:0 0 auto;width:min(480px,92%)} /* ← 可改：預設寬 */
-  /* 規格等級專用：再縮小，接近產品卡尺寸 */
-  .spec-cards .card{width:min(360px,48%)}               /* ← 可改：手機看起來更小 */
-  @media(min-width:900px){.spec-cards .card{width:min(420px,32%)}}
+    /* ===== 浮動購物車 🍊 ===== */
+    .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:55;background:var(--brand);color:#111;border:1px solid rgba(0,0,0,.06);padding:12px 16px;border-radius:999px;box-shadow:0 10px 18px rgba(245,158,11,.35);display:flex;align-items:center;gap:8px;font-weight:800;cursor:pointer}
+    .fab-badge{display:inline-block;min-width:22px;height:22px;border-radius:999px;background:#111;color:#fff;font-size:12px;line-height:22px;text-align:center;padding:0 6px}
 
-  /* 產品網格（兩欄） */
-  .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  @media(min-width:960px){.product-grid{gap:14px}}
-  .product{display:flex;flex-direction:column}
-  .product img{width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;border-radius:14px 14px 0 0}
-  .product .body{padding:10px 12px}
-  .title{margin:0;font-weight:700;font-size:clamp(12.5px,3.5vw,15px);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
-  .price{font-weight:800;font-size:clamp(14px,3.8vw,16px)}
-  .row-between{display:flex;align-items:center;justify-content:space-between}
-  .tag-hot{display:inline-block;background:var(--hot);color:#fff;border:1px solid #ef4444;border-radius:10px;padding:3px 7px;font-size:12px;font-weight:800}
-
-  /* 區塊主題 */
-  .theme-hot .content{background:#fee2e2;border-color:#fecaca}
-  .theme-pongan .content{background:var(--pongan-surface);border-color:#fde68a}
-  .theme-maogao .content{background:var(--maogao-surface);border-color:#bbf7d0}
-
-  /* 抽屜（共用） */
-  .drawer{position:fixed;right:0;top:0;bottom:0;width:min(480px,96%);background:var(--surface);border-left:1px solid var(--border);
-    transform:translateX(105%);transition:.28s;z-index:60;display:flex;flex-direction:column}
-  .drawer.open{transform:none}
-  .drawer header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .drawer header .btns{display:flex;gap:8px}
-  .drawer main{padding:12px 14px;overflow:auto;flex:1}
-  .line{height:1px;background:var(--border);margin:10px 0}
-
-  .cart-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0}
-  .qty{display:flex;align-items:center;border:1px solid var(--border);border-radius:10px}
-  .qty button{width:30px;height:30px;border:0;background:#f3f4f6}
-  .qty span{display:inline-block;width:32px;text-align:center}
-
-  .summary{background:#f9fafb;border:1px dashed var(--border);border-radius:12px;padding:12px}
-  .badge{display:inline-block;background:#fff0d6;color:#7c2d12;border:1px solid #fed7aa;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:700}
-  .warn{background:#fff1f2;border:1px solid #fecdd3;color:#7f1d1d}
-
-  /* 表單 */
-  .form .row{display:grid;gap:10px}
-  @media(min-width:720px){.form .row{grid-template-columns:1fr 1fr}}
-  .label{font-weight:700;margin:8px 0 6px}
-  .input, select, textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:16px}
-  input, select, textarea{touch-action:manipulation}
-  .help{font-size:12px;color:#6b7280;margin-top:4px}
-
-  /* 浮動購物車按鈕 */
-  .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:55;background:var(--brand);color:#111;border:1px solid rgba(0,0,0,.06);
-    padding:12px 16px;border-radius:999px;box-shadow:0 10px 18px rgba(245,158,11,.35);display:flex;align-items:center;gap:8px;font-weight:800;cursor:pointer}
-  .fab-badge{display:inline-block;min-width:22px;height:22px;border-radius:999px;background:#111;color:#fff;font-size:12px;line-height:22px;text-align:center;padding:0 6px}
-
-  /* 不起眼的管理員按鈕（左下角） */
-  .admin-btn{position:fixed;left:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:56;background:#fff;border:1px solid var(--border);border-radius:999px;box-shadow:var(--shadow);padding:8px 10px;opacity:.5;cursor:pointer}
-  .admin-btn:hover{opacity:.9}
-
-  /* 右下角齒輪（庫存編輯） */
-  .gear{position:fixed;right:16px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:55;background:#fff;border:1px solid var(--border);border-radius:999px;box-shadow:var(--shadow);padding:10px 12px;cursor:pointer}
-
-  footer{padding:34px 0 56px;color:#6b7280;text-align:center}
-</style>
+    /* ===== 頁尾 ===== */
+    footer{padding:34px 0 56px;color:#6b7280;text-align:center}
+  </style>
 </head>
 <body>
-
-<!-- 購物車抽屜 -->
-<aside id="drawer" class="drawer" aria-hidden="true">
-  <header>
-    <strong>購物車</strong>
-    <div class="btns">
-      <button class="btn-ghost" onclick="clearCart()">清空購物車</button> <!-- ← 可改：是否顯示 -->
-      <button class="btn" onclick="toggleDrawer(false)">關閉</button>
-    </div>
-  </header>
-  <main>
-    <div id="cartList"></div>
-
-    <div class="line"></div>
-
-    <!-- 配送方式 -->
-    <div class="summary" style="margin-bottom:10px">
-      <div class="label">配送方式</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button id="shipHomeBtn" class="btn" type="button" onclick="setShipMethod('HOME')">宅配</button>
-        <button id="shipCvsBtn" class="btn-ghost" type="button" onclick="setShipMethod('CVS')">超商取貨（免運｜限10斤×1）</button>
+  <!-- 購物車抽屜 -->
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <header>
+      <strong>購物車</strong>
+      <div class="btns">
+        <button class="btn-ghost" onclick="clearCart()">清空購物車</button>
+        <button class="btn" onclick="toggleDrawer(false)">關閉</button>
       </div>
-      <div class="help">超商取貨限「單一 10 台斤 × 1 箱」，不接受外島配送。</div>
-    </div>
-
-    <!-- 運費與總額 -->
-    <div class="summary">
-      <div class="row-between"><span>商品小計</span><strong id="subtotal">$0</strong></div>
-      <div class="row-between"><span id="shipLabel">運費（宅配）</span><strong id="shipping">$0</strong></div>
+    </header>
+    <main>
+      <div id="cartList"></div>
       <div class="line"></div>
-      <div class="row-between" style="font-size:18px"><span>應付金額</span><strong id="total">$0</strong></div>
-      <div class="note" style="margin-top:8px">宅配滿額 <b id="freeShipText">0</b> 免運；超商取貨一律免運。</div>
-    </div>
-
-    <div class="line"></div>
-
-    <!-- 下單表單 -->
-    <form id="orderForm" class="form" onsubmit="submitOrder(event)">
-      <div class="row">
-        <div>
-          <div class="label">姓名</div>
-          <input class="input" name="name" placeholder="例：陳小橘" required>
-        </div>
-        <div>
-          <div class="label">手機</div>
-          <input class="input" name="phone" placeholder="例：0912-345-678" required>
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <div class="label">Email（寄送出貨通知）</div>
-          <input class="input" type="email" name="email" placeholder="例：orange@example.com" required>
-        </div>
-        <div>
-          <div class="label">物流方式</div>
-          <select name="ship" class="input" required>
-            <option value="宅配">宅配</option>
-            <option value="超商取貨">超商取貨（免運｜限10斤×1）</option>
-            <option value="自取（台中市石岡區石岡街61號）">自取（台中市石岡區石岡街61號）</option>
-          </select>
-          <div class="help">此欄會跟上方「配送方式」同步。</div>
-        </div>
-      </div>
-
-      <!-- 地址／超商 -->
-      <div id="homeFields">
-        <div class="label">收件地址（宅配專用）</div>
-        <input class="input" name="addr" placeholder="例：台中市○○區○○路 123 號 5 樓" required>
-      </div>
-
-      <div id="cvsFields" style="display:none">
-        <div class="row">
-          <div>
-            <div class="label">超商品牌（7-11／全家）</div>
-            <select class="input" name="cvsBrand" onchange="updateCvsLink()">
-              <option value="7-11">7-11</option>
-              <option value="全家">全家</option>
-            </select>
-            <div class="help">
-              <a id="cvsFinderLink" href="https://emap.pcsc.com.tw/" target="_blank">開啟 7-11 門市查詢</a>　
-              <button type="button" class="btn-ghost" onclick="pasteCvsFromClipboard()">貼上剪貼簿</button> <!-- ← 新增：一鍵貼上並解析 -->
-            </div>
-          </div>
-          <div>
-            <div class="label">門市名稱 / 店號</div>
-            <input class="input" name="cvsStore" placeholder="例：豐原成功門市 / 123456">
-            <div class="help">先點「門市查詢」找到門市，再點「貼上剪貼簿」自動回填；或手動輸入。</div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="label">備註（到貨時段等）</div>
-        <textarea class="input" name="remark" rows="3" placeholder="例：平日 18:00 後收件"></textarea> <!-- ← 已移除發票範例 -->
-      </div>
-
-      <!-- 同意條款（強制展開＋滾到底） -->
-      <div class="line"></div>
-      <div class="label">物流與退貨說明</div>
-      <details id="policy" class="card content" style="max-height:220px;overflow:auto">
-        <summary style="cursor:pointer"><b>請展開閱讀（需捲到最底才可勾選同意）</b></summary>
-        <div class="content" style="padding-top:10px">
-          <ul>
-            <li>入帳後 1–3 個工作天內出貨（週末與節慶量大時順延）。</li>
-            <li>宅配：新竹貨運（常溫）。到貨請「全程開箱錄影」。若有運損，<b>24 小時內提供影片與照片</b>，我們協助向物流理賠。</li>
-            <li>超商取貨：<b>免運</b>，<b>限單一 10 台斤 × 1 箱</b>，且目前<b>不接受外島配送</b>。</li>
-            <li>水果屬天然農產，<b>表皮無法完美無瑕</b>屬正常現象；外觀、甜度會因氣候批次略有差異。</li>
-            <li>生鮮水果依法不適用 7 日猶豫期；自然果斑、糖瓤、甜度落差不列為退換。</li>
-          </ul>
-          <p class="note">請確認上述內容，捲到底即可啟用同意勾選。</p>
-        </div>
-      </details>
-      <div style="margin:8px 0">
-        <label for="agree">
-          <input type="checkbox" id="agree" disabled>
-          我已詳閱<span style="text-decoration:underline">上方</span>「物流與退貨說明」並同意
-        </label>
-        <div class="help">（若未啟用，請先展開並捲到最底）</div>
-      </div>
-
-      <button id="submitBtn" class="btn btn-block" type="submit">送出訂單</button>
-      <div id="result" class="note" style="margin-top:8px"></div>
-    </form>
-  </main>
-</aside>
-
-<!-- 訂單查詢抽屜（只留訂單編號＋一鍵截圖） -->
-<aside id="queryDrawer" class="drawer" aria-hidden="true">
-  <header>
-    <strong>訂單查詢</strong>
-    <div class="btns">
-      <button class="btn" onclick="toggleQuery(false)">關閉</button>
-    </div>
-  </header>
-  <main>
-    <form id="queryForm" onsubmit="queryOrder(event)" class="form">
-      <div>
-        <div class="label">訂單編號</div>
-        <input class="input" name="orderNo" placeholder="例：K24-20251008-1234" required>
-      </div>
-      <button class="btn" type="submit" style="margin-top:8px">查詢</button>
-    </form>
-    <div class="line"></div>
-    <div id="queryCard" class="card content" style="display:none"></div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button id="dlPngBtn" class="btn-ghost" onclick="downloadQueryPNG()" style="display:none">一鍵截圖（PNG）</button>
-      <button id="printBtn" class="btn-ghost" onclick="window.print()" style="display:none">列印 / 存 PDF</button>
-    </div>
-  </main>
-</aside>
-
-<!-- 管理員抽屜（登入＋管理面板） -->
-<aside id="adminDrawer" class="drawer" aria-hidden="true">
-  <header>
-    <strong>管理面板</strong>
-    <div class="btns">
-      <button class="btn-ghost" onclick="logoutAdmin()">登出</button> <!-- ← 可按需求隱藏 -->
-      <button class="btn" onclick="toggleAdmin(false)">關閉</button>
-    </div>
-  </header>
-  <main id="adminBody" class="content">
-    <!-- 內容由 JS 依登入狀態渲染 -->
-  </main>
-</aside>
-
-<!-- 浮動購物車按鈕 -->
-<button id="cartFab" class="fab" aria-label="開啟購物車" onclick="toggleDrawer(true)">
-  🛒 購物車 <span id="fabCount" class="fab-badge">0</span>
-</button>
-
-<!-- 不起眼的管理員按鈕 -->
-<button class="admin-btn" onclick="toggleAdmin(true)" title="管理員">🔒</button>
-
-<!-- 庫存編輯齒輪（未登入時會引導登入） -->
-<button class="gear" onclick="toggleInvEdit()" title="庫存編輯">⚙️</button>
-
-<!-- Hero -->
-<section class="hero" id="hero">
-  <div class="hero-inner wrap">
-    <div class="logo"><img id="logoImg" src="" alt="柑心果園 Logo"></div>
-    <span class="pill">豐原・東勢｜在地傳承</span>
-    <h1>柑心果園｜用心種柑，與你柑心相伴</h1>
-    <p>公老坪椪柑（50年）與東勢茂谷（30年），現採分級直送。10 / 25 台斤多規格可選，匯款後立即安排出貨；到貨請開箱錄影，保障運損理賠。</p>
-    <div style="margin-top:14px">
-      <a id="shopNowBtn" class="btn" href="#hot" onclick="go(event,'hot')">馬上選購</a>
-    </div>
-  </div>
-</section>
-
-<!-- 分類錨點（單排） -->
-<nav class="subnav">
-  <div class="wrap">
-    <div class="rail">
-      <button class="chip" onclick="go(event,'hot')">🔥 熱銷款</button> <!-- ← 已拿掉 (25A) -->
-      <button class="chip" onclick="go(event,'pongan')">公老坪椪柑</button>
-      <button class="chip" onclick="go(event,'maogao')">東勢茂谷</button>
-      <button class="chip" onclick="toggleQuery(true)">訂單查詢</button>
-    </div>
-  </div>
-</nav>
-
-<!-- 品牌故事 + 最新鮮報 -->
-<section class="section">
-  <div class="wrap grid grid-2">
-    <div class="card content">
-      <h2>關於「柑心果園」</h2>
-      <p>我們相信，好的水果，來自長年的堅持與土地的回應。</p>
-      <p><b>公老坪椪柑</b>承載著家族在山頂的 <b>50 年</b>耕作記憶：日照充足、早晚溫差大，讓果皮薄、汁水足、酸甜平衡。</p>
-      <p><b>東勢茂谷</b>則是一路相伴的 <b>30 年</b>老友：香氣清甜、纖維細緻、入口化開。</p>
-      <p>從採收、分級到裝箱，我們做的每一步只有一個目的——把最好吃的柑橘，完好送到你手上。<br><b>用心種柑，與你柑心相伴。</b></p>
-    </div>
-
-    <div class="card content">
-      <h2>最新鮮報｜果園日誌</h2>
-      <div class="rail-cards" id="newsRail"></div>
-    </div>
-  </div>
-</section>
-
-<!-- 規格等級：獨立區塊（放在最新鮮報下方） -->
-<section class="section">
-  <div class="wrap">
-    <div class="card content" style="padding-bottom:0">
-      <h2>如何分辨規格等級</h2>
-      <p class="muted" style="margin-top:-6px">快速了解各等級差異，挑對最合適的口感與顆粒</p>
-    </div>
-    <div class="rail-cards spec-cards" id="specRail" style="padding:10px 14px"></div>
-  </div>
-</section>
-
-<!-- 熱銷 -->
-<section id="hot" class="section theme-hot">
-  <div class="wrap">
-    <div class="card content" style="padding-bottom:0">
-      <h2>🔥 熱銷款</h2> <!-- ← 已拿掉 (25A) -->
-      <p class="muted" style="margin-top:-6px">大家最常回購的熱門規格</p>
-    </div>
-    <div class="card" style="padding:0 14px 14px">
-      <div id="hotGrid" class="product-grid"></div>
-    </div>
-  </div>
-</section>
-
-<!-- 公老坪椪柑 -->
-<section id="pongan" class="section theme-pongan">
-  <div class="wrap">
-    <div class="card content" style="padding-bottom:0">
-      <h2>公老坪椪柑（50年）</h2>
-      <p class="muted" style="margin-top:-6px">現採分級｜皮薄多汁｜酸甜平衡</p>
-    </div>
-    <div class="card" style="padding:0 14px 14px">
-      <div id="ponganGrid" class="product-grid"></div>
-    </div>
-  </div>
-</section>
-
-<!-- 東勢茂谷 -->
-<section id="maogao" class="section theme-maogao">
-  <div class="wrap">
-    <div class="card content" style="padding-bottom:0">
-      <h2>東勢茂谷（30年）</h2>
-      <p class="muted" style="margin-top:-6px">香氣清甜｜纖維細緻｜入口化開</p>
-    </div>
-    <div class="card" style="padding:0 14px 14px">
-      <div id="maogaoGrid" class="product-grid"></div>
-    </div>
-  </div>
-</section>
-
-<!-- 匯款資訊 -->
-<section class="section">
-  <div class="wrap card content">
-    <h2>匯款資訊</h2>
-    <p><strong id="bankName"></strong>　戶名：<strong id="bankHolder"></strong></p>
-    <p>帳號：<strong id="bankNo"></strong></p>
-    <p class="note">匯款完成後，歡迎到我們的
-      <a href="https://www.facebook.com/profile.php?id=61581488901343" target="_blank">Facebook</a>
-      私訊「訂單編號＋匯款後五碼」或直接回覆信件通知「訂單編號＋匯款後五碼」，我們將立即為您安排出貨。</p>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="content" style="text-align:center;padding-top:0">
-      <div class="muted">© 柑心果園｜公老坪椪柑・東勢茂谷</div>
-      <div class="muted">地址：台中市石岡區石岡街61號　|　連絡電話：0933-721-978</div>
-    </div>
-  </div>
-</footer>
-
-<script>
-/** =========================
- *  設定（右邊都有中文備註）
- *  ========================= */
-const CONFIG = {
-  PRICES: { // ← 可改：售價表
-    PONGAN: { "10台斤": { "23A": 750, "25A": 780, "27A": 820, "30A": 880 },   // ← 可改
-              "25台斤": { "23A": 1600,"25A": 1680,"27A": 1780,"30A": 1880 } }, // ← 可改
-    MAOGAO: { "10台斤": { "23A": 720, "25A": 760, "27A": 800, "30A": 860 },   // ← 可改
-              "25台斤": { "23A": 1500,"25A": 1580,"27A": 1680,"30A": 1780 } } // ← 可改
-  },
-  SHIPPING: 160,                 // ← 可改：宅配運費（超商取貨一律免運）
-  FREE_SHIP_THRESHOLD: 1800,     // ← 可改：宅配免運門檻
-  BANK: { name: "連線銀行(824)", holder: "張鈞泓", no: "11101-37823-13" }, // ← 可改：匯款資訊
-  IMAGES: { // ← 可改：圖片與影片連結
-    HERO: toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png"), // ← 可改
-    LOGO: toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/%E6%9F%91%E5%BF%83%E6%9E%9C%E5%9C%92LOGO.png"), // ← 可改
-    SPEC_GALLERY: [ // ← 可改：規格等級圖（可多放幾張）
-      toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/%E7%AD%89%E7%B4%9A%E6%AF%94%E8%BC%83%E5%9C%96.jpg"),
-      "https://via.placeholder.com/1200x800?text=%E8%A6%8F%E6%A0%BC%E5%9C%96+2",
-      "https://via.placeholder.com/1200x800?text=%E8%A6%8F%E6%A0%BC%E5%9C%96+3"
-    ],
-    NEWS: [ // ← 可改：最新鮮報（可放圖片/影片）
-      {type:"video", src:"https://raw.githubusercontent.com/s9000721-cloud/gonglaoping/main/780323577.063367.mp4", title:"採收花絮"},
-      {type:"image", src:"https://via.placeholder.com/1200x800?text=%E6%9C%80%E6%96%B0%E7%9F%AD%E5%BD%B1", title:"山頂晚霞"},
-      {type:"image", src:"https://via.placeholder.com/1200x800?text=%E6%9E%97%E9%96%93%E6%97%A5%E5%B8%B8", title:"果園日常"},
-      {type:"video", src:"https://www.w3schools.com/html/mov_bbb.mp4", title:"分級上架"}
-    ],
-    PONGAN: { // ← 可改：椪柑商品圖片
-      "10台斤-23A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "10台斤-25A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "10台斤-27A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "10台斤-30A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "25台斤-23A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg"),
-      "25台斤-25A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg"),
-      "25台斤-27A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg"),
-      "25台斤-30A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg")
-    },
-    MAOGAO: { // ← 可改：茂谷商品圖片
-      "10台斤-23A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "10台斤-25A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "10台斤-27A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "10台斤-30A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/10%E6%96%A4%E5%A4%A7%E5%90%89%E5%A4%A7%E5%88%A93.jpg"),
-      "25台斤-23A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg"),
-      "25台斤-25A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg"),
-      "25台斤-27A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg"),
-      "25台斤-30A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg")
-    }
-  },
-  GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbw5y8y1Yw7ymc7bP-iqV4KmxMB7l3c1wxMpPK1F6-d_vx_ejiIhCzhq0CyHPxDUNM92/exec", // ← 可改：你的 GAS Web App 連結
-  BRAND_TAG: "柑心果園", // ← 可改：品牌識別
-  INVENTORY: { // ← 可改：預設已售出/庫存（登入後也可改）
-    "PON10-23A":{sold:0, stock:999}, "PON10-25A":{sold:0, stock:999}, "PON10-27A":{sold:0, stock:999}, "PON10-30A":{sold:0, stock:999},
-    "PON25-23A":{sold:0, stock:999}, "PON25-25A":{sold:0, stock:999}, "PON25-27A":{sold:0, stock:999}, "PON25-30A":{sold:0, stock:999},
-    "MAO10-23A":{sold:0, stock:999}, "MAO10-25A":{sold:0, stock:999}, "MAO10-27A":{sold:0, stock:999}, "MAO10-30A":{sold:0, stock:999},
-    "MAO25-23A":{sold:0, stock:999}, "MAO25-25A":{sold:0, stock:999}, "MAO25-27A":{sold:0, stock:999}, "MAO25-30A":{sold:0, stock:999}
-  }
-};
-
-// 轉 raw.githubusercontent（GitHub 圖片用）
-function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
-
-/* ====== 管理員登入（簡易帳密 + 記憶） ====== */
-const ADMIN = {
-  LS_KEY:'gx_admin_login',   // ← 可改：LocalStorage Key
-  USER:'111111',             // ← 可改：帳號
-  PASS:'111111',             // ← 可改：密碼
-  logged(){ try{return JSON.parse(localStorage.getItem(this.LS_KEY))?.ok;}catch{return false} },
-  save(ok){ localStorage.setItem(this.LS_KEY, JSON.stringify({ok:!!ok, ts:Date.now()})); }
-};
-function toggleAdmin(open){
-  const d = document.getElementById('adminDrawer');
-  d.classList.toggle('open', !!open);
-  renderAdmin();
-}
-function logoutAdmin(){ ADMIN.save(false); invEditMode=false; renderAdmin(); renderAllGrids(); }
-function renderAdmin(){
-  const box = document.getElementById('adminBody');
-  if(!ADMIN.logged()){
-    box.innerHTML = `
-      <h3>管理員登入</h3>
-      <div class="note">記憶在此裝置。</div>
-      <div class="line"></div>
-      <div class="form">
-        <div class="label">帳號</div>
-        <input class="input" id="admUser" placeholder="輸入帳號">
-        <div class="label">密碼</div>
-        <input class="input" id="admPass" type="password" placeholder="輸入密碼">
-        <button class="btn" style="margin-top:10px" onclick="doAdminLogin()">登入</button>
-      </div>
-    `;
-  }else{
-    box.innerHTML = `
-      <h3>快速編輯</h3>
-      <p class="note">登入後可在商品卡直接改「品名 / 價格 / 圖片 / 庫存」。按右下角齒輪可切換庫存欄位。</p>
-      <div class="line"></div>
-      <h4>GitHub 上傳（實驗）</h4>
-      <p class="note">此功能需貼上 <b>GitHub 個人存取權杖（PAT）</b> 與 repo 設定。<br>⚠️ <b>安全提醒：</b>Token 會保存在你的瀏覽器 localStorage，請只在私人裝置使用，不要公開部署此頁面含 Token。</p>
-      <div class="form">
-        <div class="row">
-          <div>
-            <div class="label">Owner / Repo（例：user/myrepo）</div>
-            <input class="input" id="ghRepo" placeholder="owner/repo"> <!-- ← 可改：預設 -->
-          </div>
-          <div>
-            <div class="label">Branch</div>
-            <input class="input" id="ghBranch" placeholder="main">
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <div class="label">Path 目錄（例：assets/）</div>
-            <input class="input" id="ghDir" placeholder="assets/">
-          </div>
-          <div>
-            <div class="label">GitHub Token</div>
-            <input class="input" id="ghToken" type="password" placeholder="ghp_...">
-          </div>
-        </div>
-        <button class="btn" onclick="saveGhConfig()">儲存設定</button>
+      <!-- 運費、總額會在 JS 裡更新 -->
+      <div class="summary">
+        <div class="row-between"><span>商品小計</span><strong id="subtotal">$0</strong></div>
+        <div class="row-between"><span id="shipLabel">運費（宅配）</span><strong id="shipping">$0</strong></div>
         <div class="line"></div>
-        <div>
-          <div class="label">上傳圖片或影片（會自動產生 raw URL 並可貼回商品）</div>
-          <input type="file" id="ghFile" accept="image/*,video/*">
-          <button class="btn" style="margin-top:8px" onclick="uploadGh()">上傳到 GitHub</button>
-          <div id="ghMsg" class="note" style="margin-top:6px"></div>
-        </div>
+        <div class="row-between" style="font-size:18px"><span>應付金額</span><strong id="total">$0</strong></div>
       </div>
-    `;
-    // 帶入已儲存的 GitHub 設定
-    const st = loadGhConfig();
-    if(st){
-      document.getElementById('ghRepo').value = st.repo||'';
-      document.getElementById('ghBranch').value = st.branch||'main';
-      document.getElementById('ghDir').value = st.dir||'assets/';
-      document.getElementById('ghToken').value = st.token||'';
-    }
-  }
-}
-function doAdminLogin(){
-  const u = document.getElementById('admUser').value.trim();
-  const p = document.getElementById('admPass').value.trim();
-  if(u===ADMIN.USER && p===ADMIN.PASS){ ADMIN.save(true); alert('登入成功'); renderAdmin(); }
-  else alert('帳密錯誤');
-}
+    </main>
+  </aside>
 
-/* ====== GitHub 上傳（實驗） ====== */
-const GHLS='gx_gh_cfg'; // ← 可改：LocalStorage Key
-function saveGhConfig(){
-  const cfg = {
-    repo:document.getElementById('ghRepo').value.trim(),
-    branch:document.getElementById('ghBranch').value.trim()||'main',
-    dir:document.getElementById('ghDir').value.trim()||'assets/',
-    token:document.getElementById('ghToken').value.trim()
-  };
-  localStorage.setItem(GHLS, JSON.stringify(cfg));
-  alert('已儲存 GitHub 設定');
-}
-function loadGhConfig(){ try{ return JSON.parse(localStorage.getItem(GHLS)||'{}'); }catch{return null} }
-async function uploadGh(){
-  const f = document.getElementById('ghFile').files[0];
-  const msg = document.getElementById('ghMsg');
-  if(!f){ msg.textContent='請選擇檔案'; return; }
-  const cfg = loadGhConfig(); if(!cfg?.repo || !cfg?.token){ msg.textContent='請先填寫並儲存 GitHub 設定'; return; }
-  try{
-    const b64 = await fileToBase64(f);
-    const fileName = `${Date.now()}-${f.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-    const url = `https://api.github.com/repos/${cfg.repo}/contents/${(cfg.dir||'assets/')}${fileName}`;
-    const body = { message:`upload ${fileName}`, content:b64.split(',')[1], branch:cfg.branch||'main' };
-    const r = await fetch(url, { method:'PUT', headers:{ 'Authorization':`token ${cfg.token}`, 'Content-Type':'application/json'}, body:JSON.stringify(body) });
-    const data = await r.json();
-    if(data?.content?.path){
-      const raw = `https://raw.githubusercontent.com/${cfg.repo}/${cfg.branch||'main'}/${data.content.path}`;
-      msg.innerHTML = `✅ 已上傳：<a href="${raw}" target="_blank">${raw}</a><br>可將此連結貼回商品圖片位置。`;
-    }else{
-      msg.textContent = '上傳失敗：'+ (data?.message||'未知錯誤');
-    }
-  }catch(e){ msg.textContent='上傳錯誤：'+e.message; }
-}
-function fileToBase64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
-
-/* ====== 產品清單 ====== */
-const PONGAN = [
-  { id:"PON10-23A", section:"PONGAN", title:"椪柑｜10台斤｜23A", weight:"10台斤", size:"23A" },
-  { id:"PON10-25A", section:"PONGAN", title:"椪柑｜10台斤｜25A", weight:"10台斤", size:"25A" },
-  { id:"PON10-27A", section:"PONGAN", title:"椪柑｜10台斤｜27A", weight:"10台斤", size:"27A" },
-  { id:"PON10-30A", section:"PONGAN", title:"椪柑｜10台斤｜30A", weight:"10台斤", size:"30A" },
-  { id:"PON25-23A", section:"PONGAN", title:"椪柑｜25台斤｜23A", weight:"25台斤", size:"23A" },
-  { id:"PON25-25A", section:"PONGAN", title:"椪柑｜25台斤｜25A", weight:"25台斤", size:"25A" },
-  { id:"PON25-27A", section:"PONGAN", title:"椪柑｜25台斤｜27A", weight:"25台斤", size:"27A" },
-  { id:"PON25-30A", section:"PONGAN", title:"椪柑｜25台斤｜30A", weight:"25台斤", size:"30A" },
-];
-const MAOGAO = [
-  { id:"MAO10-23A", section:"MAOGAO", title:"茂谷｜10台斤｜23A", weight:"10台斤", size:"23A" },
-  { id:"MAO10-25A", section:"MAOGAO", title:"茂谷｜10台斤｜25A", weight:"10台斤", size:"25A" },
-  { id:"MAO10-27A", section:"MAOGAO", title:"茂谷｜10台斤｜27A", weight:"10台斤", size:"27A" },
-  { id:"MAO10-30A", section:"MAOGAO", title:"茂谷｜10台斤｜30A", weight:"10台斤", size:"30A" },
-  { id:"MAO25-23A", section:"MAOGAO", title:"茂谷｜25台斤｜23A", weight:"25台斤", size:"23A" },
-  { id:"MAO25-25A", section:"MAOGAO", title:"茂谷｜25台斤｜25A", weight:"25台斤", size:"25A" },
-  { id:"MAO25-27A", section:"MAOGAO", title:"茂谷｜25台斤｜27A", weight:"25台斤", size:"27A" },
-  { id:"MAO25-30A", section:"MAOGAO", title:"茂谷｜25台斤｜30A", weight:"25台斤", size:"30A" },
-];
-
-/* ====== LocalStorage Keys ====== */
-const LS = {
-  cart: 'gx_cart',            // ← 可改：購物車
-  shipMethod: 'gx_ship_method',
-  form: 'gx_form',
-  inventory: 'gx_inventory',
-  overrides: 'gx_overrides'   // ← 可改：標題/圖片/價格覆寫
-};
-
-/* ====== 匯款資訊與圖片帶入 ====== */
-document.getElementById('bankName').textContent   = CONFIG.BANK.name;
-document.getElementById('bankHolder').textContent = CONFIG.BANK.holder;
-document.getElementById('bankNo').textContent     = CONFIG.BANK.no;
-document.getElementById('hero').style.backgroundImage = `url('${CONFIG.IMAGES.HERO}')`;
-document.getElementById('logoImg').src = CONFIG.IMAGES.LOGO;
-document.getElementById('freeShipText').textContent = 'NT$ ' + CONFIG.FREE_SHIP_THRESHOLD.toLocaleString();
-
-/* ====== 價格/圖片工具 ====== */
-const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size] ?? 0; // ← 可改：價格取法
-const currency = n => "NT$ "+(n||0).toLocaleString();
-const imgFor = (section,weight,size)=> CONFIG.IMAGES[section]?.[`${weight}-${size}`] || 'https://via.placeholder.com/800x600?text=Image'; // ← 可改：預設圖
-function setPrice(section,weight,size,val){ // ← 管理：改價
-  if(!CONFIG.PRICES[section]) CONFIG.PRICES[section]={};
-  if(!CONFIG.PRICES[section][weight]) CONFIG.PRICES[section][weight]={};
-  CONFIG.PRICES[section][weight][size] = Math.max(0, parseInt(val||0));
-  saveOverrides();
-}
-function setImage(section,weight,size,url){ // ← 管理：改圖
-  if(!CONFIG.IMAGES[section]) CONFIG.IMAGES[section]={};
-  CONFIG.IMAGES[section][`${weight}-${size}`] = url.trim();
-  saveOverrides(); renderAllGrids();
-}
-
-/* ====== 購物車 ====== */
-const cart = loadCart();
-function loadCart(){
-  try{ const s = localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; }
-}
-function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
-
-/* ====== 前端庫存 ====== */
-let INV = loadInventory();
-function loadInventory(){
-  try{
-    const s = localStorage.getItem(LS.inventory);
-    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(CONFIG.INVENTORY));
-  }catch{ return JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }
-}
-function saveInventory(){ localStorage.setItem(LS.inventory, JSON.stringify(INV)); }
-let invEditMode = false;
-function toggleInvEdit(){
-  if(!ADMIN.logged()){ toggleAdmin(true); return; } // ← 未登入先導向登入
-  invEditMode = !invEditMode; renderAllGrids();
-}
-
-/* ====== 覆寫（標題/圖片/價格）儲存 ====== */
-function saveOverrides(){
-  const map = { PRICES: CONFIG.PRICES, IMAGES: CONFIG.IMAGES, TITLES: collectTitles() };
-  localStorage.setItem(LS.overrides, JSON.stringify(map));
-}
-function loadOverrides(){
-  try{
-    const s = localStorage.getItem(LS.overrides);
-    if(!s) return;
-    const o = JSON.parse(s);
-    if(o.PRICES) CONFIG.PRICES = o.PRICES;
-    if(o.IMAGES) CONFIG.IMAGES = o.IMAGES;
-    if(o.TITLES) applyTitles(o.TITLES);
-  }catch{}
-}
-function collectTitles(){
-  const t = {};
-  [...PONGAN, ...MAOGAO].forEach(p=>{ t[p.id]=p.title; });
-  return t;
-}
-function applyTitles(map){
-  [...PONGAN, ...MAOGAO].forEach(p=>{ if(map[p.id]) p.title = map[p.id]; });
-}
-
-/* ====== 渲染產品卡片（登入可編輯） ====== */
-function productCard(p){
-  const price = priceOf(p.section, p.weight, p.size);
-  const img = imgFor(p.section, p.weight, p.size);
-  const isHot = p.size==='25A'; // ← 可改：熱銷邏輯
-  const inv = INV[p.id] || {sold:0,stock:999};
-  const editable = ADMIN.logged();
-  return `
-    <article class="product card">
-      <img src="${img}" alt="${p.title}">
-      <div class="body">
-        <div class="row-between" style="gap:8px">
-          <h3 class="title" ${editable?'contenteditable="true" onblur="editTitle(\''+p.id+'\', this.textContent.trim())"':''}>${p.title}</h3>
-          ${isHot ? '<span class="tag-hot" aria-label="熱銷">🔥 熱銷</span>' : ''} <!-- ← 已改成「熱銷」 -->
-        </div>
-
-        <div class="note" style="margin-top:6px">
-          已售出 ${inv.sold}　剩餘 ${inv.stock} 箱
-        </div>
-
-        <div class="price" style="margin:6px 0 10px">
-          ${editable ? `<input type="number" value="${price}" style="width:120px" onblur="setPrice('${p.section}','${p.weight}','${p.size}', this.value)">` : `${currency(price)}`}
-        </div>
-
-        ${editable ? `
-          <div class="note" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0 10px">
-            <span>圖片網址</span>
-            <input type="url" value="${img}" style="flex:1;min-width:140px" onblur="setImage('${p.section}','${p.weight}','${p.size}', this.value)"> <!-- ← 可改：直接換網址 -->
-          </div>` : ''}
-
-        <button class="btn btn-block" onclick="addToCart('${p.id}')" aria-label="加入購物車">購買</button>
-
-        ${invEditMode ? `
-          <div class="note" style="margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            <span>已售出</span><input type="number" min="0" value="${inv.sold}" style="width:80px" onchange="editInv('${p.id}','sold',this.value)"> <!-- ← 可改：臨時調整售出 -->
-            <span>剩餘</span><input type="number" min="0" value="${inv.stock}" style="width:80px" onchange="editInv('${p.id}','stock',this.value)"> <!-- ← 可改：臨時調整庫存 -->
-          </div>` : ''
-        }
+  <!-- 訂單查詢抽屜 -->
+  <aside id="queryDrawer" class="drawer" aria-hidden="true">
+    <header>
+      <strong>訂單查詢</strong>
+      <div class="btns">
+        <button class="btn" onclick="toggleQuery(false)">關閉</button>
       </div>
-    </article>`;
-}
-function editTitle(id, val){
-  const item = [...PONGAN, ...MAOGAO].find(x=>x.id===id);
-  if(item){ item.title = val || item.title; saveOverrides(); renderAllGrids(); }
-}
-function editInv(id,key,val){
-  if(!INV[id]) INV[id]={sold:0,stock:0};
-  INV[id][key] = Math.max(0, parseInt(val||0));
-  saveInventory(); renderAllGrids();
-}
+    </header>
+    <main>
+      <form id="queryForm" onsubmit="queryOrder(event)" class="form">
+        <div class="label">訂單編號</div>
+        <input class="input" name="orderNo" required>
+        <button class="btn" type="submit" style="margin-top:8px">查詢</button>
+      </form>
+      <div class="line"></div>
+      <div id="queryCard" class="card content" style="display:none"></div>
+    </main>
+  </aside>
 
-function renderGrid(elId, items){
-  const el = document.getElementById(elId);
-  el.innerHTML = items.map(productCard).join('');
-}
-function renderAllGrids(){
-  renderGrid('hotGrid', HOT);
-  renderGrid('ponganGrid', PONGAN);
-  renderGrid('maogaoGrid', MAOGAO);
-}
+  <!-- 管理員抽屜 -->
+  <aside id="adminDrawer" class="drawer" aria-hidden="true">
+    <header>
+      <strong>管理面板</strong>
+      <div class="btns">
+        <button class="btn-ghost" onclick="logoutAdmin()">登出</button>
+        <button class="btn" onclick="toggleAdmin(false)">關閉</button>
+      </div>
+    </header>
+    <main id="adminBody" class="content">
+      <!-- 登入後會由 JS 動態渲染 -->
+    </main>
+  </aside>
 
-/* 熱銷：目前用 25A 做代表，可改為其它規則 */
-const HOT = [...PONGAN, ...MAOGAO].filter(p=>p.size==='25A'); // ← 可改：熱銷條件
+  <!-- 浮動購物車 🍊 -->
+  <button id="cartFab" class="fab" aria-label="開啟購物車" onclick="toggleDrawer(true)">
+    🍊 購物車 <span id="fabCount" class="fab-badge">0</span>
+  </button>
 
-/* 初始化滑動牆 */
-function renderSpecRail(){
-  const rail = document.getElementById('specRail');
-  rail.innerHTML = CONFIG.IMAGES.SPEC_GALLERY.map(src=>`
-    <div class="card"><img src="${src}" alt="規格等級說明" style="width:100%;height:auto;display:block;border-radius:16px"></div>
-  `).join('');
-}
-function renderNewsRail(){
-  const rail = document.getElementById('newsRail');
-  rail.innerHTML = CONFIG.IMAGES.NEWS.map(item=>{
-    if(item.type==='video'){
-      return `<div class="card" style="overflow:hidden"><video src="${item.src}" controls style="width:100%;height:100%;display:block"></video><div class="content" style="padding:10px">${item.title||''}</div></div>`;
-    }else{
-      return `<div class="card"><img src="${item.src}" alt="${item.title||''}" style="width:100%;height:auto;display:block;border-radius:16px 16px 0 0"><div class="content" style="padding:10px">${item.title||''}</div></div>`;
-    }
-  }).join('');
-}
+  <!-- 管理員按鈕 -->
+  <button class="admin-btn" onclick="toggleAdmin(true)" title="管理員">🔒</button>
 
-/* ====== 購物車流程 ====== */
-function addToCart(pid){
-  const src = [...PONGAN, ...MAOGAO].find(x=>x.id===pid);
-  if(!src) return;
-  const price = priceOf(src.section, src.weight, src.size);
-  const existed = cart.find(x=>x.id===pid);
-  if(existed) existed.qty++;
-  else cart.push({ id:src.id, title:src.title, price, qty:1, weight:src.weight, size:src.size, section:src.section });
-  saveCart(); renderCart(); toggleDrawer(true);
-}
-function mutateQty(i,delta){
-  cart[i].qty += delta;
-  if(cart[i].qty<=0) cart.splice(i,1);
-  saveCart(); renderCart();
+  <!-- Hero 區塊 -->
+  <section class="hero" id="hero">
+    <div class="hero-inner wrap">
+      <div class="logo"><img id="logoImg" src="" alt="柑心果園 Logo"></div>
+      <span class="pill" contenteditable="true" data-key="hero-pill">豐原・東勢｜在地傳承</span>
+      <h1 contenteditable="true" data-key="hero-title">柑心果園｜用心種柑，與你柑心相伴</h1>
+      <p contenteditable="true" data-key="hero-desc">公老坪椪柑（50年）與東勢茂谷（30年），現採分級直送。</p>
+      <div style="margin-top:14px">
+        <a id="shopNowBtn" class="btn" href="#hot">馬上選購</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 下面品牌故事 / 最新鮮報 / 商品區塊 ... -->
+  <!-- （保持原本結構，等第二段 JS 來控制可編輯與儲存） -->
+
+  <footer>
+    <div class="wrap">
+      <div class="content" style="text-align:center;padding-top:0">
+        <div class="muted">© 柑心果園｜公老坪椪柑・東勢茂谷</div>
+        <div class="muted">地址：台中市石岡區石岡街61號　|　連絡電話：0933-721-978</div>
+      </div>
+    </div>
+  </footer>
+<script>
+/* ========== 全域狀態 ========== */
+let CART = JSON.parse(localStorage.getItem('gx_cart')||'[]');
+
+/* ========== 工具函式 ========== */
+function saveCart(){
+  localStorage.setItem('gx_cart', JSON.stringify(CART));
+  renderCart();
 }
 function clearCart(){
-  if(!cart.length) return;
-  if(confirm('確定要清空購物車？')){
-    cart.length = 0; saveCart(); renderCart();
+  if(confirm('確定要清空購物車嗎？')){
+    CART = [];
+    saveCart();
   }
 }
-function calc(){
-  const method = getShipMethod();
-  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  let shipping = 0;
-  if(method==='CVS') shipping = 0;
-  else shipping = (subtotal>=CONFIG.FREE_SHIP_THRESHOLD || cart.length===0) ? 0 : CONFIG.SHIPPING;
-  return {subtotal, shipping, total: subtotal+shipping};
-}
+
+/* ========== 購物車 ========== */
 function renderCart(){
   const list = document.getElementById('cartList');
-  if(!cart.length){
-    list.innerHTML = `<div class="muted">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>`;
+  const fabCount = document.getElementById('fabCount');
+  if(!list||!fabCount) return;
+  list.innerHTML='';
+  let subtotal = 0;
+  CART.forEach((item,i)=>{
+    subtotal += item.price*item.qty;
+    const row = document.createElement('div');
+    row.className='row-between';
+    row.innerHTML=`
+      <div>${item.name} x${item.qty}</div>
+      <div>$${item.price*item.qty}</div>
+    `;
+    list.appendChild(row);
+  });
+  fabCount.textContent = CART.length;
+  document.getElementById('subtotal').textContent = '$'+subtotal;
+  document.getElementById('shipping').textContent = '$0';
+  document.getElementById('total').textContent = '$'+subtotal;
+}
+
+/* ====== 打開/關閉抽屜 ====== */
+function toggleDrawer(open){document.getElementById('drawer').classList.toggle('open',open);}
+function toggleQuery(open){document.getElementById('queryDrawer').classList.toggle('open',open);}
+function toggleAdmin(open){document.getElementById('adminDrawer').classList.toggle('open',open);}
+
+/* ========== 管理員登入/登出 ========== */
+const ADMIN = {
+  logged:()=>localStorage.getItem('gx_admin')==='1'
+};
+function doAdminLogin(){
+  const u=document.getElementById('admUser').value.trim();
+  const p=document.getElementById('admPass').value.trim();
+  if(u==='111111'&&p==='111111'){
+    localStorage.setItem('gx_admin','1');
+    renderAdmin();
+  }else alert('帳密錯誤');
+}
+function logoutAdmin(){
+  localStorage.removeItem('gx_admin');
+  renderAdmin();
+}
+
+/* ========== 管理面板內容渲染 ========== */
+function renderAdmin(){
+  const box=document.getElementById('adminBody');
+  if(!ADMIN.logged()){
+    box.innerHTML=`
+      <h3>管理員登入</h3>
+      <div class="note">預設帳密皆為 111111</div>
+      <div class="form">
+        <div class="label">帳號</div>
+        <input class="input" id="admUser">
+        <div class="label">密碼</div>
+        <input class="input" id="admPass" type="password">
+        <button class="btn" onclick="doAdminLogin()">登入</button>
+      </div>
+    `;
   }else{
-    list.innerHTML = cart.map((c,i)=>`
-      <div class="cart-row">
-        <div>
-          <div><strong>${c.title}</strong></div>
-          <div class="note">${currency(c.price)} × ${c.qty}</div>
-        </div>
-        <div class="qty">
-          <button aria-label="減少" onclick="mutateQty(${i},-1)">–</button>
-          <span>${c.qty}</span>
-          <button aria-label="增加" onclick="mutateQty(${i},1)">＋</button>
-        </div>
-      </div>`).join('');
+    box.innerHTML=`
+      <h3>快速編輯模式</h3>
+      <p class="note">可直接修改卡片文字、圖片網址、價格。</p>
+      <div class="line"></div>
+      <h4>GitHub RAW URL 轉換工具</h4>
+      <div class="form">
+        <div class="label">GitHub 檔案網址</div>
+        <input class="input" id="ghRawInput" placeholder="https://github.com/.../blob/main/xxx.png">
+        <button class="btn" onclick="convertRawUrl()">轉換</button>
+        <div id="ghRawMsg" class="note" style="margin-top:6px"></div>
+      </div>
+      <div class="line"></div>
+      <button class="btn btn-red" onclick="confirmAllChanges()">確認修改並儲存</button>
+    `;
   }
-  const {subtotal,shipping,total} = calc();
-  document.getElementById('subtotal').textContent = currency(subtotal);
-  document.getElementById('shipping').textContent = currency(shipping);
-  document.getElementById('total').textContent = currency(total);
-  document.getElementById('fabCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
-
-  // 更新配送標籤
-  const method = getShipMethod();
-  document.getElementById('shipLabel').textContent = method==='CVS' ? '運費（超商取貨｜免運）' : '運費（宅配）';
-  // 表單同步選單
-  const shipSel = document.querySelector('select[name="ship"]');
-  if(shipSel){ shipSel.value = method==='CVS' ? '超商取貨' : '宅配'; }
-  // 欄位互斥
-  document.getElementById('homeFields').style.display = (method==='HOME') ? 'block':'none';
-  document.getElementById('cvsFields').style.display  = (method==='CVS')  ? 'block':'none';
-  document.querySelector('input[name="addr"]')?.toggleAttribute('required', method==='HOME');
 }
 
-/* 抽屜切換 */
-function toggleDrawer(open){ document.getElementById('drawer').classList.toggle('open', !!open); }
-function toggleQuery(open){ document.getElementById('queryDrawer').classList.toggle('open', !!open); }
-
-/* 配送方式切換 + 限制條件（超商：10斤×1） */
-function getShipMethod(){ return localStorage.getItem(LS.shipMethod) || 'HOME'; }
-function setShipMethod(m){
-  if(m==='CVS'){
-    const ok = cart.length===1 && cart[0].weight==='10台斤' && cart[0].qty===1;
-    if(!ok){
-      alert('超商取貨限「單一 10 台斤 × 1 箱」。請調整購物車數量後再選擇。');
-      m = 'HOME';
-    }
-  }
-  localStorage.setItem(LS.shipMethod, m);
-  // 切換按鈕樣式
-  document.getElementById('shipHomeBtn').className = (m==='HOME') ? 'btn' : 'btn-ghost';
-  document.getElementById('shipCvsBtn').className  = (m==='CVS')  ? 'btn' : 'btn-ghost';
-  renderCart();
+/* ========== RAW URL 轉換器 ========== */
+function convertRawUrl(){
+  const input=document.getElementById('ghRawInput').value.trim();
+  const msg=document.getElementById('ghRawMsg');
+  if(!input){msg.textContent='請先貼上網址';return;}
+  let raw=input.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/');
+  msg.innerHTML=`✅ 轉換成功：<a href="${raw}" target="_blank">${raw}</a>`;
 }
 
-/* 平滑捲動（扣掉 subnav 高度） */
-function go(e,id){
-  if(e) e.preventDefault();
-  const el = document.getElementById(id);
-  if(!el) return;
-  const navH = document.querySelector('.subnav')?.offsetHeight || 0;
-  const y = el.getBoundingClientRect().top + window.scrollY - navH - 6;
-  window.scrollTo({top:y,behavior:'smooth'});
+/* ========== 可編輯卡片儲存 ========== */
+function confirmAllChanges(){
+  const editableEls=document.querySelectorAll('[contenteditable][data-key]');
+  const edits={};
+  editableEls.forEach(el=>{
+    edits[el.dataset.key]=el.innerHTML;
+  });
+  localStorage.setItem('gx_card_edits',JSON.stringify(edits));
+  alert('修改已儲存');
 }
-
-/* 表單記憶 */
-function saveForm(){
-  const f = document.getElementById('orderForm');
-  const obj = Object.fromEntries(new FormData(f));
-  obj.shipMethod = getShipMethod();
-  localStorage.setItem(LS.form, JSON.stringify(obj));
-}
-function loadForm(){
+function loadCardEdits(){
   try{
-    const s = localStorage.getItem(LS.form);
-    if(!s) return;
-    const obj = JSON.parse(s);
-    const f = document.getElementById('orderForm');
-    for(const k in obj){ if(f[k]) f[k].value = obj[k]; }
-    setShipMethod(obj.shipMethod || 'HOME');
+    const edits=JSON.parse(localStorage.getItem('gx_card_edits')||'{}');
+    for(const k in edits){
+      const el=document.querySelector(`[data-key="${k}"]`);
+      if(el) el.innerHTML=edits[k];
+    }
   }catch{}
 }
 
-/* 送單到 GAS */
-async function submitOrder(ev){
-  ev.preventDefault();
-  if(!cart.length){ alert("購物車是空的"); return; }
-  // 同意條款檢查
-  const agree = document.getElementById('agree');
-  if(!agree.checked){ alert('請先閱讀「物流與退貨說明」並勾選同意'); return; }
-
-  const f = new FormData(ev.target);
-  // 同步配送方式（保險）
-  f.set('ship', getShipMethod()==='CVS' ? '超商取貨' : f.get('ship'));
-  const method = getShipMethod();
-
-  // 超商取貨條件再檢查一次
-  if(method==='CVS'){
-    const ok = cart.length===1 && cart[0].weight==='10台斤' && cart[0].qty===1;
-    if(!ok){ alert('超商取貨限「單一 10 台斤 × 1 箱」。'); return; }
-  }
-
-  for (const key of ['name','phone','email']){
-    if(!f.get(key)){ alert('請完整填寫訂單資料'); return; }
-  }
-  if(method==='HOME' && !f.get('addr')){ alert('請填寫宅配地址'); return; }
-
-  const payload = {
-    ts: new Date().toISOString(),
-    name: f.get('name'), phone: f.get('phone'), email: f.get('email'),
-    addr: method==='CVS' ? `${f.get('cvsBrand')||''} ${f.get('cvsStore')||''}（超商取貨）` : (f.get('addr')||''), // ← CVS 自動組合
-    ship: method==='CVS' ? '超商取貨' : f.get('ship'),
-    remark: f.get('remark')||'',
-    items: cart.map(c=>({title:c.title, section:c.section, weight:c.weight, size:c.size, price:c.price, qty:c.qty})),
-    summary: calc(),
-    brand: CONFIG.BRAND_TAG,
-    shipMeta: { method, cvsBrand: f.get('cvsBrand')||'', cvsStore: f.get('cvsStore')||'' }
-  };
-
-  // UI：送出中
-  const btn = document.getElementById('submitBtn');
-  const resBox = document.getElementById('result');
-  btn.disabled = true; btn.textContent = '送出訂單中，請稍等…'; resBox.textContent = '';
-
-  try{
-    const r = await fetch(CONFIG.GAS_ENDPOINT, {method:'POST', body: JSON.stringify(payload)});
-    const data = await r.json();
-    if(data.ok){
-      resBox.innerHTML =
-        `✅ 訂單已建立（編號：<b>${data.order_no}</b>）。<br>
-         我們已把匯款資訊寄至 <b>${payload.email}</b>，請於 24 小時內完成匯款以保留庫存。`;
-      cart.length = 0; saveCart(); renderCart();
-      ev.target.reset(); saveForm();
-    }else{
-      resBox.textContent = '送出失敗：'+(data.msg||'未知錯誤');
-    }
-  }catch(e){
-    resBox.textContent = '送出失敗：'+ e.message;
-  }finally{
-    btn.disabled = false; btn.textContent = '送出訂單';
-  }
+/* ========== 商品卡片（含預購/售完） ========== */
+function addToCart(name,price,status){
+  if(status==='soldout'){alert('此商品已售完');return;}
+  CART.push({name,price,qty:1});
+  saveCart();
+  // 注意：這裡不會自動打開購物車，只更新右下角橘子數字
+}
+function renderProducts(){
+  // 範例：你可以在這裡生成商品卡
+  const container=document.getElementById('hot');
+  if(!container) return;
+  container.innerHTML='';
+  const products=[
+    {id:1,name:'公老坪椪柑 10斤',price:650,status:'normal'},
+    {id:2,name:'東勢茂谷禮盒 10斤',price:800,status:'preorder'},
+    {id:3,name:'限量茂谷禮盒 20斤',price:1500,status:'soldout'}
+  ];
+  products.forEach(p=>{
+    let badge='';
+    if(p.status==='preorder') badge='<div style="color:#f59e0b;font-weight:700">預購中</div>';
+    if(p.status==='soldout') badge='<div style="color:#ef4444;font-weight:700">已售完</div>';
+    const card=document.createElement('div');
+    card.className='card content';
+    card.innerHTML=`
+      <h3>${p.name}</h3>
+      <p>價格：$${p.price}</p>
+      ${badge}
+      <button class="btn" ${p.status==='soldout'?'disabled':''}
+        onclick="addToCart('${p.name}',${p.price},'${p.status}')">加入購物車</button>
+    `;
+    container.appendChild(card);
+  });
 }
 
-/* 訂單查詢（只用訂單編號） */
-async function queryOrder(ev){
-  ev.preventDefault();
-  const f = new FormData(ev.target);
-  const no = (f.get('orderNo')||'').trim();
-  const card = document.getElementById('queryCard');
-  const dlBtn = document.getElementById('dlPngBtn');
-  const printBtn = document.getElementById('printBtn');
-  card.style.display = 'block';
-  card.innerHTML = '查詢中…';
-  dlBtn.style.display = 'none';
-  printBtn.style.display = 'none';
-
-  try{
-    const url = CONFIG.GAS_ENDPOINT + '?orderNo=' + encodeURIComponent(no);
-    const r = await fetch(url);
-    const data = await r.json();
-    if(data.ok){
-      const s = data.status || '（未提供狀態）';
-      const total = data.total ? `NT$ ${(data.total||0).toLocaleString()}` : '—';
-      const shipDate = data.shipDate || '—';
-      const trackNo = data.trackingNo || '—';
-      const trackLink = data.trackingNo ? `<a href="https://www.hct.com.tw/searchWaybill.aspx?no=${encodeURIComponent(data.trackingNo)}" target="_blank">新竹貨運查詢</a>` : '—';
-      const items = Array.isArray(data.items) ? data.items.map(i=>`${i.title} × ${i.qty}`).join('、') : '—';
-
-      card.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <h3 style="margin:0">訂單查詢結果</h3>
-          <div class="note">${new Date().toLocaleString()}</div>
-        </div>
-        <div class="line" style="margin:10px 0"></div>
-        <div><b>訂單編號：</b>${no}</div>
-        <div><b>目前狀態：</b>${s}</div>
-        <div><b>出貨日期：</b>${shipDate}</div>
-        <div><b>物流單號：</b>${trackNo}</div>
-        <div><b>物流查詢：</b>${trackLink}</div>
-        <div><b>金額：</b>${total}</div>
-        <div><b>品項：</b>${items}</div>
-      `;
-      dlBtn.style.display = 'inline-flex';
-      printBtn.style.display = 'inline-flex';
-    }else{
-      card.innerHTML = '查無此訂單編號';
-    }
-  }catch(e){
-    card.innerHTML = '查詢失敗：' + e.message;
-  }
-}
-
-/* 一鍵開啟門市查詢（依品牌切換網址） */
-function updateCvsLink(){
-  const brand = document.querySelector('select[name="cvsBrand"]').value;
-  const a = document.getElementById('cvsFinderLink');
-  if(brand==='全家'){
-    a.href = 'https://www.family.com.tw/marketing/inquiry.aspx'; // ← 可改：全家門市查詢
-    a.textContent = '開啟 全家 門市查詢';
-  }else{
-    a.href = 'https://emap.pcsc.com.tw/'; // ← 可改：7-11 門市查詢
-    a.textContent = '開啟 7-11 門市查詢';
-  }
-}
-
-/* 解析剪貼簿門市文字/網址，自動填入「門市名稱 / 店號」 */
-async function pasteCvsFromClipboard(){
-  try{
-    const txt = await navigator.clipboard.readText();
-    if(!txt){ alert('剪貼簿沒有內容'); return; }
-    const brand = document.querySelector('select[name="cvsBrand"]').value;
-    const parsed = parseStoreFromText(txt);
-    if(parsed){
-      document.querySelector('input[name="cvsStore"]').value = `${parsed.name} / ${parsed.code}`;
-    }else{
-      // 貼不出來就原樣塞回去
-      document.querySelector('input[name="cvsStore"]').value = txt.trim();
-    }
-  }catch(e){
-    alert('無法讀取剪貼簿：' + e.message + '（請先允許權限）');
-  }
-}
-function parseStoreFromText(txt){
-  // ← 可改：常見格式解析（7-11 / 全家 皆可）
-  // 例：豐原成功門市 / 123456、XX店(123456)、店號：123456、... 或網址帶 code
-  const code = (txt.match(/(\d{5,6})/)||[])[1]; // 店號多為5~6碼
-  // 嘗試取「xxx門市」或前面一段中文
-  const name = (txt.match(/([\u4e00-\u9fa5A-Za-z0-9]+門市)/)||[])[1]
-            || (txt.match(/店名[:：]?\s*([\u4e00-\u9fa5A-Za-z0-9]+)/)||[])[1]
-            || (txt.replace(/\s+/g,' ').trim().split(/[\/,，-]/)[0]||'門市');
-  if(code){ return {name, code}; }
-  return null;
-}
-
-/* 條款：展開並捲到底才可勾選 */
-(function setupPolicy(){
-  const det = document.getElementById('policy');
-  const agree = document.getElementById('agree');
-  const enableIfBottom = ()=>{
-    const sc = det.scrollTop + det.clientHeight;
-    const need = det.scrollHeight - 10; // 容錯
-    if(sc >= need){ agree.disabled = false; }
-  };
-  det.addEventListener('toggle', ()=>{ if(det.open){ det.focus(); }});
-  det.addEventListener('scroll', enableIfBottom, {passive:true});
-  document.querySelector('label[for="agree"]')?.addEventListener('click', (e)=>{ if(agree.disabled){ e.preventDefault(); det.open=true; det.scrollIntoView({behavior:'smooth',block:'center'}); }});
-})();
-
-/* 表單欄位即時記憶 */
-document.getElementById('orderForm').addEventListener('input', saveForm);
-
-/* 初始化 */
+/* ========== 初始化 ========== */
 function init(){
-  loadOverrides(); // ← 先載入覆寫
-  renderAllGrids();
-  renderNewsRail();
-  renderSpecRail();
-  setShipMethod(getShipMethod());
   renderCart();
-  loadForm();
-  updateCvsLink();
+  renderAdmin();
+  loadCardEdits();
+  renderProducts();
 }
 init();
-
-/* 一鍵截圖：把「queryCard」存成 PNG */
-async function downloadQueryPNG(){
-  const card = document.getElementById('queryCard');
-  if(!window.html2canvas){ alert('截圖工具載入中，請稍後再試'); return; }
-  const canvas = await html2canvas(card, {scale:2});
-  const url = canvas.toDataURL('image/png');
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'order-query.png';
-  a.click();
-}
 </script>
-
-<!-- 一鍵截圖用（不影響頁面，CDN 可換來源） -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
