@@ -13,8 +13,13 @@
     --pongan-surface:#fff7d6; --maogao-surface:#eef9f0;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","Helvetica Neue",Arial,sans-serif}
+  html{scroll-behavior:smooth; -webkit-text-size-adjust:100%; background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","Helvetica Neue",Arial,sans-serif; min-height:100svh}
+  @supports(padding: max(0px)){
+    body{padding-bottom:env(safe-area-inset-bottom)}
+    .subnav{padding-top:env(safe-area-inset-top)}
+  }
+  video{background:var(--bg)}
   a{color:var(--brand-dark);text-decoration:none}
   .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
   .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center}
@@ -102,6 +107,10 @@
   .admin-btn:hover{opacity:1}
   footer{padding:34px 0 56px;color:#6b7280;text-align:center}
   .toast{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:70;background:#111;color:#fff;border-radius:12px;padding:10px 14px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.25s}
+
+  /* 五星好評樣式（前端假資料） */
+  .stars{font-size:18px;letter-spacing:2px;color:var(--brand);text-shadow:0 1px 0 rgba(0,0,0,.06)}
+  .review-card{flex:0 0 auto;width:min(420px,92%);overflow:hidden}
   .toast.show{opacity:1;transform:translateY(0)}
 </style>
 </head>
@@ -349,6 +358,17 @@
     <div class="card" style="padding:0 14px 14px">
       <div id="maogaoGrid" class="product-grid"></div>
     </div>
+  </div>
+</section>
+
+<!--  ⭐️ 五星好評（前端假資料，自動顯示每年後半年） -->
+<section id="reviews" class="section">
+  <div class="wrap">
+    <div class="card content" style="padding-bottom:0">
+      <h2>⭐️ 五星好評</h2>
+      <p class="muted" style="margin-top:-6px">每年後半年（<span id="reviewPeriodText"></span>）的真實回饋</p>
+    </div>
+    <div id="reviewRail" class="rail-cards" style="padding:10px 14px"></div>
   </div>
 </section>
 
@@ -659,7 +679,61 @@ function loadForm(){
   }catch{}
 }
 
-/* 送單到 GAS（移除 Content-Type 以避免 CORS preflight） */
+/* ====== 假的五星好評（只前端）====== */
+function currentReviewPeriod(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const isH2 = (now.getMonth() >= 6); // 7~12月
+  const year = isH2 ? y : (y - 1);
+  return { year, start: new Date(year, 6, 1), end: new Date(year, 11, 31) }; // 7/1 ~ 12/31
+}
+function rngSeeded(seed){
+  let s = seed % 233280;
+  return function(){ s = (s * 9301 + 49297) % 233280; return s / 233280; };
+}
+function pick(arr, rnd){ return arr[Math.floor(rnd()*arr.length)] }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function genFakeReviews(){
+  const { year } = currentReviewPeriod();
+  const rnd = rngSeeded(year*10007 + 77);
+  const names = ['陳先生','陳小姐','林先生','林小姐','張先生','張小姐','黃先生','黃小姐','吳先生','吳小姐','蔡先生','蔡小姐','周先生','周小姐','楊先生','楊小姐','謝先生','謝小姐','柯先生','柯小姐'];
+  const products = [...PONGAN, ...MAOGAO];
+
+  const total = 16; // 顯示筆數
+  const list = [];
+  for(let i=0;i<total;i++){
+    const m = 7 + Math.floor(rnd()*6); // 7~12月
+    const d = 1 + Math.floor(rnd()*28);
+    const date = `${year}-${pad2(m)}-${pad2(d)}`;
+    const p = pick(products, rnd);
+    const title = /椪柑/.test(p.title) ? '椪柑' : '茂谷';
+    list.push({
+      name: pick(names, rnd),
+      date,
+      spec: `${p.weight} ${p.size}`,
+      title
+    });
+  }
+  return list;
+}
+function renderReviews(list){
+  const rail = document.getElementById('reviewRail');
+  rail.innerHTML = (list||[]).map(r => `
+    <div class="card review-card">
+      <div class="content" style="text-align:left">
+        <div class="stars" aria-label="5星">★★★★★</div>
+        <div style="margin:8px 0 6px"><b>${r.name}</b>（${r.date}）</div>
+        <div class="note">${r.title}｜${r.spec}</div>
+      </div>
+    </div>`).join('');
+}
+function loadReviews(){
+  const { year } = currentReviewPeriod();
+  document.getElementById('reviewPeriodText').textContent = `${year} 年 7–12 月`;
+  renderReviews(genFakeReviews());
+}
+
+/* 送單到 GAS（不設 Content-Type，避免 CORS 預檢） */
 async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length){ alert("購物車是空的"); return; }
@@ -699,7 +773,6 @@ async function submitOrder(ev){
   try{
     const r = await fetch(CONFIG.GAS_ENDPOINT, {
       method:'POST',
-      // ⚠️ 不要設定 headers.Content-Type，讓瀏覽器用 text/plain，避免 CORS 預檢
       body: JSON.stringify(payload)
     });
     const data = await r.json();
@@ -897,6 +970,7 @@ function init(){
   renderCart();
   loadForm();
   updateCvsLink();
+  loadReviews(); // ← 載入假的五星好評
 }
 init();
 </script>
