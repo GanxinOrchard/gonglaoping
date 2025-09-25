@@ -1,3 +1,6 @@
+下面是已修正「送出失敗：Failed to fetch」的完整檔案（唯一關鍵更動：`submitOrder()` 的 `fetch` **移除 Content-Type 標頭**，避免 CORS preflight）。直接整份覆蓋你的 `index.html` 即可使用。
+
+```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -420,7 +423,7 @@ const CONFIG = {
       "25台斤-30A": toRaw("https://github.com/s9000721-cloud/gonglaoping/blob/main/25%E6%96%A4%E6%A9%98%E5%AD%90.jpg")
     }
   },
-  GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbwiNI1dkdtlFuYOLMC612xlk_4C01H3JqPXQ8rKliKwrnb7gdcsf8Gz7iPVuaMMTQZS/exec",
+  GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbwrDLQvgHNkner1Tdhwt0qPROag0jDbpoBLreegeaVIj09i2z2DKJm7bVUcgUN81RbQ/exec",
   BRAND_TAG: "柑心果園",
   INVENTORY: {
     "PON10-23A":{sold:50, stock:200}, "PON10-25A":{sold:122, stock:678}, "PON10-27A":{sold:66, stock:734}, "PON10-30A":{sold:55, stock:745},
@@ -659,7 +662,7 @@ function loadForm(){
   }catch{}
 }
 
-/* 送單到 GAS（新增 Content-Type） */
+/* 送單到 GAS（移除 Content-Type 以避免 CORS preflight） */
 async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length){ alert("購物車是空的"); return; }
@@ -699,7 +702,7 @@ async function submitOrder(ev){
   try{
     const r = await fetch(CONFIG.GAS_ENDPOINT, {
       method:'POST',
-      headers: { 'Content-Type': 'application/json' },
+      // ⚠️ 不要設定 headers.Content-Type，讓瀏覽器用 text/plain，避免 CORS 預檢
       body: JSON.stringify(payload)
     });
     const data = await r.json();
@@ -902,3 +905,4 @@ init();
 </script>
 </body>
 </html>
+```
