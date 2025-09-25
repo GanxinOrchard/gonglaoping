@@ -472,6 +472,28 @@ const CONFIG = {
     "PON25-23A":{sold:22, stock:228}, "PON25-25A":{sold:88, stock:712}, "PON25-27A":{sold:53, stock:747}, "PON25-30A":{sold:12, stock:788},
     "MAO10-23A":{sold:72, stock:178}, "MAO10-25A":{sold:355, stock:545}, "MAO10-27A":{sold:102, stock:698}, "MAO10-30A":{sold:78, stock:722},
     "MAO25-23A":{sold:12, stock:238}, "MAO25-25A":{sold:56, stock:744}, "MAO25-27A":{sold:32, stock:768}, "MAO25-30A":{sold:15, stock:785}
+  },
+
+  /* === 後台控管：每品項獨立狀態（normal | preorder | soldout）=== */
+  STATUS: {
+    // 椪柑（PONGAN）
+    "PON10-23A":"normal",
+    "PON10-25A":"normal",
+    "PON10-27A":"normal",
+    "PON10-30A":"normal",
+    "PON25-23A":"normal",
+    "PON25-25A":"normal",
+    "PON25-27A":"normal",
+    "PON25-30A":"normal",
+    // 茂谷（MAOGAO）
+    "MAO10-23A":"normal",
+    "MAO10-25A":"normal",
+    "MAO10-27A":"normal",
+    "MAO10-30A":"normal",
+    "MAO25-23A":"normal",
+    "MAO25-25A":"normal",
+    "MAO25-27A":"normal",
+    "MAO25-30A":"normal"
   }
 };
 
@@ -506,7 +528,7 @@ const LS = {
   shipMethod: 'gx_ship_method',
   form: 'gx_form',
   inventory: 'gx_inventory',
-  overrides: 'gx_overrides'   // ← 標題/圖片/價格 覆寫
+  overrides: 'gx_overrides'   // ← 價格/圖片/標題 覆寫（不含狀態）
 };
 
 /* ====== 匯款資訊與圖片帶入 ====== */
@@ -533,6 +555,11 @@ function setImage(section,weight,size,url){
   saveOverrides(); renderAllGrids();
 }
 
+/* ====== 狀態工具（後台控管） ====== */
+function statusOf(id){
+  return (CONFIG.STATUS && CONFIG.STATUS[id]) || 'normal';
+}
+
 /* ====== 購物車 ====== */
 const cart = loadCart();
 function loadCart(){
@@ -550,7 +577,7 @@ function loadInventory(){
 }
 function saveInventory(){ localStorage.setItem(LS.inventory, JSON.stringify(INV)); }
 
-/* ====== 覆寫儲存/載入（價格/圖片/標題） ====== */
+/* ====== 覆寫儲存/載入（價格/圖片/標題，不含狀態） ====== */
 function saveOverrides(){
   const map = { PRICES: CONFIG.PRICES, IMAGES: CONFIG.IMAGES, TITLES: collectTitles() };
   localStorage.setItem(LS.overrides, JSON.stringify(map));
@@ -574,17 +601,28 @@ function applyTitles(map){
   [...PONGAN, ...MAOGAO].forEach(p=>{ if(map[p.id]) p.title = map[p.id]; });
 }
 
-/* ====== 渲染產品卡片（移除前端狀態切換） ====== */
+/* ====== 渲染產品卡片（含 預購/售完 Ribbon 與按鈕狀態） ====== */
 function productCard(p){
   const price = priceOf(p.section, p.weight, p.size);
   const img = imgFor(p.section, p.weight, p.size);
   const isHot = p.size==='25A';
   const inv = INV[p.id] || {sold:0,stock:999};
+  const st = statusOf(p.id); // 'normal' | 'preorder' | 'soldout'
+
+  // Ribbon
+  let ribbon = '';
+  if(st==='preorder') ribbon = `<span class="ribbon ribbon-pre">開放預購</span>`;
+  if(st==='soldout')  ribbon = `<span class="ribbon ribbon-sold">已售完</span>`;
+
+  // 按鈕
+  const disabled = (st==='soldout');
+  const btnText  = (st==='preorder') ? '預購' : (st==='soldout' ? '已售完' : '購買');
 
   return `
     <article class="product card">
       <div class="img-wrap">
         <img src="${img}" alt="${p.title}">
+        ${ribbon}
       </div>
       <div class="body">
         <div class="row-between" style="gap:8px">
@@ -598,7 +636,10 @@ function productCard(p){
 
         <div class="price" style="margin:6px 0 10px">${currency(price)}</div>
 
-        <button class="btn btn-block" onclick="addToCart('${p.id}')" aria-label="加入購物車">購買</button>
+        <button class="btn btn-block" ${disabled?'disabled':''}
+                onclick="addToCart('${p.id}')" aria-label="加入購物車">
+          ${btnText}
+        </button>
       </div>
     </article>`;
 }
@@ -634,8 +675,9 @@ function renderNewsRail(){
   }).join('');
 }
 
-/* ====== 加入購物車 ====== */
+/* ====== 加入購物車（售完擋下；預購提示） ====== */
 function addToCart(pid){
+  if(statusOf(pid)==='soldout'){ showToast('此品項已售完'); return; }
   const src = [...PONGAN, ...MAOGAO].find(x=>x.id===pid);
   if(!src) return;
   const price = priceOf(src.section, src.weight, src.size);
@@ -644,7 +686,7 @@ function addToCart(pid){
   else cart.push({ id:src.id, title:src.title, price, qty:1, weight:src.weight, size:src.size, section:src.section });
   saveCart(); renderCart();
   bumpFab();
-  showToast('已加入購物車');
+  showToast(statusOf(pid)==='preorder' ? '已加入預購清單' : '已加入購物車');
 }
 function bumpFab(){
   const f = document.getElementById('cartFab');
@@ -823,7 +865,6 @@ function dateOnly(val){
       return `${y}-${m}-${da}`;
     }
   }catch(e){}
-  // 不可解析時，抓空白或 T 之前的片段
   return String(val).split(/[ T]/)[0];
 }
 
