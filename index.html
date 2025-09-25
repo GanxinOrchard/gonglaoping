@@ -18,10 +18,11 @@
   a{color:var(--brand-dark);text-decoration:none}
   .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
 
-  /* Hero（黑邊修正：底色+透明收尾+消除髮絲縫） */
-  .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center;background-color:#000;overflow:hidden;-webkit-transform:translateZ(0);transform:translateZ(0)}
-  @media(max-width:560px){.hero{min-height:44vh}}
-  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%, rgba(0,0,0,.12) 60%, rgba(0,0,0,0) 100%);z-index:0;pointer-events:none}
+  /* Hero（手機黑邊優化＋更穩的視窗高度單位） */
+  .hero{position:relative;min-height:56vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#000}
+  @supports(height:100svh){ .hero{min-height:56svh} }
+  @media(max-width:560px){.hero{min-height:48svh}}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.12));z-index:0;pointer-events:none}
   .hero-inner{position:relative;z-index:1;text-align:center;padding:56px 16px}
   .logo{width:110px;height:110px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:10px}
   .logo img{max-width:100%;max-height:100%}
@@ -109,27 +110,26 @@
   .fab-badge{display:inline-block;min-width:22px;height:22px;border-radius:999px;background:#111;color:#fff;font-size:12px;line-height:22px;text-align:center;padding:0 6px}
   .bump{animation:bump .35s ease}
   @keyframes bump{0%{transform:scale(1)}15%{transform:scale(1.09)}40%{transform:scale(1)}}
+
   .admin-btn{position:fixed;left:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:56;background:#fff;border:1px solid var(--border);border-radius:999px;box-shadow:var(--shadow);padding:8px 10px;opacity:.8;cursor:pointer}
   .admin-btn:hover{opacity:1}
+
   footer{padding:34px 0 56px;color:#6b7280;text-align:center}
   .toast{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:70;background:#111;color:#fff;border-radius:12px;padding:10px 14px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.25s}
   .toast.show{opacity:1;transform:translateY(0)}
 
-  /* ── 好評牆（卡片式 + 直向連續輪播） ───────────────────────── */
-  .review-wall .head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-  .review-wall .head h2{margin:0}
-  .review-ticker{max-height:420px;overflow:hidden}
-  .review-track{display:grid;gap:10px;will-change:transform}
-  .review-card{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:12px}
-  .review-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-  .avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:#ffedd5;border:1px solid #fdba74;color:#7c2d12}
-  .r-meta{flex:1 1 auto;min-width:0}
-  .r-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .r-sub{font-size:12px;color:#6b7280}
-  .r-text{margin:6px 0 0;line-height:1.6}
-  .stars{white-space:nowrap}
-  .star{color:#f59e0b;margin-left:2px}
-  .star.empty{opacity:.25}
+  /* ==== 五星好評（卡片＋自動上捲輪播） ==== */
+  .reviews{position:relative}
+  .reviews .head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .reviews .window{overflow:hidden}
+  .reviews .rail{display:flex;flex-direction:column;gap:10px}
+  .review-card{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:var(--shadow)}
+  .avatar{width:42px;height:42px;border-radius:999px;background:#fef3c7;border:1px solid #fde68a;display:grid;place-items:center;font-weight:900}
+  .name{font-weight:800}
+  .stars{font-size:14px;line-height:1}
+  .meta{font-size:12px;color:var(--muted)}
+  .comment{grid-column:1/-1;color:#374151}
+  .ticker-paused{opacity:.7}
 </style>
 </head>
 <body>
@@ -244,8 +244,7 @@
           <input type="checkbox" id="agree" disabled>
           我已詳閱<span style="text-decoration:underline">上方</span>「物流與退貨說明」並同意
         </label>
-        <div class="help">（若未啟用，請先展開並捲到最底）</div>
-      </div>
+        </div>
 
       <button id="submitBtn" class="btn btn-block" type="submit">送出訂單</button>
       <div id="result" class="note" style="margin-top:8px"></div>
@@ -288,9 +287,7 @@
   <main id="adminBody" class="content"></main>
 </aside>
 
-<button id="cartFab" class="fab" aria-label="開啟購物車" onclick="toggleDrawer(true)">
-  🍊 購物車 <span id="fabCount" class="fab-badge">0</span>
-</button>
+<button id="cartFab" class="fab" aria-label="開啟購物車" onclick="toggleDrawer(true)">🍊 購物車 <span id="fabCount" class="fab-badge">0</span></button>
 <button class="admin-btn" onclick="toggleAdmin(true)" title="管理員">🔒</button>
 
 <section class="hero" id="hero">
@@ -316,15 +313,22 @@
   </div>
 </nav>
 
-<!-- ⭐⭐⭐⭐⭐ 好評牆（放在關於我們前） -->
-<section class="section">
-  <div class="wrap review-wall">
-    <div class="head">
-      <h2>真實回饋｜買家好評牆</h2>
-      <span class="note">每年 11 月～隔年 3 月的訂單節錄，自動更新</span>
+<!-- ======= 五星好評：放在關於我們之前 ======= -->
+<section class="section reviews" id="reviews">
+  <div class="wrap">
+    <div class="card content" style="padding-bottom:0">
+      <div class="head">
+        <div>
+          <h2>⭐ 五星好評</h2>
+          <p class="muted" style="margin-top:-6px">真實口吻好評自動輪播（每年 11 月 ~ 次年 3 月，日期不超過今天）</p>
+        </div>
+        <div class="muted" id="reviewCount"></div>
+      </div>
     </div>
-    <div id="reviewTicker" class="review-ticker card content" style="padding-bottom:0">
-      <div id="reviewTrack" class="review-track"></div>
+    <div class="card" style="padding:10px 14px">
+      <div class="window" id="reviewsWindow" aria-live="polite">
+        <div class="rail" id="reviewsRail"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -415,7 +419,6 @@
 <div id="toast" class="toast" aria-live="polite"></div>
 
 <script>
-/* ===================== 基本設定 ===================== */
 const CONFIG = {
   PRICES: {
     PONGAN: { "10台斤": { "23A": 750, "25A": 780, "27A": 820, "30A": 880 },
@@ -478,7 +481,7 @@ const CONFIG = {
 };
 function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
 
-/* ===================== 商品資料 ===================== */
+/* ==== 商品資料 ==== */
 const PONGAN = [
   { id:"PON10-23A", section:"PONGAN", title:"椪柑｜10台斤｜23A", weight:"10台斤", size:"23A" },
   { id:"PON10-25A", section:"PONGAN", title:"椪柑｜10台斤｜25A", weight:"10台斤", size:"25A" },
@@ -499,13 +502,9 @@ const MAOGAO = [
   { id:"MAO25-27A", section:"MAOGAO", title:"茂谷｜25台斤｜27A", weight:"25台斤", size:"27A" },
   { id:"MAO25-30A", section:"MAOGAO", title:"茂谷｜25台斤｜30A", weight:"25台斤", size:"30A" },
 ];
+const LS = { cart:'gx_cart', shipMethod:'gx_ship_method', form:'gx_form', inventory:'gx_inventory', overrides:'gx_overrides' };
 
-/* ===================== 本地儲存鍵 ===================== */
-const LS = {
-  cart: 'gx_cart', shipMethod: 'gx_ship_method', form: 'gx_form', inventory: 'gx_inventory', overrides: 'gx_overrides'
-};
-
-/* ===================== 初始化靜態內容 ===================== */
+/* ==== 首屏圖/匯款資訊渲染 ==== */
 document.getElementById('bankName').textContent   = CONFIG.BANK.name;
 document.getElementById('bankHolder').textContent = CONFIG.BANK.holder;
 document.getElementById('bankNo').textContent     = CONFIG.BANK.no;
@@ -513,7 +512,7 @@ document.getElementById('hero').style.backgroundImage = `url('${CONFIG.IMAGES.HE
 document.getElementById('logoImg').src = CONFIG.IMAGES.LOGO;
 document.getElementById('freeShipText').textContent = 'NT$ ' + CONFIG.FREE_SHIP_THRESHOLD.toLocaleString();
 
-/* ===================== 工具：價格/圖片等 ===================== */
+/* ==== 工具 ==== */
 const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size] ?? 0;
 const currency = n => "NT$ "+(n||0).toLocaleString();
 const imgFor = (section,weight,size)=> CONFIG.IMAGES[section]?.[`${weight}-${size}`] || 'https://via.placeholder.com/800x600?text=Image';
@@ -524,52 +523,37 @@ function setImage(section,weight,size,url){
 }
 function statusOf(id){ return (CONFIG.STATUS && CONFIG.STATUS[id]) || 'normal'; }
 
-/* ===================== 購物車 ===================== */
+/* ==== 購物車 ==== */
 const cart = (()=>{
   try{ const s = localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; }
 })();
 function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
-
 let INV = (()=>{
-  try{
-    const s = localStorage.getItem(LS.inventory);
-    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(CONFIG.INVENTORY));
-  }catch{ return JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }
+  try{ const s = localStorage.getItem(LS.inventory); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }
+  catch{ return JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }
 })();
 function saveInventory(){ localStorage.setItem(LS.inventory, JSON.stringify(INV)); }
-
-function saveOverrides(){
-  const map = { PRICES: CONFIG.PRICES, IMAGES: CONFIG.IMAGES, TITLES: collectTitles() };
-  localStorage.setItem(LS.overrides, JSON.stringify(map));
-}
+function saveOverrides(){ const map = { PRICES: CONFIG.PRICES, IMAGES: CONFIG.IMAGES, TITLES: collectTitles() }; localStorage.setItem(LS.overrides, JSON.stringify(map)); }
 function loadOverrides(){
-  try{
-    const s = localStorage.getItem(LS.overrides);
-    if(!s) return;
-    const o = JSON.parse(s);
-    if(o.PRICES) CONFIG.PRICES = o.PRICES;
-    if(o.IMAGES) CONFIG.IMAGES = o.IMAGES;
-    if(o.TITLES) applyTitles(o.TITLES);
+  try{ const s = localStorage.getItem(LS.overrides); if(!s) return; const o = JSON.parse(s);
+    if(o.PRICES) CONFIG.PRICES = o.PRICES; if(o.IMAGES) CONFIG.IMAGES = o.IMAGES; if(o.TITLES) applyTitles(o.TITLES);
   }catch{}
 }
 function collectTitles(){ const t={}; [...PONGAN,...MAOGAO].forEach(p=>t[p.id]=p.title); return t; }
 function applyTitles(map){ [...PONGAN,...MAOGAO].forEach(p=>{ if(map[p.id]) p.title = map[p.id]; }); }
 
-/* ===================== 產品格子 ===================== */
+/* ==== 商品卡 ==== */
 function productCard(p){
   const price = priceOf(p.section, p.weight, p.size);
   const img = imgFor(p.section, p.weight, p.size);
   const isHot = p.size==='25A';
   const inv = INV[p.id] || {sold:0,stock:999};
   const st = statusOf(p.id);
-
   let ribbon = '';
   if(st==='preorder') ribbon = `<span class="ribbon ribbon-pre">開放預購</span>`;
   if(st==='soldout')  ribbon = `<span class="ribbon ribbon-sold">已售完</span>`;
-
   const disabled = (st==='soldout');
   const btnText  = (st==='preorder') ? '預購' : (st==='soldout' ? '已售完' : '購買');
-
   return `
     <article class="product card">
       <div class="img-wrap">
@@ -591,6 +575,7 @@ function renderGrid(elId, items){ document.getElementById(elId).innerHTML = item
 function renderAllGrids(){ renderGrid('hotGrid', HOT); renderGrid('ponganGrid', PONGAN); renderGrid('maogaoGrid', MAOGAO); }
 const HOT = [...PONGAN, ...MAOGAO].filter(p=>p.size==='25A');
 
+/* ==== 規格說明 / 新聞牆 ==== */
 function renderSpecRail(){
   const rail = document.getElementById('specRail');
   rail.innerHTML = CONFIG.IMAGES.SPEC_GALLERY.map(src=>`
@@ -608,7 +593,7 @@ function renderNewsRail(){
   }).join('');
 }
 
-/* ===================== 購物車操作 ===================== */
+/* ==== 購物車流程 ==== */
 function addToCart(pid){
   if(statusOf(pid)==='soldout'){ showToast('此品項已售完'); return; }
   const src = [...PONGAN, ...MAOGAO].find(x=>x.id===pid);
@@ -623,7 +608,6 @@ function addToCart(pid){
 function bumpFab(){ const f=document.getElementById('cartFab'); f.classList.remove('bump'); void f.offsetWidth; f.classList.add('bump'); }
 function mutateQty(i,delta){ cart[i].qty += delta; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
 function clearCart(){ if(!cart.length) return; if(confirm('確定要清空購物車？')){ cart.length=0; saveCart(); renderCart(); } }
-
 function calc(){
   const method = getShipMethod();
   const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
@@ -666,7 +650,6 @@ function renderCart(){
 }
 function toggleDrawer(open){ document.getElementById('drawer').classList.toggle('open', !!open); }
 function toggleQuery(open){ document.getElementById('queryDrawer').classList.toggle('open', !!open); }
-
 function getShipMethod(){ return localStorage.getItem(LS.shipMethod) || 'HOME'; }
 function setShipMethod(m){
   if(m==='CVS'){
@@ -690,7 +673,7 @@ function go(e,id){
   window.scrollTo({top:y,behavior:'smooth'});
 }
 
-/* ===================== 表單保存 ===================== */
+/* ==== 表單儲存 ==== */
 function saveForm(){
   const f = document.getElementById('orderForm');
   const obj = Object.fromEntries(new FormData(f));
@@ -708,7 +691,7 @@ function loadForm(){
   }catch{}
 }
 
-/* ===================== 送單到 GAS ===================== */
+/* ==== 送單到 GAS（避免預檢） ==== */
 async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length){ alert("購物車是空的"); return; }
@@ -746,15 +729,10 @@ async function submitOrder(ev){
   btn.disabled = true; btn.textContent = '送出訂單中，請稍等…'; resBox.textContent = '';
 
   try{
-    const r = await fetch(CONFIG.GAS_ENDPOINT, {
-      method:'POST',
-      body: JSON.stringify(payload) // 不設 Content-Type，避免預檢
-    });
+    const r = await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
     const data = await r.json();
     if(data.ok){
-      resBox.innerHTML =
-        `✅ 訂單已建立（編號：<b>${data.order_no}</b>）。<br>
-         我們已把匯款資訊寄至 <b>${payload.email}</b>，請於 24 小時內完成匯款以保留庫存。`;
+      resBox.innerHTML = `✅ 訂單已建立（編號：<b>${data.order_no}</b>）。<br>我們已把匯款資訊寄至 <b>${payload.email}</b>，請於 24 小時內完成匯款以保留庫存。`;
       cart.length = 0; saveCart(); renderCart();
       ev.target.reset(); saveForm();
     }else{
@@ -767,7 +745,7 @@ async function submitOrder(ev){
   }
 }
 
-/* ===================== 訂單查詢 ===================== */
+/* ==== 訂單查詢 ==== */
 function dateOnly(val){
   if(!val) return '—';
   try{
@@ -781,16 +759,13 @@ function dateOnly(val){
   }catch(e){}
   return String(val).split(/[ T]/)[0];
 }
-
 async function queryOrder(ev){
   ev.preventDefault();
   const f = new FormData(ev.target);
   const no = (f.get('orderNo')||'').trim();
   const card = document.getElementById('queryCard');
   const printBtn = document.getElementById('printBtn');
-  card.style.display = 'block';
-  card.innerHTML = '查詢中…';
-  printBtn.style.display = 'none';
+  card.style.display = 'block'; card.innerHTML = '查詢中…'; printBtn.style.display = 'none';
 
   try{
     const url = CONFIG.GAS_ENDPOINT + '?orderNo=' + encodeURIComponent(no);
@@ -806,7 +781,6 @@ async function queryOrder(ev){
         `<a href="https://eservice.7-11.com.tw/e-tracking/search.aspx" target="_blank" rel="noopener">7-11</a> ｜ 
          <a href="https://fmec.famiport.com.tw/FP_Entrance/QueryBox" target="_blank" rel="noopener">全家</a>`;
       const items = Array.isArray(data.items) ? data.items.map(i=>`${i.title} × ${i.qty}`).join('、') : '—';
-
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
           <h3 style="margin:0">訂單查詢結果</h3>
@@ -830,7 +804,7 @@ async function queryOrder(ev){
   }
 }
 
-/* ===================== 超商連結切換 ===================== */
+/* ==== 超商查詢連結 ==== */
 function updateCvsLink(){
   const brand = document.querySelector('select[name="cvsBrand"]').value;
   const a = document.getElementById('cvsFinderLink');
@@ -843,7 +817,7 @@ function updateCvsLink(){
   }
 }
 
-/* ===================== 同意條款捲到底啟用 ===================== */
+/* ==== 同意條款：捲到最底才可勾 ==== */
 (function setupPolicy(){
   const det = document.getElementById('policy');
   const agree = document.getElementById('agree');
@@ -857,7 +831,155 @@ function updateCvsLink(){
   document.querySelector('label[for="agree"]')?.addEventListener('click', (e)=>{ if(agree.disabled){ e.preventDefault(); det.open=true; det.scrollIntoView({behavior:'smooth',block:'center'}); }});
 })();
 
-/* ===================== Admin：RAW 轉換工具 ===================== */
+/* ==== 五星好評：資料產生（日期：每年 11~3 月，且不超過今天） ==== */
+function maskName(full){
+  // 至少把中間字擋掉；兩字：王＊；三字：王＊豪；四字以上：王＊…＊豪
+  const s = full.trim();
+  if(s.length<=1) return s+'＊';
+  if(s.length===2) return s[0]+'＊';
+  if(s.length===3) return s[0]+'＊'+s[2];
+  return s[0]+'＊'+s.slice(2,-1).replace(/./g,'')+'＊'+s[s.length-1];
+}
+function seasonRange(today=new Date()){
+  const y = today.getFullYear(), m = today.getMonth()+1;
+  let start, end;
+  if([11,12].includes(m)){ // 本年 11~12 開始，結束到明年 3/31，但不可超過今天
+    start = new Date(y,10,1);           // 11/01
+    end   = new Date(y+1,2,31);         // 次年 3/31
+  }else if([1,2,3].includes(m)){ // 今年 1~3，從去年 11/01 起算，到今年 3/31，但不可超過今天
+    start = new Date(y-1,10,1);         // 去年 11/01
+    end   = new Date(y,2,31);           // 今年 3/31
+  }else{ // 4~10：顯示「上一季」：去年 11/01 ~ 今年 3/31
+    start = new Date(y-1,10,1);
+    end   = new Date(y,2,31);
+  }
+  if(today.getTime() < end.getTime()) end = today; // 不能超過今天
+  return {start, end};
+}
+function randomDateInRange(start,end){
+  const a=start.getTime(), b=end.getTime();
+  const t = a + Math.floor(Math.random()*(Math.max(1,b-a+1)));
+  return new Date(t);
+}
+function fmtDate(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const da=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${da}`; }
+
+function genReviews(minCount=100){
+  const surnames = '陳林黃張李王吳劉蔡楊許鄭謝郭洪邱曾賴周詹葉蘇潘簡魏顏朱鍾彭段粘顧孟余方程方曹呂唐馮溫藍喬'.split('');
+  const givenA = '子宇承昱柏育冠家建宗庭哲品尚家宜芝怡妤珮郁郡郁慈欣筑芸亭姵宥柔姿昀語晏'.split('');
+  const givenB = '安庭廷豪豪翔翊睿恩哲宏均瑜婷儀萱蓁珊甄瑄潔硯祐慈瑜嘉霈媛茹瑋'.split('');
+  const comments5 = [
+    '超甜多汁，剝開就香氣爆棚！','真的好吃到停不下來','顆顆飽滿，果皮薄又好剝','甜度穩定，家人一直指定要買',
+    '送禮超體面，收的人一直稱讚','冰過更好吃，汁水直接噴','比去年更甜，品質穩','回購第三年了，依舊滿意',
+    '孩子超愛吃，當點心剛好','果香清爽不膩，超讚','每顆都很漂亮，幾乎零瑕疵','甜中帶一點酸更耐吃',
+    '物流很穩，收到都完好','產地直送的新鮮感吃得出來','皮薄肉厚，太可以了','現採的新鮮脆甜'
+  ];
+  const comments4 = [
+    '整體很甜，偶有一兩顆比較清爽','甜度很不錯，酸甜平衡','果粒細緻，口感佳','家人都說好吃，已經回購',
+    '包裝用心，收到完整無碰傷','香氣清新，配茶超搭'
+  ];
+  const comments3 = [
+    '偏清爽派但還是好吃','整體OK，喜歡不那麼甜的會愛','口味清甜，當季吃最剛好'
+  ];
+  const sizes = ['23A','25A','27A','30A'];
+  const weights = ['10台斤','25台斤'];
+
+  // 依規則：每 50 則 → 4★=3、3★=1，其餘 5★
+  const total = Math.max(100, minCount);
+  const blocks = Math.floor(total/50);
+  const remainder = total % 50;
+  const target4 = blocks*3 + Math.min(3, Math.floor(remainder/17)); // 保持比例
+  const target3 = blocks*1 + (remainder>=50?1:0); // 幾乎不會加，保 1/50 規則
+  let list = [];
+
+  // 先塞 4★與3★
+  for(let i=0;i<target4;i++) list.push({stars:4, comment: comments4[i%comments4.length]});
+  for(let i=0;i<Math.max(1,target3);i++) list.push({stars:3, comment: comments3[i%comments3.length]});
+  // 其餘補 5★
+  while(list.length<total){
+    list.push({stars:5, comment: comments5[list.length%comments5.length]});
+  }
+
+  // 打散順序
+  for(let i=list.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1)); [list[i],list[j]]=[list[j],list[i]];
+  }
+
+  // 產生名字、規格與日期（每年 11~3 月，不超過今天）
+  const today=new Date();
+  const {start,end}=seasonRange(today);
+  const result = list.map((it,idx)=>{
+    const name = surnames[idx%surnames.length] + (Math.random()<0.7? givenA[idx%givenA.length] : (givenA[idx%givenA.length]+(Math.random()<0.5? '':''))) + (Math.random()<0.6? givenB[idx%givenB.length] : '');
+    const masked = maskName(name);
+    const d = randomDateInRange(start,end);
+    const size = sizes[(idx*7)%sizes.length];
+    const weight = weights[(idx*13)%weights.length];
+    return { name: masked, date: fmtDate(d), stars: it.stars, comment: it.comment, spec:`${weight}・${size}` };
+  });
+
+  // 依日期排序（新到舊）
+  result.sort((a,b)=> b.date.localeCompare(a.date));
+  return result;
+}
+function starHtml(n){
+  const full = '★'.repeat(n), empty = '☆'.repeat(5-n);
+  return `<span aria-label="${n} 星">${full}${empty}</span>`;
+}
+function reviewCard(r){
+  return `
+  <div class="review-card">
+    <div class="avatar">🍊</div>
+    <div>
+      <div class="name">${r.name}</div>
+      <div class="meta">購買時間：${r.date}　｜　規格：${r.spec}</div>
+    </div>
+    <div class="stars" style="text-align:right">${starHtml(r.stars)}</div>
+    <div class="comment">${r.comment}</div>
+  </div>`;
+}
+function renderReviews(){
+  const data = genReviews(110); // ≥100
+  document.getElementById('reviewCount').textContent = `共 ${data.length} 則`;
+  const rail = document.getElementById('reviewsRail');
+  rail.innerHTML = data.map(reviewCard).join('');
+  // 複製一份做無限循環
+  rail.innerHTML += data.map(reviewCard).join('');
+}
+function startReviewTicker(){
+  const win = document.getElementById('reviewsWindow');
+  const rail = document.getElementById('reviewsRail');
+  let rowH = 0;
+  const measure = ()=>{
+    const first = rail.querySelector('.review-card');
+    rowH = first ? (first.getBoundingClientRect().height + 10) : 72; // 卡片高 + gap
+    win.style.maxHeight = (rowH*4 + 10*3) + 'px'; // 同時顯示 4 張
+  };
+  measure(); window.addEventListener('resize', measure, {passive:true});
+  let y = 0;
+  const SPEED = 900; // 3 倍速左右（越小越快）
+  let timer = setInterval(tick, SPEED);
+  function tick(){
+    y += rowH;
+    rail.style.transform = `translateY(-${y}px)`;
+    rail.style.transition = 'transform .36s ease';
+    // 到一半（複本末）就歸零
+    if(y >= rail.scrollHeight/2 - rowH){
+      setTimeout(()=>{
+        rail.style.transition = 'none';
+        y = 0;
+        rail.style.transform = 'translateY(0)';
+      }, 380);
+    }
+  }
+  // 滑入暫停
+  win.addEventListener('mouseenter', ()=>{ clearInterval(timer); win.classList.add('ticker-paused'); });
+  win.addEventListener('mouseleave', ()=>{ timer = setInterval(tick, SPEED); win.classList.remove('ticker-paused'); });
+}
+
+/* ==== 通用 ==== */
+document.getElementById('orderForm').addEventListener('input', saveForm);
+let toastTimer=null;
+function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 1800); }
+
 function toggleAdmin(open){
   const d = document.getElementById('adminDrawer');
   d.classList.toggle('open', !!open);
@@ -867,10 +989,7 @@ function renderAdmin(){
   const box = document.getElementById('adminBody');
   box.innerHTML = `
     <h3>GitHub RAW 連結轉換器</h3>
-    <p class="note">
-      貼上 <b>GitHub 檔案頁</b>網址（例如：<code>https://github.com/user/repo/blob/main/assets/photo.jpg</code>），
-      按【轉換】即可得到 <b>raw.githubusercontent.com</b> 的直接連結（圖片/影片都可），可貼回商品圖片欄位使用。
-    </p>
+    <p class="note">貼上 <b>GitHub 檔案頁</b>網址（例如：<code>https://github.com/user/repo/blob/main/assets/photo.jpg</code>），按【轉換】即可得到 <b>raw.githubusercontent.com</b> 的直接連結（圖片/影片都可），可貼回商品圖片欄位使用。</p>
     <div class="label">貼上 GitHub 檔案網址</div>
     <input id="rawInput" class="input" placeholder="例如：https://github.com/user/repo/blob/main/assets/photo.jpg">
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px">
@@ -882,13 +1001,8 @@ function renderAdmin(){
   `;
 }
 async function pasteRawFromClipboard(){
-  try{
-    const txt = await navigator.clipboard.readText();
-    if(!txt) return alert('剪貼簿沒有內容');
-    document.getElementById('rawInput').value = txt.trim();
-  }catch(e){
-    alert('無法讀取剪貼簿：' + e.message + '（請先允許權限）');
-  }
+  try{ const txt = await navigator.clipboard.readText(); if(!txt) return alert('剪貼簿沒有內容'); document.getElementById('rawInput').value = txt.trim(); }
+  catch(e){ alert('無法讀取剪貼簿：' + e.message + '（請先允許權限）'); }
 }
 function convertToRaw(){
   const input = document.getElementById('rawInput');
@@ -929,114 +1043,7 @@ function renderRawPreview(url){
   }
 }
 
-/* ===================== 好評牆：資料與輪播 ===================== */
-const surnames = "陳林黃張李王吳劉蔡楊許鄭謝郭洪邱曾賴周葉蘇呂潘柯傅程曹彭蕭田杜袁鍾宋唐范方藍鄧高侯戴簡顏夏鍾施魏嚴".split("");
-const given1 = "小大家阿子佳孟志育冠怡雅廷柏家冠昭哲俊品郁宗宗孟嘉孟承柏郁思".split("");
-const given2 = "豪豪安安恩恩萱萱宇宇庭庭穎穎勳勳瑜瑜睿睿淇淇蓁蓁恬恬瑋瑋珊珊廷廷伶伶鈞鈞豪豪".split("");
-const goodPhrasesA = ["好吃","超甜","很大顆","很多汁","香氣濃","口感細緻","酸甜剛好","清爽不膩","孩子超愛","長輩說讚"];
-const goodPhrasesB = ["回購無數次","果肉飽滿","皮薄易剝","新鮮現採","分級穩定","CP 值高","物流很快","包裝很穩","服務很好","吃完還想再買"];
-
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function maskName(name){
-  const chars = [...String(name||'')];
-  if(chars.length<=1) return name||'';
-  const mid = Math.floor(chars.length/2);
-  chars[mid] = '＊';
-  return chars.join('');
-}
-function randomSpec(){
-  const sec = Math.random()<0.5 ? 'PONGAN':'MAOGAO';
-  const w = Math.random()<0.5 ? '10台斤':'25台斤';
-  const sizes = ['23A','25A','27A','30A'];
-  const size = pick(sizes);
-  return (sec==='PONGAN'?'椪柑':'茂谷')+'｜'+w+'｜'+size;
-}
-function renderStars(n){
-  let s=''; for(let i=1;i<=5;i++){ s += `<span class="star ${i<=n?'':'empty'}">★</span>`; } return s;
-}
-/* 年度產季日期（每年 11 月 ~ 隔年 3 月） */
-function randomSeasonDate(){
-  const now = new Date();
-  const year = now.getMonth()+1 >= 4 ? now.getFullYear() : now.getFullYear()-1; // 4~10月 → 當年11起；1~3月 → 前年11起
-  const start = new Date(year, 10, 1);   // 11/1
-  const end   = new Date(year+1, 2, 31); // 次年 3/31
-  const t = randInt(start.getTime(), end.getTime());
-  const d = new Date(t);
-  const y = d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${da}`;
-}
-/* 產生最少 100 則以上：3★ 約 1/50、4★ 約 3/50、其餘 5★（皆為好評） */
-function genReviews(n=120){
-  const arr=[];
-  for(let i=1;i<=n;i++){
-    let star = 5;
-    const mod = i % 50;
-    if(mod===0){ star=3; }             // 每 50 筆來 1 筆 3星
-    else if([10,30,40].includes(mod)){ star=4; } // 每 50 筆來 3 筆 4星
-    const name = pick(surnames)+pick(given1)+pick(given2);
-    const text = `${pick(goodPhrasesA)}，${pick(goodPhrasesB)}！`;
-    arr.push({ name, star, date: randomSeasonDate(), spec: randomSpec(), text });
-  }
-  return arr;
-}
-function reviewCardHTML(r){
-  const av = r.name[0];
-  return `
-    <div class="review-card">
-      <div class="review-row">
-        <div class="avatar">${av}</div>
-        <div class="r-meta">
-          <div class="r-name">${maskName(r.name)}</div>
-          <div class="r-sub">購買日期：${r.date} ｜ 規格：${r.spec}</div>
-        </div>
-        <div class="stars" aria-label="${r.star} 星">${renderStars(r.star)}</div>
-      </div>
-      <p class="r-text">${r.text}</p>
-    </div>`;
-}
-function buildReviewWall(){
-  const list = genReviews(120); // >= 100 則
-  const track = document.getElementById('reviewTrack');
-  track.innerHTML = list.map(reviewCardHTML).join('');
-  // 複製一份做無縫循環
-  const clone = document.createElement('div');
-  clone.innerHTML = track.innerHTML;
-  while(clone.firstChild){ track.appendChild(clone.firstChild); }
-
-  const container = document.getElementById('reviewTicker');
-  let pos = 0;
-  let speed = 1.2; // ← 比原先 0.4 快約 3 倍
-  let running = true;
-
-  function step(){
-    if(running){
-      pos += speed;
-      const half = track.scrollHeight / 2;
-      if(pos >= half) pos = 0;
-      track.style.transform = `translateY(-${pos}px)`;
-    }
-    requestAnimationFrame(step);
-  }
-  container.addEventListener('mouseenter', ()=> running=false);
-  container.addEventListener('mouseleave', ()=> running=true);
-  container.addEventListener('touchstart', ()=> running=false, {passive:true});
-  container.addEventListener('touchend', ()=> running=true, {passive:true});
-  requestAnimationFrame(step);
-}
-
-/* ===================== 啟動 ===================== */
-document.getElementById('orderForm').addEventListener('input', saveForm);
-
-let toastTimer=null;
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
-}
-
+/* ==== 啟動 ==== */
 function init(){
   loadOverrides();
   renderAllGrids();
@@ -1046,7 +1053,10 @@ function init(){
   renderCart();
   loadForm();
   updateCvsLink();
-  buildReviewWall(); // 啟動好評牆
+
+  // 五星好評
+  renderReviews();
+  startReviewTicker();
 }
 init();
 </script>
