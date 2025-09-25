@@ -18,12 +18,10 @@
   a{color:var(--brand-dark);text-decoration:none}
   .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
 
-  /* Hero（修正手機黑邊：漸層底部改透明、背景定位向上） */
-  .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center top;background-repeat:no-repeat;background-color:#f3a11c}
-  @media(max-width:560px){.hero{min-height:46vh}}
-  .hero::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(0,0,0,.46) 0%, rgba(0,0,0,.28) 40%, rgba(0,0,0,.12) 70%, rgba(0,0,0,0) 100%);
-    z-index:0;pointer-events:none}
+  /* Hero（黑邊修正：底色+透明收尾+消除髮絲縫） */
+  .hero{position:relative;min-height:52vh;display:grid;place-items:center;color:#fff;background-size:cover;background-position:center;background-color:#000;overflow:hidden;-webkit-transform:translateZ(0);transform:translateZ(0)}
+  @media(max-width:560px){.hero{min-height:44vh}}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%, rgba(0,0,0,.12) 60%, rgba(0,0,0,0) 100%);z-index:0;pointer-events:none}
   .hero-inner{position:relative;z-index:1;text-align:center;padding:56px 16px}
   .logo{width:110px;height:110px;border-radius:18px;background:#fff9;padding:10px;backdrop-filter:blur(4px);display:inline-grid;place-items:center;margin-bottom:10px}
   .logo img{max-width:100%;max-height:100%}
@@ -39,6 +37,7 @@
   .btn-red{background:var(--hot);color:#fff;border-color:#ef4444;box-shadow:0 10px 20px rgba(239,68,68,.25)}
   .btn-red:hover{background:var(--hot-dark)}
   .btn-block{width:100%;justify-content:center}
+
   .section{padding:34px 0}
   .section h2{font-size:clamp(17px,3.8vw,25px);margin:0 0 10px}
   .muted{color:var(--muted)}
@@ -50,18 +49,21 @@
   .content ul{margin:0;padding-left:1.2em;line-height:1.8}
   .content li{margin:4px 0}
   .note{font-size:12.5px;color:var(--muted)}
+
   .subnav{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 6px 20px rgba(0,0,0,.04)}
   .subnav .rail{display:flex;gap:8px;align-items:center;padding:10px 4px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
   .subnav .rail::-webkit-scrollbar{height:6px}
   .subnav .rail::-webkit-scrollbar-thumb{background:#e6e6e6;border-radius:999px}
   .chip{flex:0 0 auto;background:#fef3c7;border:1px solid #fde68a;color:#7c2d12;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer;scroll-snap-align:center;font-size:clamp(12.5px,3vw,14px)}
   .chip:hover{background:#fde68a}
+
   .rail-cards{display:flex;gap:12px;overflow:auto;padding:10px 4px}
   .rail-cards::-webkit-scrollbar{height:6px}
   .rail-cards::-webkit-scrollbar-thumb{background:#e6e6e6;border-radius:999px}
   .rail-cards .card{flex:0 0 auto;width:min(480px,92%)}
   .spec-cards .card{width:min(360px,48%)}
   @media(min-width:900px){.spec-cards .card{width:min(420px,32%)}}
+
   .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   @media(min-width:960px){.product-grid{gap:14px}}
   .product{display:flex;flex-direction:column}
@@ -75,11 +77,11 @@
   .price{font-weight:800;font-size:clamp(14px,3.8vw,16px)}
   .row-between{display:flex;align-items:center;justify-content:space-between}
   .tag-hot{display:inline-block;background:var(--hot);color:#fff;border:1px solid #ef4444;border-radius:10px;padding:3px 7px;font-size:12px;font-weight:800}
+
   .theme-hot .content{background:#fee2e2;border-color:#fecaca}
   .theme-pongan .content{background:var(--pongan-surface);border-color:#fde68a}
   .theme-maogao .content{background:var(--maogao-surface);border-color:#bbf7d0}
 
-  /* 購物車抽屜與表單 */
   .drawer{position:fixed;right:0;top:0;bottom:0;width:min(480px,96%);background:var(--surface);border-left:1px solid var(--border);
     transform:translateX(105%);transition:.28s;z-index:60;display:flex;flex-direction:column}
   .drawer.open{transform:none}
@@ -94,6 +96,7 @@
   .summary{background:#f9fafb;border:1px dashed var(--border);border-radius:12px;padding:12px}
   .badge{display:inline-block;background:#fff0d6;color:#7c2d12;border:1px solid #fed7aa;border-radius:10px;padding:4px 8px;font-size:12px;font-weight:700}
   .warn{background:#fff1f2;border:1px solid #fecdd3;color:#7f1d1d}
+
   .form .row{display:grid;gap:10px}
   @media(min-width:720px){.form .row{grid-template-columns:1fr 1fr}}
   .label{font-weight:700;margin:8px 0 6px}
@@ -101,7 +104,6 @@
   input, select, textarea{touch-action:manipulation}
   .help{font-size:12px;color:#6b7280;margin-top:4px}
 
-  /* FAB & Toast */
   .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:55;background:var(--brand);color:#111;border:1px solid rgba(0,0,0,.06);
     padding:12px 16px;border-radius:999px;box-shadow:0 10px 18px rgba(245,158,11,.35);display:flex;align-items:center;gap:8px;font-weight:800;cursor:pointer}
   .fab-badge{display:inline-block;min-width:22px;height:22px;border-radius:999px;background:#111;color:#fff;font-size:12px;line-height:22px;text-align:center;padding:0 6px}
@@ -113,22 +115,21 @@
   .toast{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom));z-index:70;background:#111;color:#fff;border-radius:12px;padding:10px 14px;opacity:0;pointer-events:none;transform:translateY(8px);transition:.25s}
   .toast.show{opacity:1;transform:translateY(0)}
 
-  /* ====== 好評區塊（卡片＋垂直自動輪播） ====== */
-  .reviews-head .muted{margin-top:-6px}
-  .reviews-wall{padding:0 14px 14px}
-  .ticker{height:420px;overflow:hidden;position:relative}
-  @media(min-width:900px){.ticker{height:520px}}
-  .track{will-change:transform}
-  .review-card{border:1px solid var(--border);border-radius:14px;padding:12px;margin:12px 0;background:#fff}
+  /* ── 好評牆（卡片式 + 直向連續輪播） ───────────────────────── */
+  .review-wall .head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .review-wall .head h2{margin:0}
+  .review-ticker{max-height:420px;overflow:hidden}
+  .review-track{display:grid;gap:10px;will-change:transform}
+  .review-card{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:12px}
   .review-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-  .avatar{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(135deg,#f59e0b,#f97316)}
-  .r-meta{flex:1}
-  .r-name{font-weight:800}
+  .avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:#ffedd5;border:1px solid #fdba74;color:#7c2d12}
+  .r-meta{flex:1 1 auto;min-width:0}
+  .r-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .r-sub{font-size:12px;color:#6b7280}
+  .r-text{margin:6px 0 0;line-height:1.6}
   .stars{white-space:nowrap}
-  .star{font-size:14px;line-height:1;color:#f59e0b;margin-right:1px}
-  .star.empty{color:#e5e7eb}
-  .r-text{margin:0;font-size:14px;line-height:1.7}
+  .star{color:#f59e0b;margin-left:2px}
+  .star.empty{opacity:.25}
 </style>
 </head>
 <body>
@@ -144,7 +145,9 @@
   </header>
   <main>
     <div id="cartList"></div>
+
     <div class="line"></div>
+
     <div class="summary" style="margin-bottom:10px">
       <div class="label">配送方式</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -153,6 +156,7 @@
       </div>
       <div class="help">超商取貨限「單一 10 台斤 × 1 箱」，不接受外島配送。</div>
     </div>
+
     <div class="summary">
       <div class="row-between"><span>商品小計</span><strong id="subtotal">$0</strong></div>
       <div class="row-between"><span id="shipLabel">運費（宅配）</span><strong id="shipping">$0</strong></div>
@@ -160,6 +164,7 @@
       <div class="row-between" style="font-size:18px"><span>應付金額</span><strong id="total">$0</strong></div>
       <div class="note" style="margin-top:8px">宅配滿額 <b id="freeShipText">0</b> 免運；超商取貨一律免運。</div>
     </div>
+
     <div class="line"></div>
 
     <form id="orderForm" class="form" onsubmit="submitOrder(event)">
@@ -311,17 +316,15 @@
   </div>
 </nav>
 
-<!-- ====== 好評牆（新增，放在關於我們上方） ====== -->
-<section id="reviews" class="section">
-  <div class="wrap">
-    <div class="card content reviews-head" style="padding-bottom:0">
-      <h2>大家都這樣說｜真實好評</h2>
-      <p class="muted">顯示每年 11 月－隔年 3 月的最新評論，會自動往上輪播</p>
+<!-- ⭐⭐⭐⭐⭐ 好評牆（放在關於我們前） -->
+<section class="section">
+  <div class="wrap review-wall">
+    <div class="head">
+      <h2>真實回饋｜買家好評牆</h2>
+      <span class="note">每年 11 月～隔年 3 月的訂單節錄，自動更新</span>
     </div>
-    <div class="card reviews-wall">
-      <div class="ticker" id="reviewTicker">
-        <div class="track" id="reviewTrack"></div>
-      </div>
+    <div id="reviewTicker" class="review-ticker card content" style="padding-bottom:0">
+      <div id="reviewTrack" class="review-track"></div>
     </div>
   </div>
 </section>
@@ -412,7 +415,7 @@
 <div id="toast" class="toast" aria-live="polite"></div>
 
 <script>
-/* ================== 原站設定（保留） ================== */
+/* ===================== 基本設定 ===================== */
 const CONFIG = {
   PRICES: {
     PONGAN: { "10台斤": { "23A": 750, "25A": 780, "27A": 820, "30A": 880 },
@@ -475,7 +478,7 @@ const CONFIG = {
 };
 function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
 
-/* 產品資料（保留） */
+/* ===================== 商品資料 ===================== */
 const PONGAN = [
   { id:"PON10-23A", section:"PONGAN", title:"椪柑｜10台斤｜23A", weight:"10台斤", size:"23A" },
   { id:"PON10-25A", section:"PONGAN", title:"椪柑｜10台斤｜25A", weight:"10台斤", size:"25A" },
@@ -497,9 +500,12 @@ const MAOGAO = [
   { id:"MAO25-30A", section:"MAOGAO", title:"茂谷｜25台斤｜30A", weight:"25台斤", size:"30A" },
 ];
 
-/* 本地儲存（保留） */
-const LS = { cart:'gx_cart', shipMethod:'gx_ship_method', form:'gx_form', inventory:'gx_inventory', overrides:'gx_overrides' };
+/* ===================== 本地儲存鍵 ===================== */
+const LS = {
+  cart: 'gx_cart', shipMethod: 'gx_ship_method', form: 'gx_form', inventory: 'gx_inventory', overrides: 'gx_overrides'
+};
 
+/* ===================== 初始化靜態內容 ===================== */
 document.getElementById('bankName').textContent   = CONFIG.BANK.name;
 document.getElementById('bankHolder').textContent = CONFIG.BANK.holder;
 document.getElementById('bankNo').textContent     = CONFIG.BANK.no;
@@ -507,6 +513,7 @@ document.getElementById('hero').style.backgroundImage = `url('${CONFIG.IMAGES.HE
 document.getElementById('logoImg').src = CONFIG.IMAGES.LOGO;
 document.getElementById('freeShipText').textContent = 'NT$ ' + CONFIG.FREE_SHIP_THRESHOLD.toLocaleString();
 
+/* ===================== 工具：價格/圖片等 ===================== */
 const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size] ?? 0;
 const currency = n => "NT$ "+(n||0).toLocaleString();
 const imgFor = (section,weight,size)=> CONFIG.IMAGES[section]?.[`${weight}-${size}`] || 'https://via.placeholder.com/800x600?text=Image';
@@ -517,10 +524,18 @@ function setImage(section,weight,size,url){
 }
 function statusOf(id){ return (CONFIG.STATUS && CONFIG.STATUS[id]) || 'normal'; }
 
-const cart = (()=>{ try{ const s = localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; }})();
+/* ===================== 購物車 ===================== */
+const cart = (()=>{
+  try{ const s = localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; }
+})();
 function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
 
-let INV = (()=>{ try{ const s = localStorage.getItem(LS.inventory); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }catch{ return JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }})();
+let INV = (()=>{
+  try{
+    const s = localStorage.getItem(LS.inventory);
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(CONFIG.INVENTORY));
+  }catch{ return JSON.parse(JSON.stringify(CONFIG.INVENTORY)); }
+})();
 function saveInventory(){ localStorage.setItem(LS.inventory, JSON.stringify(INV)); }
 
 function saveOverrides(){
@@ -528,7 +543,9 @@ function saveOverrides(){
   localStorage.setItem(LS.overrides, JSON.stringify(map));
 }
 function loadOverrides(){
-  try{ const s = localStorage.getItem(LS.overrides); if(!s) return;
+  try{
+    const s = localStorage.getItem(LS.overrides);
+    if(!s) return;
     const o = JSON.parse(s);
     if(o.PRICES) CONFIG.PRICES = o.PRICES;
     if(o.IMAGES) CONFIG.IMAGES = o.IMAGES;
@@ -538,15 +555,18 @@ function loadOverrides(){
 function collectTitles(){ const t={}; [...PONGAN,...MAOGAO].forEach(p=>t[p.id]=p.title); return t; }
 function applyTitles(map){ [...PONGAN,...MAOGAO].forEach(p=>{ if(map[p.id]) p.title = map[p.id]; }); }
 
+/* ===================== 產品格子 ===================== */
 function productCard(p){
   const price = priceOf(p.section, p.weight, p.size);
   const img = imgFor(p.section, p.weight, p.size);
   const isHot = p.size==='25A';
   const inv = INV[p.id] || {sold:0,stock:999};
   const st = statusOf(p.id);
+
   let ribbon = '';
   if(st==='preorder') ribbon = `<span class="ribbon ribbon-pre">開放預購</span>`;
   if(st==='soldout')  ribbon = `<span class="ribbon ribbon-sold">已售完</span>`;
+
   const disabled = (st==='soldout');
   const btnText  = (st==='preorder') ? '預購' : (st==='soldout' ? '已售完' : '購買');
 
@@ -588,7 +608,7 @@ function renderNewsRail(){
   }).join('');
 }
 
-/* 購物車 */
+/* ===================== 購物車操作 ===================== */
 function addToCart(pid){
   if(statusOf(pid)==='soldout'){ showToast('此品項已售完'); return; }
   const src = [...PONGAN, ...MAOGAO].find(x=>x.id===pid);
@@ -670,6 +690,7 @@ function go(e,id){
   window.scrollTo({top:y,behavior:'smooth'});
 }
 
+/* ===================== 表單保存 ===================== */
 function saveForm(){
   const f = document.getElementById('orderForm');
   const obj = Object.fromEntries(new FormData(f));
@@ -687,7 +708,7 @@ function loadForm(){
   }catch{}
 }
 
-/* 送單到 GAS（保留你的 fetch 寫法） */
+/* ===================== 送單到 GAS ===================== */
 async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length){ alert("購物車是空的"); return; }
@@ -725,7 +746,10 @@ async function submitOrder(ev){
   btn.disabled = true; btn.textContent = '送出訂單中，請稍等…'; resBox.textContent = '';
 
   try{
-    const r = await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
+    const r = await fetch(CONFIG.GAS_ENDPOINT, {
+      method:'POST',
+      body: JSON.stringify(payload) // 不設 Content-Type，避免預檢
+    });
     const data = await r.json();
     if(data.ok){
       resBox.innerHTML =
@@ -743,7 +767,7 @@ async function submitOrder(ev){
   }
 }
 
-/* 查單 */
+/* ===================== 訂單查詢 ===================== */
 function dateOnly(val){
   if(!val) return '—';
   try{
@@ -757,6 +781,7 @@ function dateOnly(val){
   }catch(e){}
   return String(val).split(/[ T]/)[0];
 }
+
 async function queryOrder(ev){
   ev.preventDefault();
   const f = new FormData(ev.target);
@@ -805,7 +830,7 @@ async function queryOrder(ev){
   }
 }
 
-/* 超商連結 */
+/* ===================== 超商連結切換 ===================== */
 function updateCvsLink(){
   const brand = document.querySelector('select[name="cvsBrand"]').value;
   const a = document.getElementById('cvsFinderLink');
@@ -818,7 +843,7 @@ function updateCvsLink(){
   }
 }
 
-/* 政策同意 */
+/* ===================== 同意條款捲到底啟用 ===================== */
 (function setupPolicy(){
   const det = document.getElementById('policy');
   const agree = document.getElementById('agree');
@@ -832,7 +857,7 @@ function updateCvsLink(){
   document.querySelector('label[for="agree"]')?.addEventListener('click', (e)=>{ if(agree.disabled){ e.preventDefault(); det.open=true; det.scrollIntoView({behavior:'smooth',block:'center'}); }});
 })();
 
-/* Admin 轉 RAW 工具（保留） */
+/* ===================== Admin：RAW 轉換工具 ===================== */
 function toggleAdmin(open){
   const d = document.getElementById('adminDrawer');
   d.classList.toggle('open', !!open);
@@ -904,93 +929,56 @@ function renderRawPreview(url){
   }
 }
 
-/* ============ 好評牆邏輯（動態生成 100+、指定星等分布、11~3 月日期、垂直輪播） ============ */
-function randomPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+/* ===================== 好評牆：資料與輪播 ===================== */
+const surnames = "陳林黃張李王吳劉蔡楊許鄭謝郭洪邱曾賴周葉蘇呂潘柯傅程曹彭蕭田杜袁鍾宋唐范方藍鄧高侯戴簡顏夏鍾施魏嚴".split("");
+const given1 = "小大家阿子佳孟志育冠怡雅廷柏家冠昭哲俊品郁宗宗孟嘉孟承柏郁思".split("");
+const given2 = "豪豪安安恩恩萱萱宇宇庭庭穎穎勳勳瑜瑜睿睿淇淇蓁蓁恬恬瑋瑋珊珊廷廷伶伶鈞鈞豪豪".split("");
+const goodPhrasesA = ["好吃","超甜","很大顆","很多汁","香氣濃","口感細緻","酸甜剛好","清爽不膩","孩子超愛","長輩說讚"];
+const goodPhrasesB = ["回購無數次","果肉飽滿","皮薄易剝","新鮮現採","分級穩定","CP 值高","物流很快","包裝很穩","服務很好","吃完還想再買"];
 
-/* 取得當季的 11~3 月日期範圍 */
-function getSeasonRange(){
-  const now = new Date();
-  const y = now.getFullYear();
-  if (now.getMonth()+1 >= 11){ // 當年 11 月 ~ 次年 3 月
-    return { start: new Date(y,10,1), end: new Date(y+1,2,31) };
-  }else if (now.getMonth()+1 <= 3){ // 前年 11 月 ~ 當年 3 月
-    return { start: new Date(y-1,10,1), end: new Date(y,2,31) };
-  }else{ // 非產季：就用最近一季
-    return { start: new Date(y-1,10,1), end: new Date(y,2,31) };
-  }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function maskName(name){
+  const chars = [...String(name||'')];
+  if(chars.length<=1) return name||'';
+  const mid = Math.floor(chars.length/2);
+  chars[mid] = '＊';
+  return chars.join('');
 }
-function randomDateBetween(s,e){
-  const ms = s.getTime(), me = e.getTime();
-  const r = ms + Math.random()*(me-ms);
-  const d = new Date(r);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth()+1).padStart(2,'0');
-  const dd = String(d.getDate()).padStart(2,'0');
-  return `${yyyy}/${mm}/${dd}`;
+function randomSpec(){
+  const sec = Math.random()<0.5 ? 'PONGAN':'MAOGAO';
+  const w = Math.random()<0.5 ? '10台斤':'25台斤';
+  const sizes = ['23A','25A','27A','30A'];
+  const size = pick(sizes);
+  return (sec==='PONGAN'?'椪柑':'茂谷')+'｜'+w+'｜'+size;
 }
-
-/* 產生評論 */
-function genReviews(count=120){
-  // 星等分布：3★ 每 50 則 1 則；4★ 每 50 則 3 則；其餘 5★
-  const three = Math.max(0, Math.floor(count/50));      // 120 -> 2
-  const four  = Math.max(0, Math.round(count*3/50));    // 120 -> 7
-  const five  = Math.max(0, count - three - four);      // 111
-
-  const ratings = [].concat(Array(three).fill(3), Array(four).fill(4), Array(five).fill(5));
-  shuffle(ratings);
-
-  const lastNames = ['陳','林','張','李','黃','吳','周','楊','許','王','何','蔡','鄭','謝','洪','邱','曾','賴','簡','唐','蕭','蘇','呂','羅','葉','高','潘','朱','劉','鍾'];
-  const given = ['小明','小美','小華','小傑','小婷','雅雯','家豪','怡君','佩珊','冠霖','志浩','宥蓁','柏均','欣怡','泓儒','育廷','哲瑋','書妤','佳穎','冠宇','亭羽','孟庭','宜庭','彥廷','柏妤','冠廷','佳蓉','冠穎','俞安','佳樺','筱筑','冠安','宜君','姿吟','子瑜','柏翰','鈺婷','沛庭','姿妤','家綺','柔安','亭均','育賢','柏諺','昱廷','宸瑜','育萱','佳妤','冠妤','芷榆','柏均','芊妤','奕辰','彥宇','羿廷','家甄','思妤','冠豪','品妤','佳穎','琬庭'];
-
-  const specs = [
-    '椪柑 10台斤 23A','椪柑 10台斤 25A','椪柑 10台斤 27A','椪柑 10台斤 30A',
-    '椪柑 25台斤 23A','椪柑 25台斤 25A','椪柑 25台斤 27A','椪柑 25台斤 30A',
-    '茂谷 10台斤 23A','茂谷 10台斤 25A','茂谷 10台斤 27A','茂谷 10台斤 30A',
-    '茂谷 25台斤 23A','茂谷 25台斤 25A','茂谷 25台斤 27A','茂谷 25台斤 30A'
-  ];
-
-  const text5 = [
-    '超甜多汁，真的好吃到停不下來！','果皮薄好剝，香氣一開箱就衝出來！',
-    '每顆都很漂亮，家人吃了都說讚。','酸甜剛好，連小孩都愛吃～',
-    '品質穩定，第二次回購了。','出貨快、包裝穩，收到都完好。',
-    '新鮮清香，冰過更好吃！','CP 值很高，送禮自用都適合。',
-    '汁多不乾，早餐來一顆剛剛好。','香氣細緻，入口就有陽光的味道。',
-    '產地直送真的有差，口感細緻。','甜度高又不膩，超推！',
-    '盒內分級整齊，看得出很用心。','大顆飽滿，份量十足。','家裡長輩也很喜歡，評價滿分。'
-  ];
-  const text4 = [
-    '整體很甜，少數顆比較酸，但不影響好吃程度。','新鮮好吃，只有一顆有小壓傷，已回購。',
-    '香氣好、果肉細，覺得再熟一點會更完美。','尺寸均勻，包裝扎實，推薦！',
-    '到貨隔天吃更甜，會再買。','甜味突出、酸度清爽，家人喜歡。','物流很快，口感好，一致好評。'
-  ];
-  const text3 = [
-    '口感不錯、香氣自然，當週熟度略酸一點，但整體仍是好吃的！',
-    '還算甜，幾顆酸度較高，不過新鮮度很好～'
-  ];
-
-  const {start,end} = getSeasonRange();
-  const usedNames = new Set();
-  const mkName = ()=>{
-    let n=''; let guard=0;
-    while(!n || usedNames.has(n)){
-      n = randomPick(lastNames) + randomPick(given);
-      if(++guard>500) break;
-    }
-    usedNames.add(n); return n;
-  };
-
-  return ratings.map(star=>{
-    const name = mkName();
-    const date = randomDateBetween(start,end);
-    const spec = randomPick(specs);
-    let text = star===5? randomPick(text5) : (star===4? randomPick(text4) : randomPick(text3));
-    return { name, date, spec, star, text };
-  });
-}
-
 function renderStars(n){
   let s=''; for(let i=1;i<=5;i++){ s += `<span class="star ${i<=n?'':'empty'}">★</span>`; } return s;
+}
+/* 年度產季日期（每年 11 月 ~ 隔年 3 月） */
+function randomSeasonDate(){
+  const now = new Date();
+  const year = now.getMonth()+1 >= 4 ? now.getFullYear() : now.getFullYear()-1; // 4~10月 → 當年11起；1~3月 → 前年11起
+  const start = new Date(year, 10, 1);   // 11/1
+  const end   = new Date(year+1, 2, 31); // 次年 3/31
+  const t = randInt(start.getTime(), end.getTime());
+  const d = new Date(t);
+  const y = d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${da}`;
+}
+/* 產生最少 100 則以上：3★ 約 1/50、4★ 約 3/50、其餘 5★（皆為好評） */
+function genReviews(n=120){
+  const arr=[];
+  for(let i=1;i<=n;i++){
+    let star = 5;
+    const mod = i % 50;
+    if(mod===0){ star=3; }             // 每 50 筆來 1 筆 3星
+    else if([10,30,40].includes(mod)){ star=4; } // 每 50 筆來 3 筆 4星
+    const name = pick(surnames)+pick(given1)+pick(given2);
+    const text = `${pick(goodPhrasesA)}，${pick(goodPhrasesB)}！`;
+    arr.push({ name, star, date: randomSeasonDate(), spec: randomSpec(), text });
+  }
+  return arr;
 }
 function reviewCardHTML(r){
   const av = r.name[0];
@@ -999,7 +987,7 @@ function reviewCardHTML(r){
       <div class="review-row">
         <div class="avatar">${av}</div>
         <div class="r-meta">
-          <div class="r-name">${r.name}</div>
+          <div class="r-name">${maskName(r.name)}</div>
           <div class="r-sub">購買日期：${r.date} ｜ 規格：${r.spec}</div>
         </div>
         <div class="stars" aria-label="${r.star} 星">${renderStars(r.star)}</div>
@@ -1007,10 +995,8 @@ function reviewCardHTML(r){
       <p class="r-text">${r.text}</p>
     </div>`;
 }
-
-/* 建立滾動牆（無限輪播） */
 function buildReviewWall(){
-  const list = genReviews(120); // 可調整數量（>=100）
+  const list = genReviews(120); // >= 100 則
   const track = document.getElementById('reviewTrack');
   track.innerHTML = list.map(reviewCardHTML).join('');
   // 複製一份做無縫循環
@@ -1020,13 +1006,12 @@ function buildReviewWall(){
 
   const container = document.getElementById('reviewTicker');
   let pos = 0;
-  let speed = 0.4; // px/frame
+  let speed = 1.2; // ← 比原先 0.4 快約 3 倍
   let running = true;
 
   function step(){
     if(running){
       pos += speed;
-      // 一半高度（原始清單高度）後重置
       const half = track.scrollHeight / 2;
       if(pos >= half) pos = 0;
       track.style.transform = `translateY(-${pos}px)`;
@@ -1040,15 +1025,18 @@ function buildReviewWall(){
   requestAnimationFrame(step);
 }
 
-/* 初始化 */
+/* ===================== 啟動 ===================== */
 document.getElementById('orderForm').addEventListener('input', saveForm);
+
 let toastTimer=null;
 function showToast(msg){
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  t.textContent = msg;
+  t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
 }
+
 function init(){
   loadOverrides();
   renderAllGrids();
@@ -1058,7 +1046,7 @@ function init(){
   renderCart();
   loadForm();
   updateCvsLink();
-  buildReviewWall(); // ⬅️ 啟動好評牆
+  buildReviewWall(); // 啟動好評牆
 }
 init();
 </script>
