@@ -217,3 +217,27 @@ h1,h2,h3{margin:0 0 8px;line-height:1.25}
   .cart-item{grid-template-columns:48px 1fr auto auto}
   .cart-item img{width:48px;height:48px}
 }
+/* === Cart Mobile Fullscreen & Scroll Lock (drop-in fix) === */
+.panel{ position:fixed; z-index:99; }
+.panel .panel-head{ position:sticky; top:0; z-index:2; }
+.panel .panel-body{
+  flex:1; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+}
+
+/* 桌機維持原尺寸；手機改「覆蓋式全螢幕橘色購物車」 */
+@media (max-width: 820px){
+  .panel.cart{
+    left:0; right:0; top:0; bottom:0;
+    width:100vw; height:100dvh;
+    border-radius:0;
+  }
+}
+
+/* 打開購物車時鎖住背景頁面，避免整頁跟著移動 */
+body.modal-open{
+  position:fixed; width:100%; overflow:hidden;
+}
+
+/* 輸入欄位 16px，避免 iOS 自動放大造成版面位移 */
+input, textarea, select{ font-size:16px; }
