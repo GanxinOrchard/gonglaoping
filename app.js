@@ -1,9 +1,7 @@
-/***** 基本設定 *****/
+/***** 基本設定（保持你的價格與庫存，可自行調整） *****/
 const CONFIG = {
   GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbw2Cd6Zw_aaYBxFKY0CkHXlSDQSHWj5sBwTlBtYMuYbN5HZIuRlCPnok83Jy0TIjmfA/exec",
-  SHIPPING: 160,
-  FREE_SHIP: 1800,
-  BRAND: "柑心果園",
+  SHIPPING: 160, FREE_SHIP: 1800, BRAND: "柑心果園",
   PRICES: {
     PONGAN: { "10台斤": { "23A": 750, "25A": 780, "27A": 820, "30A": 880 } },
     MAOGAO: { "10台斤": { "23A": 720, "25A": 760, "27A": 800, "30A": 860 } }
@@ -17,13 +15,10 @@ const CONFIG = {
   SIZES_CM: { "23A":"約 6.0–6.5 cm", "25A":"約 6.5–7.0 cm", "27A":"約 7.0–7.5 cm", "30A":"約 7.5–8.0 cm" }
 };
 const LS = { cart:'gx_cart', form:'gx_form', ship:'gx_ship', guide:'gx_guide', lp:'gx_lp' };
-
-/***** 小工具 *****/
-const $ = (sel,doc=document)=>doc.querySelector(sel);
-const $$= (sel,doc=document)=>[...doc.querySelectorAll(sel)];
+const $ = (s,d=document)=>d.querySelector(s), $$=(s,d=document)=>[...d.querySelectorAll(s)];
 const cur = n => 'NT$ '+(n||0).toLocaleString('en-US');
 
-/***** 導覽 & Hero 輪播 *****/
+/***** 導覽折疊 *****/
 (() => {
   const btn = $("#menuBtn"), nav = $("#mainNav");
   btn?.addEventListener("click", () => {
@@ -31,88 +26,77 @@ const cur = n => 'NT$ '+(n||0).toLocaleString('en-US');
     nav.style.display = open ? "none" : "flex";
     btn.setAttribute("aria-expanded", String(!open));
   });
-
-  const slides = $$(".hero-slide");
-  let i = 0;
-  function show(n){ slides.forEach((s,idx)=>s.classList.toggle('active', idx===n)); }
-  show(0);
-  setInterval(()=>{ i=(i+1)%slides.length; show(i); }, 6000);
 })();
 
-/***** 評價抽屜 *****/
-$("#praisePill")?.addEventListener("click", ()=> $("#praiseDrawer").classList.add("open"));
-$$("[data-close]").forEach(b=>b.addEventListener("click", e => e.target.closest(".drawer").classList.remove("open")));
+/***** 品牌故事箭頭可滑 *****/
+(() => {
+  const track = $("#storyTrack");
+  const prev = $(".car-prev"), next = $(".car-next");
+  const step = () => Math.min(track.clientWidth, 520);
+  prev.addEventListener("click", ()=> track.scrollBy({left:-step(), behavior:'smooth'}));
+  next.addEventListener("click", ()=> track.scrollBy({left: step(), behavior:'smooth'}));
+})();
+
+/***** 評價抽屜（60 則不重複） *****/
+$("#praisePill").addEventListener("click", ()=>$("#praiseDrawer").classList.add("open"));
+$$("[data-close]").forEach(b=>b.addEventListener("click", e=>e.target.closest(".drawer").classList.remove("open")));
 (function renderReviews(){
-  const list = Array.from({length:30}, (_,k)=>({
-    name: ["陳","林","黃","張","李","王"][k%6]+"○"+(8+k),
-    spec: ["23A","25A","27A","30A"][k%4],
-    text: ["好甜又多汁，家人超愛","冰過更清爽","皮薄好剝，小孩一直拿","果香乾淨不膩"][k%4],
-    date: new Date(Date.now()-k*86400000).toISOString().slice(0,10)
-  }));
+  const names = ["陳","林","黃","張","李","王","吳","周","蔡","楊","許","鄭","謝","洪","郭","曾","蕭","羅","賴","潘","簡","朱","胡","施","顏"];
+  const words = ["果香乾淨","酸甜剛好","冰過更讚","孩子超愛","皮薄好剝","汁多不膩","長輩說好吃","甜度穩定","送禮體面","回購第三年","肉質細嫩","剛剛好的酸"];
+  const list = [];
+  for(let i=0;i<60;i++){
+    const name = names[i%names.length] + ["小姐","先生"][i%2];
+    const spec = ["23A","25A","27A","30A"][i%4];
+    const text = words[(i*3)%words.length] + "，" + words[(i*5+2)%words.length] + "。";
+    const date = new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+    list.push({name,spec,text,date});
+  }
   $("#rvList").innerHTML = list.map(r=>`<div class="rv"><b>🍊 ${r.name}</b>　<span class="muted">${r.date}</span><div class="note">規格 ${r.spec}</div><div>${r.text}</div></div>`).join("");
 })();
 
-/***** 規格籤 & 產品卡 *****/
+/***** 規格 + 產品卡 + 內嵌量表（合併選購指南） *****/
 const SELECTED = { PONGAN:'25A', MAOGAO:'25A' };
-function priceOf(section, weight, size){ return CONFIG.PRICES[section]?.[weight]?.[size] || 0; }
+function score(kind){ return kind==='PONGAN' ? {sweet:4, acid:2, aroma:3} : {sweet:4.5, acid:2.5, aroma:4}; }
+function priceOf(kind, weight, size){ return CONFIG.PRICES[kind]?.[weight]?.[size] || 0; }
+function dot(n,on){ return `<span class="g-dot ${n<=on?'on':''}"></span>`; }
+function scale(v){ const on=Math.round(v); return `<span class="g-dots">${[1,2,3,4,5].map(i=>dot(i,on)).join('')}</span>`; }
 
+function renderMini(kind){
+  const s = score(kind), cm = CONFIG.SIZES_CM[SELECTED[kind]] || "";
+  const html = `
+    <div class="g"><b>甜度</b>${scale(s.sweet)}</div>
+    <div class="g"><b>酸度</b>${scale(s.acid)}</div>
+    <div class="g"><b>香氣</b>${scale(s.aroma)}</div>
+    <div class="g size">尺寸｜${cm}</div>`;
+  (kind==='PONGAN' ? $("#miniP") : $("#miniM")).innerHTML = html;
+}
 function renderSpec(kind){
-  const id = kind==='PONGAN' ? 'specP' : 'specM';
-  const out = $("#"+id);
+  const host = (kind==='PONGAN' ? $("#specP") : $("#specM"));
   const sizes = ["23A","25A","27A","30A"];
-  out.innerHTML = sizes.map(s=>`<button class="${SELECTED[kind]===s?'active':''}" onclick="selectSpec('${kind}','${s}')">${s}</button>`).join("");
-  const cm = CONFIG.SIZES_CM[SELECTED[kind]] || "";
-  const pId = kind==='PONGAN'?'priceP':'priceM';
-  const iId = kind==='PONGAN'?'invP':'invM';
-  const weight = "10台斤";
-  $("#"+pId).textContent = cur(priceOf(kind, weight, SELECTED[kind]));
-  const pid = (kind==='PONGAN'?'PON10-':'MAO10-') + SELECTED[kind];
+  host.innerHTML = sizes.map(s=>`<button class="${SELECTED[kind]===s?'active':''}" onclick="selectSpec('${kind}','${s}')">${s}</button>`).join("");
+  const weight='10台斤'; const pid=(kind==='PONGAN'?'PON10-':'MAO10-')+SELECTED[kind];
   const inv = CONFIG.INVENTORY[pid] || {sold:0,stock:0};
-  $("#"+iId).textContent = `已售 ${inv.sold}｜剩 ${inv.stock} ｜ ${cm}`;
+  (kind==='PONGAN'?$("#priceP"):$("#priceM")).textContent = cur(priceOf(kind,weight,SELECTED[kind]));
+  (kind==='PONGAN'?$("#invP"):$("#invM")).textContent = `已售 ${inv.sold}｜剩 ${inv.stock}｜${CONFIG.SIZES_CM[SELECTED[kind]]}`;
+  renderMini(kind);
   localStorage.setItem(LS.guide, JSON.stringify(SELECTED));
 }
 function selectSpec(kind, s){ SELECTED[kind]=s; renderSpec(kind); }
 renderSpec('PONGAN'); renderSpec('MAOGAO');
 
-/***** 選購指南（沿用：量表＋尺寸同步） *****/
-(function renderGuide(){
-  const box = $("#guideBoard");
-  function line(label, sweet, acid, aroma, size){
-    const dot = n => `<span class="g-dot ${n?'on':''}"></span>`;
-    const scale = v => {
-      const on = Math.round(v);
-      return `<span class="g-dots">${[1,2,3,4,5].map(i=>dot(i<=on)).join('')}</span>`;
-    };
-    return `<div class="g-line"><span class="g-key">${label}</span>
-      <div>甜度 ${scale(sweet)}</div>
-      <div>酸度 ${scale(acid)}</div>
-      <div>香氣 ${scale(aroma)}</div>
-      <div class="g-size">${size}</div>
-    </div>`;
-  }
-  const sp = CONFIG.SIZES_CM[SELECTED.PONGAN];
-  const sm = CONFIG.SIZES_CM[SELECTED.MAOGAO];
-  box.innerHTML = line('椪柑',4,2,3, sp) + line('茂谷',4.5,2.5,4, sm);
-})();
-
-/***** 產季時間軸（小橘子） *****/
-(function renderMonths(){
-  const grid = $("#monthGrid");
-  const items = [
-    {m:10,t:'青皮椪柑',style:'green'},
-    {m:11,t:'椪柑高峰',style:''},
-    {m:12,t:'橙皮始｜茂谷',style:''},
-    {m:1,t:'橙皮穩定',style:''},
-    {m:2,t:'橙皮甜香',style:''},
-    {m:3,t:'橙皮尾聲',style:''},
-    {m:4,t:'儲藏柑',style:'pale'}
-  ];
+/***** 產季時間軸（橫向兩行） *****/
+(function renderTimeline(){
   const nowM = new Date().getMonth()+1;
-  grid.innerHTML = items.map(it=>`
-    <div class="m-card ${it.style} ${it.m===nowM?'active':''}">
-      <div class="orange"><div class="leaf"></div></div>
-      <div class="txt"><b>${it.m} 月</b><div class="muted">${it.t}</div></div>
-    </div>`).join("");
+  const pon = [
+    {m:10, t:'青皮', k:'green'}, {m:11,t:'高峰',k:''},{m:12,t:'橙皮始',k:''},
+    {m:1,t:'穩定',k:''},{m:2,t:'甜香',k:''},{m:3,t:'尾聲',k:''},{m:4,t:'儲藏',k:'pale'}
+  ];
+  const mao = [{m:12,t:'初採',k:''},{m:1,t:'高峰',k:''},{m:2,t:'甜',k:''}];
+  const tpl = it => `<div class="tl-card"><div class="tl-o ${it.k||''}"></div><div class="tl-t"><b>${it.m}月</b><div class="muted">${it.t}</div></div></div>`;
+  $("#tlPon").innerHTML = pon.map(tpl).join("");
+  $("#tlMao").innerHTML = mao.map(tpl).join("");
+  // 略為捲到接近當月
+  const idx = pon.findIndex(x=>x.m===nowM); if(idx>0) $("#tlPon").scrollLeft = Math.max(0, idx-1)*108;
 })();
 
 /***** 購物車 *****/
@@ -129,17 +113,17 @@ function addSelected(kind){
   const existed = cart.find(x=>x.id===id);
   if(existed) existed.qty++;
   else cart.push({id,title,price,qty:1,weight,size,section:kind});
-  saveCart(); renderCart(); openDrawer("#cartDrawer");
-  toast('已加入購物車');
+  saveCart(); renderCart(); openDrawer("#cartDrawer"); toast('已加入購物車');
 }
 
-/* 抽屜控制 */
-$("#cartFab")?.addEventListener("click", ()=>openDrawer("#cartDrawer"));
-$("#queryFab")?.addEventListener("click", ()=>openDrawer("#queryDrawer"));
-function openDrawer(sel){ const el=$(sel); el.classList.add("open"); }
+/* 浮動抽屜 */
+$("#cartFab").addEventListener("click", ()=>openDrawer("#cartDrawer"));
+$("#queryFab").addEventListener("click", ()=>openDrawer("#queryDrawer"));
+function openDrawer(sel){ $(sel).classList.add("open"); }
+function closeCart(){ $("#cartDrawer").classList.remove("open"); }
+function clearCart(){ cart.length=0; saveCart(); renderCart(); }
 $$(".drawer .x").forEach(x=>x.addEventListener("click", e=>e.target.closest(".drawer").classList.remove("open")));
 
-/* 運送方式：宅配/自取 */
 function getShip(){ return localStorage.getItem(LS.ship)||'HOME'; }
 function setShipMethod(m){
   localStorage.setItem(LS.ship, m);
@@ -176,19 +160,14 @@ function renderCart(){
 function chgQty(i,d){ cart[i].qty+=d; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
 renderCart();
 
-/* 表單記憶（避免 iOS 放大：保持 16px） */
+/* 表單記憶 */
 const F = $("#orderForm");
-(function loadForm(){
-  try{ const obj=JSON.parse(localStorage.getItem(LS.form)||'{}');
-    for(const k in obj){ if(F[k]) F[k].value=obj[k]; }
-  }catch{}
-})();
+(function loadForm(){ try{ const obj=JSON.parse(localStorage.getItem(LS.form)||'{}'); for(const k in obj){ if(F[k]) F[k].value=obj[k]; } }catch{} })();
 $$("input,textarea,select", F).forEach(el=>el.addEventListener("input", ()=>{
-  const data = Object.fromEntries(new FormData(F));
-  localStorage.setItem(LS.form, JSON.stringify(data));
+  const data = Object.fromEntries(new FormData(F)); localStorage.setItem(LS.form, JSON.stringify(data));
 }));
 
-/***** 下單與付款（LINE Pay appUrl 優先） *****/
+/***** 下單與付款（LINE Pay：appUrl→webUrl fallback；only success shows toast） *****/
 async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length) return alert('購物車是空的');
@@ -211,56 +190,43 @@ async function submitOrder(ev){
 
   const btn=$("#submitBtn"); btn.disabled=true; btn.textContent='處理中…'; $("#result").textContent='';
   try{
-    // 建立訂單
     const r=await fetch(CONFIG.GAS_ENDPOINT,{method:'POST',body:JSON.stringify(payload)});
     const d=await r.json();
     if(!d.ok) throw new Error(d.msg||'建立訂單失敗');
     const orderNo = d.order_no;
 
-    localStorage.setItem(LS.lp, JSON.stringify({ orderNo, total: payload.summary.total, returnTo: location.href }));
+    // 記錄（供回來後顯示）
+    localStorage.setItem(LS.lp, JSON.stringify({ orderNo, total: payload.summary.total }));
 
     if((fd.get('pay')||'LINEPAY')==='LINEPAY' && d.linepay){
-      // 行動端優先 appUrl
-      const ua = navigator.userAgent.toLowerCase();
+      // 嘗試打開 LINE appUrl，1.2 秒 fallback webUrl
       const appUrl = d.linepay.appUrl || d.linepay.webUrl;
       const webUrl = d.linepay.webUrl || appUrl;
-      const target = /iphone|ipad|android|line/.test(ua) ? appUrl : webUrl;
-      location.replace(target); // 不留下返回堆疊
+      let jumped=false;
+      const t = setTimeout(()=>{ if(!jumped){ jumped=true; location.href = webUrl; } }, 1200);
+      try{ location.href = appUrl; }catch(e){ clearTimeout(t); location.href = webUrl; }
       return;
     }else{
       // 匯款 / 現金
       toast(`訂單已建立（${orderNo}）`);
-      cart.length=0; saveCart(); renderCart();
-      ev.target.reset(); localStorage.removeItem(LS.form);
+      cart.length=0; saveCart(); renderCart(); ev.target.reset(); localStorage.removeItem(LS.form);
     }
   }catch(e){ $("#result").textContent='送出失敗：'+e.message; }
   finally{ btn.disabled=false; btn.textContent='送出訂單'; }
 }
 
-/* LINE Pay 回來後：自動確認＋回到 #shop */
-(async function handleLinePayReturn(){
+/* LINE Pay 返回（僅提示，不自行假設成功） */
+(function handleLinePayReturn(){
   const u = new URL(location.href);
-  const lp = u.searchParams.get('lp');
-  const trans = u.searchParams.get('transactionId');
-  if(lp==='return'){
-    try{
-      const keep = JSON.parse(localStorage.getItem(LS.lp)||'{}');
-      if(keep.orderNo && trans){
-        // 由 GAS doGet 版已處理確認；這裡只提示 & 回到 #shop
-        toast('付款完成，感謝支持！');
-        cart.length=0; saveCart(); renderCart();
-      }
-    }catch{}
-    // 回商品區
-    history.replaceState(null,'',u.pathname+u.hash); // 清掉 query
-    location.hash = '#shop';
-  }else if(lp==='cancel'){
-    toast('您已取消付款，可改用匯款或重新下單');
-    history.replaceState(null,'',u.pathname+u.hash);
+  if (u.searchParams.get('lp') === 'return') {
+    toast('已返回商店頁'); history.replaceState(null,'',u.pathname+u.hash); location.hash='#shop';
+  } else if (u.searchParams.get('lp') === 'cancel') {
+    toast('您已取消付款'); history.replaceState(null,'',u.pathname+u.hash);
   }
 })();
 
 /***** 訂單查詢 *****/
+$("#queryFab").addEventListener("click", ()=>$("#queryDrawer").classList.add("open"));
 async function queryOrder(ev){
   ev.preventDefault();
   const no = new FormData(ev.target).get('orderNo').trim();
@@ -270,8 +236,7 @@ async function queryOrder(ev){
     const d = await r.json();
     if(!d.ok){ card.textContent='查無此訂單'; return; }
     const items=(d.items||[]).map(i=>`${i.title} × ${i.qty}`).join("、")||'—';
-    card.innerHTML = `
-      <div><b>訂單編號：</b>${d.orderNo}</div>
+    card.innerHTML = `<div><b>訂單編號：</b>${d.orderNo}</div>
       <div><b>狀態：</b>${d.shipStatus||'—'}</div>
       <div><b>出貨日期：</b>${fmt(d.shipDate)}</div>
       <div><b>物流單號：</b>${d.trackingNo||'—'}</div>
@@ -281,5 +246,5 @@ async function queryOrder(ev){
 }
 function fmt(v){ if(!v) return '—'; const d=new Date(v); return isNaN(d)? String(v).slice(0,10): d.toISOString().slice(0,10); }
 
-/***** 其他 *****/
+/***** 小工具 *****/
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),1800); }
