@@ -4,397 +4,422 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>柑心果園｜公老坪百年椪柑・東勢茂谷｜品牌直送</title>
-<meta name="description" content="柑心果園：高地日照 × 老欉分級 × 現採直送。椪柑與茂谷，單一 10 台斤多規格。LINE Pay / 匯款，出貨理賠透明。">
+<meta name="description" content="柑心果園：高地日照 × 老欉分級 × 現採直送。椪柑與茂谷，單一 10 台斤分級預購。LINE Pay / 匯款，出貨通知與理賠 SOP 透明。">
 <meta name="format-detection" content="telephone=no">
-<link rel="canonical" href="https://ganxinorchard.github.io/gonglaoping/">
-
-<!-- OG / Twitter -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="柑心果園｜公老坪百年椪柑・東勢茂谷｜品牌直送">
-<meta property="og:description" content="高地日照 × 老欉分級 × 現採直送。單一 10 台斤多規格，LINE Pay / 匯款。">
-<meta property="og:image" content="https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png">
-<meta property="og:url" content="https://ganxinorchard.github.io/gonglaoping/">
-<meta name="twitter:card" content="summary_large_image">
-
-<!-- Favicon（可自行換檔） -->
+<link rel="preconnect" href="https://raw.githubusercontent.com" />
+<link rel="stylesheet" href="styles.css" />
 <link rel="icon" href="https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E6%9F%91%E5%BF%83%E6%9E%9C%E5%9C%92LOGO.png">
-
-<!-- Schema.org -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"Organization",
-  "name":"柑心果園",
-  "url":"https://ganxinorchard.github.io/gonglaoping/",
-  "logo":"https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E6%9F%91%E5%BF%83%E6%9E%9C%E5%9C%92LOGO.png",
-  "sameAs":["https://www.facebook.com/profile.php?id=61581488901343"]
-}
-</script>
-
-<link rel="preload" as="image" href="https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png">
-<link rel="stylesheet" href="./styles.css">
 </head>
-<body id="top">
-
-<!-- 右側浮動購物車（桌機） -->
-<button id="miniCart" class="minicart" onclick="toggleCart(true)" aria-label="開啟購物車">
-  🛒 <span id="miniCartTotal">NT$ 0</span>
-</button>
-
-<!-- 左下 FAB（手機） -->
-<button id="cartFab" class="fab" aria-label="開啟購物車" onclick="toggleCart(true)">
-  🛒 購物車 <span id="fabCount" class="fab-badge">0</span>
-</button>
+<body>
 
 <!-- 置頂導覽 -->
-<nav class="subnav">
-  <div class="wrap nav-inner">
-    <a href="#top" class="brand">
-      <img id="brandLogo" alt="柑心果園 Logo">
-      <span>柑心果園</span>
-    </a>
-
-    <button class="ham" aria-label="開啟選單" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
-    <div class="nav-links">
-      <a href="#story" onclick="go(event,'story')">品牌故事</a>
-      <a href="#why" onclick="go(event,'why')">為什麼好吃</a>
-      <a href="#shop" onclick="go(event,'shop')">選購</a>
-      <a href="#guide" onclick="go(event,'guide')">選購指南</a>
-      <a href="#timeline" onclick="go(event,'timeline')">產季</a>
-      <a href="#flow" onclick="go(event,'flow')">流程</a>
-      <a href="#school" onclick="go(event,'school')">保存/切法</a>
-      <a href="#" onclick="toggleQuery(true)">查訂單</a>
+<header class="topbar">
+  <div class="wrap tb-row">
+    <div class="brand">
+      <img id="brandLogo" alt="柑心果園 Logo" />
+      <span class="brand-name">柑心果園</span>
     </div>
-  </div>
-</nav>
-
-<!-- Hero：全幅圖片＋品牌語 -->
-<header id="hero" class="hero">
-  <img id="heroImg" alt="封面" class="hero-bg">
-  <div class="hero-over">
-    <div class="hero-logo">
-      <img id="heroLogo" alt="柑心果園 Logo">
-    </div>
-    <h1>用心種柑，與你柑心相伴</h1>
-    <p class="hero-sub">高地日照 × 老欉分級 × 現採直送</p>
-    <a class="btn btn-big" href="#shop" onclick="go(event,'shop')">立即預購</a>
+    <button id="hamburger" class="hamburger" aria-label="開啟選單">☰</button>
+    <nav id="mainNav" class="nav">
+      <a href="#shop">選購</a>
+      <a href="#guide">選購指南</a>
+      <a href="#timeline">產季時間軸</a>
+      <a href="#flow">購買流程</a>
+      <a href="#warranty">保固理賠</a>
+      <a href="#story">品牌故事</a>
+      <a href="#closeup">果實近拍</a>
+      <a href="#contact">聯繫</a>
+    </nav>
   </div>
 </header>
 
-<!-- 品牌故事：左右滑動 -->
+<!-- Hero 大圖（純風景，LOGO＋標語＋置中 CTA） -->
+<section class="hero" id="hero" aria-label="封面">
+  <div class="wrap hero-inner">
+    <div class="hero-badge">🍊 在地老欉・現採直送</div>
+    <h1>用心種柑，與你柑心相伴</h1>
+    <p class="hero-sub">公老坪椪柑、東勢茂谷｜單一 10 台斤預購｜付款透明｜到貨理賠清楚</p>
+    <div class="cta">
+      <a class="btn btn-brand btn-lg" href="#shop">立即預購</a>
+    </div>
+  </div>
+</section>
+
+<!-- 側邊小評價（桌機浮動），手機則顯示於 hero 下方 -->
+<aside class="mini-reviews" id="miniReviews" aria-label="買過都說讚"></aside>
+
+<!-- 品牌故事（左右輪播卡片） -->
 <section id="story" class="section">
   <div class="wrap">
-    <div class="sec-head"><h2>品牌故事</h2></div>
-    <div class="story-slider" data-slider>
-      <div class="story-track" id="storyTrack">
-        <article class="story-card">
-          <h3>從公老坪出發</h3>
-          <p>山坡日照、夜涼晨霧，讓糖度與香氣一層一層堆疊。</p>
-        </article>
-        <article class="story-card">
-          <h3>老欉與手感</h3>
-          <p>老欉樹勢穩，採收靠手感分級，每箱都有批次可追溯。</p>
-        </article>
-        <article class="story-card">
-          <h3>現採直送</h3>
-          <p>今天整裝、明天出貨；開箱全程錄影，理賠我們負責。</p>
-        </article>
-      </div>
-      <button class="sbtn left" onclick="slideStory(-1)">‹</button>
-      <button class="sbtn right" onclick="slideStory(1)">›</button>
+    <h2 class="sec-title">品牌故事</h2>
+    <div class="carousel" id="storyCarousel">
+      <article class="story-card">
+        <div class="story-bg" data-img="story1"></div>
+        <div class="story-body">
+          <h3>百年風土，從山風開始</h3>
+          <p>公老坪的日夜溫差，讓糖酸更有層次。老欉樹勢穩，果香乾淨像早晨山霧。</p>
+        </div>
+      </article>
+      <article class="story-card">
+        <div class="story-bg" data-img="story2"></div>
+        <div class="story-body">
+          <h3>只做該做的事</h3>
+          <p>人工採收、逐顆分級；不誇大、不拼裝。你吃到的，和我們家人吃的一樣。</p>
+        </div>
+      </article>
+      <article class="story-card">
+        <div class="story-bg" data-img="story3"></div>
+        <div class="story-body">
+          <h3>把理賠講清楚</h3>
+          <p>全程開箱錄影，24 小時內回報，依比例補寄或退差。怎麼做，我們就怎麼賠。</p>
+        </div>
+      </article>
     </div>
+    <div class="carousel-dots" id="storyDots"></div>
   </div>
 </section>
 
-<!-- 三大信任卡片：滑入動畫 -->
+<!-- 三大信任點（滑到才左右滑入） -->
 <section id="why" class="section">
-  <div class="wrap kpis">
-    <div class="kpi card slide-l">
-      <h3>⛰️ 高地日照</h3>
-      <p>日夜溫差大、糖度累積穩，果香乾淨。</p>
-    </div>
-    <div class="kpi card slide-r">
-      <h3>🪵 老欉分級</h3>
-      <p>手工採收逐顆挑，批次穩定不踩雷。</p>
-    </div>
-    <div class="kpi card slide-l">
-      <h3>🚚 新鮮直送</h3>
-      <p>當日整裝、隔日出貨；理賠透明。</p>
-    </div>
-  </div>
-</section>
-
-<!-- 果實近拍：1:1 卡片輪播（手機單張、圖片不圓角） -->
-<section id="gallery" class="section">
-  <div class="wrap">
-    <div class="sec-head"><h2>果實近拍</h2></div>
-    <div class="sq-slider" data-slider>
-      <div id="sqTrack" class="sq-track">
-        <figure class="sq-card"><img id="sq1" alt="切瓣近拍"></figure>
-        <figure class="sq-card"><img id="sq2" alt="整顆與尺寸"></figure>
-        <figure class="sq-card"><img id="sq3" alt="裝箱實拍"></figure>
+  <div class="wrap kpi-grid">
+    <div class="kpi-card from-left">
+      <div class="kpi-ico">⛰️</div>
+      <div class="kpi-body">
+        <h3>高地日照</h3>
+        <p>日夜溫差大、糖度累積穩，果香乾淨。</p>
       </div>
-      <button class="sbtn left" onclick="slideSq(-1)">‹</button>
-      <button class="sbtn right" onclick="slideSq(1)">›</button>
+    </div>
+    <div class="kpi-card from-right">
+      <div class="kpi-ico">🪵</div>
+      <div class="kpi-body">
+        <h3>老欉分級</h3>
+        <p>手工採收逐顆挑，批次穩定不踩雷。</p>
+      </div>
+    </div>
+    <div class="kpi-card from-left">
+      <div class="kpi-ico">🚚</div>
+      <div class="kpi-body">
+        <h3>新鮮直送</h3>
+        <p>當日整裝、隔日出貨；理賠透明。</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- 選購：兩張品種卡，CTA 滿版，價格＋庫存併排 -->
+<!-- 選購：每種品種一張卡（保留甘心量表方式＋新增尺寸列） -->
 <section id="shop" class="section">
   <div class="wrap grid-2">
+
     <!-- 椪柑 -->
-    <article class="var card">
-      <div class="var-media">
-        <img id="imgPongan" alt="椪柑" class="cover">
+    <article class="variety card">
+      <div class="media">
+        <img id="img-pongan" alt="椪柑" />
+        <span class="ribbon">預購中</span>
       </div>
-      <div class="var-body">
-        <h2 class="var-title">公老坪椪柑</h2>
-        <p class="var-desc">皮薄好剝、酸甜平衡、果香乾淨。</p>
-
-        <div id="specPongan" class="spec-rail"></div>
-
-        <div class="var-meta">
-          <div class="var-price"><span>價格</span> <b id="pricePongan">—</b></div>
-          <div class="var-stock"><span>動態</span> <b id="stockPongan">—</b></div>
+      <div class="body">
+        <h2 class="card-title">公老坪椪柑</h2>
+        <div class="badges">
+          <span class="badge">皮薄好剝</span>
+          <span class="badge">酸甜平衡</span>
+          <span class="badge">果香乾淨</span>
         </div>
 
-        <button class="btn btn-full" onclick="addSelected('PONGAN')">立即預購</button>
+        <!-- 甘心量表（沿用原方式）-->
+        <div class="scale-row">
+          <span>甜度</span><span class="dots" data-on="4"></span>
+          <span>酸度</span><span class="dots" data-on="2"></span>
+          <span>香氣</span><span class="dots" data-on="3"></span>
+          <span>尺寸</span><span class="size-dot" id="size-pongan">—</span>
+        </div>
+
+        <!-- 規格 -->
+        <div id="spec-pongan" class="spec-rail"></div>
+
+        <!-- 價格＋售量 -->
+        <div id="price-pongan" class="price-row"></div>
+
+        <!-- CTA -->
+        <button class="btn btn-brand btn-full" onclick="addSelected('PONGAN')">立即預購</button>
+
+        <!-- 簡述 -->
+        <p class="note">食用：直接手剝；冷藏更清爽。產季：10–12 月青皮、12–4 月橙皮（儲藏）。</p>
       </div>
     </article>
 
     <!-- 茂谷 -->
-    <article class="var card">
-      <div class="var-media">
-        <img id="imgMaogao" alt="茂谷柑" class="cover">
+    <article class="variety card">
+      <div class="media">
+        <img id="img-maogao" alt="茂谷柑" />
+        <span class="ribbon">預購中</span>
       </div>
-      <div class="var-body">
-        <h2 class="var-title">東勢茂谷</h2>
-        <p class="var-desc">皮薄多汁、細嫩口感、色澤橙亮。</p>
-
-        <div id="specMaogao" class="spec-rail"></div>
-
-        <div class="var-meta">
-          <div class="var-price"><span>價格</span> <b id="priceMaogao">—</b></div>
-          <div class="var-stock"><span>動態</span> <b id="stockMaogao">—</b></div>
+      <div class="body">
+        <h2 class="card-title">東勢茂谷</h2>
+        <div class="badges">
+          <span class="badge">皮薄多汁</span>
+          <span class="badge">細嫩口感</span>
+          <span class="badge">色澤橙亮</span>
         </div>
 
-        <button class="btn btn-full" onclick="addSelected('MAOGAO')">立即預購</button>
+        <div class="scale-row">
+          <span>甜度</span><span class="dots" data-on="5"></span>
+          <span>酸度</span><span class="dots" data-on="3"></span>
+          <span>香氣</span><span class="dots" data-on="4"></span>
+          <span>尺寸</span><span class="size-dot" id="size-maogao">—</span>
+        </div>
+
+        <div id="spec-maogao" class="spec-rail"></div>
+        <div id="price-maogao" class="price-row"></div>
+        <button class="btn btn-brand btn-full" onclick="addSelected('MAOGAO')">立即預購</button>
+        <p class="note">切法：水果刀 4 刀→6 塊；或自蒂頭輕剝。細嫩、爆汁、香甜。</p>
       </div>
     </article>
+
   </div>
 </section>
 
-<!-- 選購指南：回到你的原樣式（三列圓點）＋ 尺寸一列 -->
+<!-- 果實近拍（1:1 大圖卡片式輪播） -->
+<section id="closeup" class="section">
+  <div class="wrap">
+    <h2 class="sec-title">果實近拍</h2>
+    <div class="closeup rail gallery-1x1" id="closeupGallery">
+      <img data-src="close1" alt="切瓣近拍" />
+      <img data-src="close2" alt="整顆尺寸對比" />
+      <img data-src="close3" alt="果肉出汁" />
+      <img data-src="close4" alt="裝箱實拍" />
+    </div>
+  </div>
+</section>
+
+<!-- 選購指南（保持簡潔、有設計感） -->
 <section id="guide" class="section">
   <div class="wrap">
-    <div class="sec-head"><h2>選購指南</h2></div>
-    <div class="card guide-simple">
-      <div class="meter-block">
-        <h3>椪柑｜甘心量表</h3>
-        <div class="og-srow"><span>甜度</span><div id="og-p-sweet" class="dots"></div><span id="og-p-sweet-txt" class="og-txt">—</span></div>
-        <div class="og-srow"><span>酸度</span><div id="og-p-acid" class="dots"></div><span id="og-p-acid-txt" class="og-txt">—</span></div>
-        <div class="og-srow"><span>香氣</span><div id="og-p-aroma" class="dots"></div><span id="og-p-aroma-txt" class="og-txt">—</span></div>
-        <div class="og-srow"><span>尺寸</span><div class="dots d-none"></div><span class="og-txt" id="og-size-p">23A 7.4–7.8cm｜25A 7.8–8.2｜27A 8.2–8.6｜30A 8.6–9.2</span></div>
+    <h2 class="sec-title">選購指南</h2>
+    <div class="guide-grid">
+      <div class="card guide-card">
+        <h3>口感關鍵詞</h3>
+        <p class="muted">椪柑：脆、多汁、清爽｜茂谷：細嫩、爆汁、香甜</p>
       </div>
-      <div class="meter-block">
-        <h3>茂谷｜甘心量表</h3>
-        <div class="og-srow"><span>甜度</span><div id="og-m-sweet" class="dots"></div><span id="og-m-sweet-txt" class="og-txt">—</span></div>
-        <div class="og-srow"><span>酸度</span><div id="og-m-acid" class="dots"></div><span id="og-m-acid-txt" class="og-txt">—</span></div>
-        <div class="og-srow"><span>香氣</span><div id="og-m-aroma" class="dots"></div><span id="og-m-aroma-txt" class="og-txt">—</span></div>
-        <div class="og-srow"><span>尺寸</span><div class="dots d-none"></div><span class="og-txt" id="og-size-m">23A 7.4–7.8cm｜25A 7.8–8.2｜27A 8.2–8.6｜30A 8.6–9.2</span></div>
+      <div class="card guide-card">
+        <h3>適合族群</h3>
+        <ul>
+          <li>長輩：椪柑 27A / 30A（好剝、香氣溫和）</li>
+          <li>孩子：茂谷 25A（細嫩多汁、不易噎）</li>
+          <li>送禮：椪柑 25A（穩定不踩雷）</li>
+        </ul>
+      </div>
+      <div class="card guide-card">
+        <h3>尺寸參考（直徑 cm）</h3>
+        <p class="muted" id="sizeLegend">23A：約 8.6–9.0｜25A：約 8.1–8.5｜27A：約 7.6–8.0｜30A：約 7.0–7.5（可自行調整）</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 產季時間軸：回到 7 格小卡，放大月份 -->
+<!-- 產季時間軸（沿用方式但字變大） -->
 <section id="timeline" class="section">
   <div class="wrap">
-    <div class="sec-head"><h2>產季時間軸</h2></div>
-    <div class="card" style="padding:16px">
-      <div class="timeline-grid">
-        <div class="tl-month"><b>10</b><div class="muted">青皮椪柑</div></div>
-        <div class="tl-month"><b>11</b><div class="muted">椪柑高峰</div></div>
-        <div class="tl-month"><b>12</b><div class="muted">橙皮始／茂谷</div></div>
-        <div class="tl-month"><b>1</b><div class="muted">橙皮穩定</div></div>
-        <div class="tl-month"><b>2</b><div class="muted">橙皮甜香</div></div>
-        <div class="tl-month"><b>3</b><div class="muted">橙皮尾聲</div></div>
-        <div class="tl-month"><b>4</b><div class="muted">儲藏柑</div></div>
+    <h2 class="sec-title">產季時間軸</h2>
+    <div class="timeline">
+      <div class="month"><b>10</b><div class="muted">青皮椪柑</div></div>
+      <div class="month"><b>11</b><div class="muted">椪柑高峰</div></div>
+      <div class="month"><b>12</b><div class="muted">橙皮始｜茂谷</div></div>
+      <div class="month"><b>1</b><div class="muted">橙皮穩定</div></div>
+      <div class="month"><b>2</b><div class="muted">橙皮甜香</div></div>
+      <div class="month"><b>3</b><div class="muted">橙皮尾聲</div></div>
+      <div class="month"><b>4</b><div class="muted">儲藏柑</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 購買流程（上方小圓鈕，點了展開原卡片） -->
+<section id="flow" class="section">
+  <div class="wrap">
+    <h2 class="sec-title">購買流程（預購制）</h2>
+    <div class="flow-dots">
+      <button class="flow-dot on" aria-label="下單預購">1</button>
+      <button class="flow-dot" aria-label="現採分級">2</button>
+      <button class="flow-dot" aria-label="出貨通知">3</button>
+      <button class="flow-dot" aria-label="到貨開箱">4</button>
+    </div>
+    <div class="flow-cards">
+      <div class="card flow-card">
+        <h3>1. 下單預購</h3>
+        <p class="muted">選規格加入購物車，填資料，選 LINE Pay 或匯款。</p>
+      </div>
+      <div class="card flow-card" style="display:none">
+        <h3>2. 現採分級裝箱</h3>
+        <p class="muted">依成熟度與等級上架，堅持手工分級。</p>
+      </div>
+      <div class="card flow-card" style="display:none">
+        <h3>3. 出貨通知</h3>
+        <p class="muted">簡訊 / Email 通知出貨與追蹤碼。</p>
+      </div>
+      <div class="card flow-card" style="display:none">
+        <h3>4. 到貨開箱</h3>
+        <p class="muted">請全程錄影保障理賠，冷藏更清甜。</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 購買流程：圓形步驟鍵＋展開卡 -->
-<section id="flow" class="section">
+<!-- 保固與理賠（友善版） -->
+<section id="warranty" class="section">
   <div class="wrap">
-    <div class="sec-head"><h2>購買流程</h2></div>
-    <div class="flow-dots">
-      <button class="dot on" data-step="1" onclick="openStep(1)">1</button>
-      <button class="dot" data-step="2" onclick="openStep(2)">2</button>
-      <button class="dot" data-step="3" onclick="openStep(3)">3</button>
-      <button class="dot" data-step="4" onclick="openStep(4)">4</button>
-    </div>
-    <div id="flowCards" class="grid-2">
-      <article class="card flow-card show" data-card="1"><h3>1. 下單預購</h3><p>選規格加入購物車，填資料，付款選 LINE Pay / 匯款。</p></article>
-      <article class="card flow-card" data-card="2"><h3>2. 現採分級裝箱</h3><p>依成熟度與等級上架，堅持手工分級。</p></article>
-      <article class="card flow-card" data-card="3"><h3>3. 出貨通知</h3><p>簡訊 / Email / LINE 通知出貨與追蹤碼。</p></article>
-      <article class="card flow-card" data-card="4"><h3>4. 到貨開箱</h3><p>請全程錄影保障理賠；冷藏更清甜。</p></article>
+    <h2 class="sec-title">保固與理賠（我們站在你這邊）</h2>
+    <div class="card policy">
+      <ul>
+        <li><b>時效：</b>到貨 24 小時內，私訊訂單編號＋開箱全程錄影與損傷照片。</li>
+        <li><b>範圍：</b>嚴重破損、腐敗、發酵異味等非人為保存不當之情形。</li>
+        <li><b>處理：</b>依比例補寄或退差額（扣實際運費）；整件退回不提供。</li>
+        <li><b>透明：</b>我們會與物流、果園一起改善，讓下一箱更好。</li>
+      </ul>
+      <p class="muted">生鮮依《消保法》第 19 條但書不適用 7 日無條件退貨；裝箱為產地分級，甜度/大小有自然區間。</p>
     </div>
   </div>
 </section>
 
-<!-- 保存 / 切法 -->
-<section id="school" class="section">
-  <div class="wrap">
-    <div class="sec-head"><h2>保存與切法</h2></div>
-    <div class="grid-2">
-      <article class="card content">
-        <h3>保存</h3>
-        <ul>
-          <li>冷藏：到貨後盡量冷藏，風味更穩定。</li>
-          <li>通風陰涼：常溫請避開日照與悶熱。</li>
-        </ul>
-      </article>
-      <article class="card content">
-        <h3>切法</h3>
-        <ul>
-          <li>茂谷：沿果蒂放射 4 刀 → 6 塊。</li>
-          <li>小香橘：整顆輕按後剝，汁水不亂飛。</li>
-          <li>椪柑：直接手剝，冰過更清爽。</li>
-        </ul>
-      </article>
-    </div>
-  </div>
-</section>
+<!-- 浮動購物車 FAB -->
+<button id="cartFab" class="fab">🛒 購物車 <span id="fabCount" class="fab-badge">0</span></button>
 
-<!-- 訂單查詢抽屜 -->
-<aside id="queryDrawer" class="drawer" aria-hidden="true">
-  <header>
-    <strong>訂單查詢</strong>
-    <button class="btn" onclick="toggleQuery(false)">關閉</button>
-  </header>
-  <main>
-    <form id="queryForm" onsubmit="queryOrder(event)" class="form">
-      <div class="label">訂單編號</div>
-      <input class="input" name="orderNo" placeholder="例：K24-20251008-1234" required>
-      <button class="btn" type="submit" style="margin-top:8px">查詢</button>
-    </form>
-    <div class="line"></div>
-    <div id="queryCard" class="card content" style="display:none"></div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button id="printBtn" class="btn-ghost" onclick="window.print()" style="display:none">列印 / 存 PDF</button>
-    </div>
-  </main>
-</aside>
-
-<!-- 購物車抽屜（只留宅配；LINE Pay 綠色樣式） -->
+<!-- 購物車抽屜（背景改為柔橘） -->
 <aside id="cartDrawer" class="drawer" aria-hidden="true">
   <header>
     <strong>購物車</strong>
-    <button class="btn" onclick="toggleCart(false)">關閉</button>
+    <button class="btn btn-ghost" id="closeCart">關閉</button>
   </header>
   <main>
     <div id="cartList"></div>
-
     <div class="line"></div>
 
     <div class="summary">
-      <div class="row2">
-        <span>商品小計</span><strong id="subtotal">$0</strong>
-      </div>
-      <div class="row2">
-        <span>運費（宅配）</span><strong id="shipping">$0</strong>
-      </div>
+      <div class="row"><span>商品小計</span><strong id="subtotal">$0</strong></div>
+      <div class="row"><span>運費（宅配）</span><strong id="shipping">$0</strong></div>
       <div class="line"></div>
-      <div class="row2 big">
-        <span>應付金額</span><strong id="total">$0</strong>
-      </div>
-      <div class="note">宅配滿 <b id="freeShipText">NT$ 0</b> 免運。</div>
+      <div class="row total"><span>應付金額</span><strong id="total">$0</strong></div>
+      <div class="note">宅配滿 <b id="freeShipText">0</b> 免運。</div>
     </div>
 
     <div class="line"></div>
 
-    <form id="orderForm" class="form" onsubmit="submitOrder(event)">
-      <div class="row row-2">
-        <div><div class="label">姓名</div><input class="input" name="name" required></div>
-        <div><div class="label">手機</div><input class="input" name="phone" required></div>
+    <form id="orderForm" class="form">
+      <div class="row2">
+        <div>
+          <div class="label">姓名</div>
+          <input class="input" name="name" placeholder="例：陳小橘" required>
+        </div>
+        <div>
+          <div class="label">手機</div>
+          <input class="input" name="phone" placeholder="例：0912-345-678" required>
+        </div>
       </div>
-      <div><div class="label">Email（寄送出貨通知）</div><input type="email" class="input" name="email" required></div>
 
-      <div class="label">收件地址（宅配）</div>
-      <input class="input" name="addr" placeholder="例：台中市○○區○○路 123 號 5 樓" required>
-
-      <div class="label" style="margin-top:8px">付款方式</div>
-      <div class="pay-opts">
-        <label class="pay-pill linepay on">
-          <input type="radio" name="pay" value="LINEPAY" checked> <span class="mark">LINE Pay</span>
-        </label>
-        <label class="pay-pill bank">
-          <input type="radio" name="pay" value="BANK"> <span class="mark">匯款</span>
-        </label>
+      <div class="row2">
+        <div>
+          <div class="label">Email（寄送出貨通知）</div>
+          <input class="input" type="email" name="email" placeholder="orange@example.com" required>
+        </div>
+        <div>
+          <div class="label">物流方式</div>
+          <input class="input" value="宅配" disabled>
+          <div class="note">本版僅提供宅配，免除超取限制。</div>
+        </div>
       </div>
-      <div id="payHint" class="pay-hint linepay">以 <b>LINE Pay</b> 安全付款。</div>
 
-      <div class="label" style="margin-top:8px">備註</div>
-      <textarea class="input" name="remark" rows="3" placeholder="例：平日 18:00 後收件"></textarea>
+      <div>
+        <div class="label">收件地址</div>
+        <input class="input" name="addr" placeholder="例：台中市○○區○○路 123 號 5 樓" required>
+      </div>
+
+      <div>
+        <div class="label">付款方式</div>
+        <div class="pay-opts">
+          <label class="pay-pill">
+            <input type="radio" name="pay" value="LINEPAY" checked>
+            <span class="lp-badge">LINE&nbsp;PAY</span>
+          </label>
+          <label class="pay-pill">
+            <input type="radio" name="pay" value="BANK">
+            <span>匯款</span>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <div class="label">備註（到貨時段等）</div>
+        <textarea class="input" name="remark" rows="3" placeholder="例：平日 18:00 後收件"></textarea>
+      </div>
 
       <div class="line"></div>
 
       <div class="label">物流與退貨說明</div>
-      <details id="policy" class="card content smallscroll">
-        <summary><b>請展開閱讀（需捲到最底才可勾選同意）</b></summary>
-        <ul>
-          <li>付款成功後 1–3 個工作天內出貨（週末與節慶量大時順延）。</li>
-          <li>宅配：新竹貨運（常溫）。到貨請「全程開箱錄影」。若有運損，<b>24 小時內提供影片與照片</b>。</li>
-          <li>水果為天然農產，表皮不完美屬正常；批次甜度略有差異。</li>
-          <li>生鮮依法不適用 7 日猶豫期；自然果斑、糖瓤、甜度落差不列為退換。</li>
-          <li>怎麼做、就怎麼賠：資料齊全我們一定處理。</li>
-        </ul>
+      <details id="policy" class="card policy-box">
+        <summary>請展開閱讀（捲到底可勾選同意）</summary>
+        <div class="content">
+          <ul>
+            <li>付款成功後 1–3 個工作天內出貨（週末/節慶量大順延）。</li>
+            <li>宅配：新竹貨運（常溫）。到貨請「全程開箱錄影」；<b>24 小時內提供影片與照片</b>，我們協助理賠。</li>
+            <li>水果為天然農產，表皮難以完美無瑕；批次甜度略有差異。</li>
+            <li>生鮮依法不適用 7 日猶豫期；自然果斑、糖瓤、甜度落差不列為退換。</li>
+          </ul>
+        </div>
       </details>
-      <label class="agree"><input type="checkbox" id="agree" disabled> 我已閱讀並同意</label>
+      <label class="agree">
+        <input type="checkbox" id="agree" disabled>
+        我已詳閱並同意上述說明
+      </label>
 
-      <button id="submitBtn" class="btn btn-full" type="submit">送出訂單</button>
+      <button id="submitBtn" class="btn btn-brand btn-full" type="submit">送出訂單</button>
       <div id="result" class="note" style="margin-top:8px"></div>
     </form>
   </main>
 </aside>
 
-<!-- Footer：簡潔，公司訊息＋回頂部 -->
-<footer class="footer">
+<!-- 訂單查詢（精簡） -->
+<aside id="queryDrawer" class="drawer" aria-hidden="true">
+  <header>
+    <strong>訂單查詢</strong>
+    <button class="btn btn-ghost" onclick="toggleQuery(false)">關閉</button>
+  </header>
+  <main>
+    <form id="queryForm" class="form">
+      <div class="label">訂單編號</div>
+      <input class="input" name="orderNo" placeholder="例：K24-20251008-1234" required>
+      <button class="btn btn-brand" type="submit" style="margin-top:8px">查詢</button>
+    </form>
+    <div class="line"></div>
+    <div id="queryCard" class="card" style="display:none; padding:14px"></div>
+  </main>
+</aside>
+
+<!-- 回頂按鈕（置於頁尾導欄） -->
+<footer id="contact" class="footer">
   <div class="wrap">
-    <div class="foot-brand">
-      <img id="footLogo" alt="柑心果園 Logo">
-      <div>
-        <b>柑心果園</b>
-        <div class="muted">在地老園・可追溯批次・現採直送</div>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img id="footLogo" alt="柑心果園 Logo" />
+        <p><b>柑心果園</b><br>在地老園｜現採直送｜可追溯批次</p>
+      </div>
+      <div class="foot-info">
+        <p>地址：台中市石岡區石岡街61號</p>
+        <p>電話：0933-721-978</p>
+        <p>Facebook：<a href="https://www.facebook.com/profile.php?id=61581488901343" target="_blank" rel="noopener">粉專連結</a></p>
+      </div>
+      <div class="foot-nav">
+        <a class="btn btn-ghost" id="backToTop" href="#">回到頂部 ↑</a>
       </div>
     </div>
-    <div class="foot-cols">
-      <div>
-        <div class="muted">地址</div>
-        <div>台中市石岡區石岡街61號</div>
-      </div>
-      <div>
-        <div class="muted">聯絡</div>
-        <div>0933-721-978</div>
-      </div>
-      <div>
-        <div class="muted">Facebook</div>
-        <a href="https://www.facebook.com/profile.php?id=61581488901343" target="_blank" rel="noopener">前往粉專</a>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span class="muted">© 柑心果園</span>
-      <a class="btn-ghost small" href="#top" onclick="go(event,'top')">回到頂部 ↑</a>
-    </div>
+    <div class="copy muted">© 柑心果園｜公老坪椪柑・東勢茂谷</div>
   </div>
 </footer>
 
-<!-- 訂單完成／提示 -->
+<!-- 側邊「買過都說讚」橘籤（桌機固定、手機在 hero 下方） -->
+<aside id="sidePraise" class="side-praise" aria-hidden="true">
+  <div class="praise-track" id="praiseTrack"></div>
+</aside>
+
+<!-- Toast -->
 <div id="toast" class="toast" aria-live="polite"></div>
 
-<script src="./app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
