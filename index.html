@@ -10,21 +10,24 @@
 </head>
 <body>
 
-  <!-- 置頂小評價（半透明＋慢速→hover 暫停） -->
-  <div class="top-reviews" aria-label="真實好評跑馬燈">
-    <div id="rvTicker" class="top-reviews-track"></div>
-  </div>
+  <!-- 左側：好評浮動小部件（手機縮成圓鈕） -->
+  <aside class="reviews-float" aria-label="真實好評">
+    <button class="rv-toggle" aria-label="開關好評" title="真實好評">★</button>
+    <div class="rv-panel">
+      <div id="rvFloatTrack" class="rvv-track"></div>
+    </div>
+  </aside>
 
-  <!-- Hero -->
-  <header id="hero" class="hero" data-anim="zoom" role="banner" aria-label="柑心果園品牌橫幅">
-    <div class="hero-inner wrap">
-      <div class="brand-badge">🍊 在地老欉・現採直送</div>
-      <h1>柑心果園｜用心種柑，與你柑心相伴</h1>
-      <p>公老坪椪柑、東勢茂谷。單一 10 台斤，甜度穩、風味正。LINE Pay / 匯款，出貨理賠透明。</p>
-      <div class="cta">
-        <a class="btn" href="#shop" onclick="go(event,'shop')">立即預購</a>
-        <a class="btn-ghost" href="#guide" onclick="go(event,'guide')">看甘心量表</a>
-      </div>
+  <!-- Hero：全幅風景圖 + 單一 CTA -->
+  <header id="hero" class="hero">
+    <picture class="hero-media">
+      <!-- 你可以換檔名，系統自動轉 RAW -->
+      <img id="heroImg" alt="果園風景" />
+    </picture>
+    <div class="hero-cta">
+      <h1>柑心果園</h1>
+      <p>公老坪椪柑・東勢茂谷｜現採直送</p>
+      <a class="btn hero-btn" href="#shop" onclick="go(event,'shop')">立即預購</a>
     </div>
   </header>
 
@@ -41,24 +44,25 @@
     </div>
   </nav>
 
-  <!-- 選購：品種卡（產品圖） -->
+  <!-- 選購：產品卡 + 果實近拍卡 -->
   <section id="shop" class="section">
     <div class="wrap grid grid-2">
 
-      <!-- 椪柑產品卡 -->
-      <article class="variety card theme-orange" aria-label="公老坪椪柑產品卡">
-        <div class="media">
-          <span class="ribbon">預購中</span>
-          <img id="img-pongan" alt="椪柑 10 斤產品圖" loading="eager" />
-        </div>
+      <!-- 椪柑 -->
+      <article class="variety card theme-orange" aria-label="公老坪椪柑">
+        <div class="media"><span class="ribbon">預購中</span><img id="img-pongan" alt="椪柑 10 斤" loading="eager" /></div>
         <div class="body">
-          <h2>公老坪椪柑</h2>
-          <p class="muted">皮薄好剝、酸甜平衡、果香乾淨。手剝即食，冰過更清爽。</p>
+          <h2 class="title-slab">公老坪椪柑</h2>
+          <ul class="bullets">
+            <li>皮薄好剝、酸甜平衡</li>
+            <li>果香乾淨不膩口</li>
+            <li>手剝即食，冰過更清爽</li>
+          </ul>
           <div class="scale">
             <span>甘心量表：</span>
-            <span class="dots" aria-label="甜度 4"><i></i><i></i><i></i><i></i><i class="off"></i></span>
-            <span class="dots" aria-label="酸度 2"><i></i><i></i><i class="off"></i><i class="off"></i><i class="off"></i></span>
-            <span class="dots" aria-label="香氣 3"><i></i><i></i><i></i><i class="off"></i><i class="off"></i></span>
+            <span class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></span>
+            <span class="dots"><i></i><i></i><i class="off"></i><i class="off"></i><i class="off"></i></span>
+            <span class="dots"><i></i><i></i><i></i><i class="off"></i><i class="off"></i></span>
           </div>
           <div class="spec-rail" id="spec-pongan"></div>
           <div class="price" id="price-pongan">—</div>
@@ -70,20 +74,21 @@
         </div>
       </article>
 
-      <!-- 茂谷產品卡 -->
-      <article class="variety card theme-green" aria-label="東勢茂谷產品卡">
-        <div class="media">
-          <span class="ribbon">預購中</span>
-          <img id="img-maogao" alt="茂谷 10 斤產品圖" loading="lazy" />
-        </div>
+      <!-- 茂谷 -->
+      <article class="variety card theme-green" aria-label="東勢茂谷">
+        <div class="media"><span class="ribbon">預購中</span><img id="img-maogao" alt="茂谷 10 斤" loading="lazy" /></div>
         <div class="body">
-          <h2>東勢茂谷</h2>
-          <p class="muted">皮薄多汁、細嫩口感、色澤橙亮。4 刀切 6 塊，好分食不流汁。</p>
+          <h2 class="title-slab">東勢茂谷</h2>
+          <ul class="bullets">
+            <li>皮薄爆汁、細嫩好口感</li>
+            <li>4 刀 → 6 塊，好分食不流汁</li>
+            <li>色澤橙亮、香甜度高</li>
+          </ul>
           <div class="scale">
             <span>甘心量表：</span>
-            <span class="dots" aria-label="甜度 4.5"><i></i><i></i><i></i><i></i><i class="half"></i></span>
-            <span class="dots" aria-label="酸度 2.5"><i></i><i></i><i class="half"></i><i class="off"></i><i class="off"></i></span>
-            <span class="dots" aria-label="香氣 4"><i></i><i></i><i></i><i></i><i class="off"></i></span>
+            <span class="dots"><i></i><i></i><i></i><i></i><i class="half"></i></span>
+            <span class="dots"><i></i><i></i><i class="half"></i><i class="off"></i><i class="off"></i></span>
+            <span class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></span>
           </div>
           <div class="spec-rail" id="spec-maogao"></div>
           <div class="price" id="price-maogao">—</div>
@@ -95,39 +100,43 @@
         </div>
       </article>
 
-      <!-- 新：果實近拍卡（你提供的果實圖） -->
-      <article class="variety card theme-cream" aria-label="果實近拍與尺寸對比">
+      <!-- 果實近拍卡 -->
+      <article class="variety card theme-cream">
         <div class="media media-gallery">
           <div class="gallery">
-            <img id="img-fruit-pongan" alt="椪柑果實近拍" loading="lazy" />
-            <img id="img-fruit-maogao" alt="茂谷果實近拍" loading="lazy" />
+            <img id="img-fruit-pongan" alt="椪柑近拍" loading="lazy" />
+            <img id="img-fruit-maogao" alt="茂谷近拍" loading="lazy" />
           </div>
         </div>
         <div class="body">
-          <h2>果實近拍｜尺寸對比</h2>
-          <ul class="bullets">
-            <li>切瓣近拍看質地</li>
-            <li>整顆＋手部/硬幣對比</li>
-            <li>果肉出汁短片（下滑可看）</li>
-            <li>裝箱實拍，真實包裝</li>
-          </ul>
-          <div class="note">圖片可在 <code>CONFIG.IMAGES</code> 一鍵替換（貼 GitHub 檔案頁網址即可）。</div>
+          <h2 class="title-slab">果實近拍 & 尺寸對比</h2>
+          <p class="muted">切瓣近拍｜整顆＋手/硬幣對比｜果肉出汁短片｜裝箱實拍</p>
         </div>
       </article>
 
     </div>
   </section>
 
-  <!-- 選購指南（互動卡） -->
+  <!-- 選購指南（品種＋規格對應量表） -->
   <section id="guide" class="section">
     <div class="wrap">
-      <div class="card guide">
+      <div class="guide card">
         <div class="guide-header">
-          <h2>選購指南</h2>
-          <div class="guide-switch" role="tablist" aria-label="切換品種">
-            <button class="pill active" data-kind="PONGAN" aria-selected="true">椪柑</button>
-            <button class="pill" data-kind="MAOGAO" aria-selected="false">茂谷</button>
+          <div class="guide-title">
+            <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="12" fill="#f59e0b"/></svg>
+            <h2>選購指南・甘心量表</h2>
           </div>
+          <div class="guide-switch" role="tablist">
+            <button class="pill active" data-kind="PONGAN">椪柑</button>
+            <button class="pill" data-kind="MAOGAO">茂谷</button>
+          </div>
+        </div>
+
+        <div class="size-switch" role="tablist">
+          <button class="pill sm active" data-size="23A">23A</button>
+          <button class="pill sm" data-size="25A">25A</button>
+          <button class="pill sm" data-size="27A">27A</button>
+          <button class="pill sm" data-size="30A">30A</button>
         </div>
 
         <div class="guide-body">
@@ -136,28 +145,19 @@
             <div class="gauge-row"><span>酸度</span><div class="bar"><i></i></div></div>
             <div class="gauge-row"><span>香氣</span><div class="bar"><i></i></div></div>
           </div>
-          <div class="chips">
-            <span class="chip-lg">脆</span>
-            <span class="chip-lg">多汁</span>
-            <span class="chip-lg">細嫩</span>
-          </div>
-          <div class="audience">
-            <div class="aud-card"><b>長輩</b><span>椪柑 27A/30A</span></div>
-            <div class="aud-card"><b>孩子</b><span>茂谷 25A</span></div>
-            <div class="aud-card"><b>送禮</b><span>椪柑 25A</span></div>
-          </div>
+          <div class="chips" id="chipHost"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 產季時間軸（SVG＋🍊滾動） -->
+  <!-- 產季時間軸 -->
   <section id="timeline" class="section">
     <div class="wrap">
       <div class="card timeline-card">
-        <h2>產季時間軸</h2>
+        <h2 class="title-slab">產季時間軸</h2>
         <div class="timeline-wrap">
-          <svg class="timeline-svg" viewBox="0 0 1200 140" aria-label="10月至4月產季時間軸">
+          <svg class="timeline-svg" viewBox="0 0 1200 160" aria-label="10月至4月產季時間軸">
             <defs>
               <linearGradient id="grad" x1="0" x2="1" y1="0" y2="0">
                 <stop offset="0%" stop-color="#f59e0b"/>
@@ -167,22 +167,20 @@
                 <feGaussianBlur stdDeviation="8"/>
               </filter>
             </defs>
-            <rect x="40" y="64" width="1120" height="8" rx="4" fill="url(#grad)" />
-            <!-- 月份節點 -->
-            <g class="ticks" fill="#111">
-              <g transform="translate(80,105)"><text>10 月</text></g>
-              <g transform="translate(240,105)"><text>11 月</text></g>
-              <g transform="translate(400,105)"><text>12 月</text></g>
-              <g transform="translate(560,105)"><text>1 月</text></g>
-              <g transform="translate(720,105)"><text>2 月</text></g>
-              <g transform="translate(880,105)"><text>3 月</text></g>
-              <g transform="translate(1040,105)"><text>4 月</text></g>
+            <rect x="40" y="70" width="1120" height="10" rx="6" fill="url(#grad)" />
+            <g class="ticks" font-size="18" font-weight="800" fill="#111">
+              <g transform="translate(80,120)"><text>10 月</text></g>
+              <g transform="translate(240,120)"><text>11 月</text></g>
+              <g transform="translate(400,120)"><text>12 月</text></g>
+              <g transform="translate(560,120)"><text>1 月</text></g>
+              <g transform="translate(720,120)"><text>2 月</text></g>
+              <g transform="translate(880,120)"><text>3 月</text></g>
+              <g transform="translate(1040,120)"><text>4 月</text></g>
             </g>
-            <!-- 橘子（動畫） -->
-            <g class="orange" transform="translate(40,60)">
-              <circle r="18" fill="#f59e0b" />
-              <circle r="18" fill="#f59e0b" filter="url(#soft)" opacity=".35"/>
-              <path d="M -4 -22 q 10 -8 20 0" fill="#84cc16"/>
+            <g class="orange" transform="translate(40,70)">
+              <circle r="20" fill="#f59e0b" />
+              <circle r="20" fill="#f59e0b" filter="url(#soft)" opacity=".35"/>
+              <path d="M -5 -25 q 12 -8 24 0" fill="#84cc16"/>
             </g>
           </svg>
           <div class="legend">
@@ -195,80 +193,118 @@
     </div>
   </section>
 
-  <!-- 購買流程（圖示卡） -->
+  <!-- 購買流程（新樣式） -->
   <section id="flow" class="section">
     <div class="wrap grid grid-4 flow-grid">
       <div class="flow card">
+        <div class="step-num">1</div>
         <div class="ico-cart"></div>
-        <h3>1. 下單預購</h3>
-        <p class="muted">選規格加入購物車，付款方式選 LINE Pay 或匯款。</p>
+        <h3>下單預購</h3>
+        <p class="muted">選規格加入購物車，LINE Pay / 匯款。</p>
       </div>
       <div class="flow card">
+        <div class="step-num">2</div>
         <div class="ico-pick"></div>
-        <h3>2. 現採分級</h3>
-        <p class="muted">依成熟度與等級上架，堅持手工分級。</p>
+        <h3>現採分級</h3>
+        <p class="muted">依成熟度上架，手工分級裝箱。</p>
       </div>
       <div class="flow card">
+        <div class="step-num">3</div>
         <div class="ico-truck"></div>
-        <h3>3. 出貨通知</h3>
-        <p class="muted">簡訊 / Email / LINE 通知出貨與追蹤碼。</p>
+        <h3>出貨通知</h3>
+        <p class="muted">簡訊 / Email / LINE 追蹤碼。</p>
       </div>
       <div class="flow card">
+        <div class="step-num">4</div>
         <div class="ico-camera"></div>
-        <h3>4. 到貨開箱</h3>
-        <p class="muted">請全程錄影保障理賠，冷藏更清甜。</p>
+        <h3>到貨開箱</h3>
+        <p class="muted">全程錄影保障理賠，冷藏更清甜。</p>
       </div>
     </div>
   </section>
 
-  <!-- 保存 & 切法（圖示＋步驟卡） -->
+  <!-- 保存 & 切法（含插畫） -->
   <section id="school" class="section">
     <div class="wrap grid grid-2">
       <div class="card teach">
-        <h2>保存方式</h2>
+        <h2 class="title-slab">保存方式</h2>
         <div class="steps">
           <div class="step">
-            <div class="ico-fridge"></div>
+            <div class="svg-box">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="10" y="6" width="44" height="52" rx="6" fill="#93c5fd"/>
+                <rect x="15" y="14" width="34" height="36" rx="4" fill="#dbeafe"/>
+              </svg>
+            </div>
             <div><b>冷藏保存</b><p class="muted">到貨後盡量冷藏，風味更穩定。</p></div>
           </div>
           <div class="step">
-            <div class="ico-wind"></div>
+            <div class="svg-box">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="20" cy="32" r="10" fill="#7dd3fc"/><path d="M40 22c8 6 8 14 0 20" stroke="#0ea5e9" stroke-width="6" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
             <div><b>通風陰涼</b><p class="muted">常溫請避開日照與悶熱。</p></div>
           </div>
         </div>
       </div>
       <div class="card teach">
-        <h2>切法小教室</h2>
+        <h2 class="title-slab">切法小教室</h2>
         <div class="steps">
           <div class="step">
-            <div class="ico-knife"></div>
-            <div><b>茂谷 4 刀 → 6 塊</b><p class="muted">沿果蒂放射切，乾淨好分食。</p></div>
+            <div class="svg-box">
+              <!-- 4 刀 → 6 塊 橘瓣 -->
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="32" cy="32" r="22" fill="#f59e0b"/><!-- 橘子 -->
+                <g fill="#fde68a">
+                  <path d="M32 10 A22 22 0 0 1 52 32 L32 32Z"/>
+                  <path d="M52 32 A22 22 0 0 1 32 54 L32 32Z"/>
+                  <path d="M32 54 A22 22 0 0 1 12 32 L32 32Z"/>
+                  <path d="M12 32 A22 22 0 0 1 32 10 L32 32Z"/>
+                  <path d="M42 16 A22 22 0 0 1 48 26 L32 32Z"/>
+                  <path d="M16 42 A22 22 0 0 1 26 48 L32 32Z"/>
+                </g>
+              </svg>
+            </div>
+            <div><b>茂谷 4 刀 → 6 塊</b><p class="muted">沿果蒂放射切，乾淨不流汁。</p></div>
           </div>
           <div class="step">
-            <div class="ico-peel"></div>
-            <div><b>椪柑</b><p class="muted">直接手剝；冰過更清爽。</p></div>
+            <div class="svg-box">
+              <!-- 手剝圖案 -->
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="38" cy="28" r="14" fill="#f59e0b"/>
+                <path d="M12 46c8-6 18-6 26 0" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <circle cx="38" cy="28" r="6" fill="#fde68a"/>
+              </svg>
+            </div>
+            <div><b>椪柑手剝</b><p class="muted">直接剝食；冰過更清爽。</p></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 友善版：保固與理賠 -->
+  <!-- 友善版：保固與理賠（新排版） -->
   <section id="warranty" class="section">
-    <div class="wrap card content">
-      <h2>保固與理賠（我們站在你這邊）</h2>
-      <ul>
-        <li><b>時效：</b>到貨 24 小時內，私訊訂單編號＋開箱全程錄影與損傷照片。</li>
-        <li><b>範圍：</b>嚴重破損、腐敗、發酵異味等非人為保存不當之情形。</li>
-        <li><b>處理：</b>視比例補寄或退差額（扣實際運費）；整件退回不提供。</li>
-        <li><b>透明：</b>我們會與物流、果園一起改善，讓下一箱更好。</li>
-      </ul>
-      <p class="muted">生鮮依《消保法》第 19 條但書不適用 7 日無條件退貨；裝箱為產地分級，甜度/大小有自然區間。</p>
+    <div class="wrap">
+      <div class="wty card">
+        <div class="wty-aside"></div>
+        <div class="wty-body">
+          <h2 class="title-slab">保固與理賠｜怎麼做就怎麼賠</h2>
+          <div class="wty-grid">
+            <div class="wty-item"><b>時效</b><p>到貨 24 小時內，私訊訂單編號＋開箱全程錄影與損傷照片。</p></div>
+            <div class="wty-item"><b>範圍</b><p>嚴重破損、腐敗、發酵異味等非人為保存不當之情形。</p></div>
+            <div class="wty-item"><b>處理</b><p>視比例補寄或退差額（扣實際運費）；整件退回不提供。</p></div>
+            <div class="wty-item"><b>透明</b><p>我們與物流、果園持續改善，讓下一箱更好。</p></div>
+          </div>
+          <p class="muted">生鮮依《消保法》第19條但書不適用 7 日無條件退貨；產地分級下甜度/大小有自然區間。</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 購物車抽屜（只留宅配） -->
-  <aside id="cartDrawer" class="drawer" aria-hidden="true" aria-modal="true" role="dialog">
+  <!-- 購物車抽屜（橘色系） -->
+  <aside id="cartDrawer" class="drawer drawer-orange" aria-hidden="true" aria-modal="true" role="dialog">
     <header>
       <strong>購物車</strong>
       <div class="row-inline">
@@ -279,12 +315,12 @@
     <main>
       <div id="cartList" class="cart-list"></div>
 
-      <div class="summary">
+      <div class="summary glass">
         <div class="row-sum"><span>商品小計</span><strong id="subtotal">$0</strong></div>
-        <div class="row-sum"><span id="shipLabel">運費（宅配）</span><strong id="shipping">$0</strong></div>
+        <div class="row-sum"><span>運費（宅配）</span><strong id="shipping">$0</strong></div>
         <div class="line"></div>
         <div class="row-sum total"><span>應付金額</span><strong id="total">$0</strong></div>
-        <div class="note">宅配滿 <b id="freeShipText">0</b> 免運。</div>
+        <div class="note">滿 <b id="freeShipText">0</b> 免運</div>
       </div>
 
       <form id="orderForm" class="form" onsubmit="submitOrder(event)">
@@ -292,34 +328,30 @@
           <label>姓名<input class="input" name="name" placeholder="例：陳小橘" required></label>
           <label>手機<input class="input" name="phone" placeholder="例：0912-345-678" required></label>
         </div>
-
         <div class="row row-2">
-          <label>Email（寄送出貨通知）<input class="input" type="email" name="email" placeholder="orange@example.com" required></label>
-          <label>收件地址（宅配）<input class="input" name="addr" placeholder="例：台中市○○區○○路 123 號 5 樓" required></label>
+          <label>Email<input class="input" type="email" name="email" placeholder="orange@example.com" required></label>
+          <label>收件地址<input class="input" name="addr" placeholder="台中市○○區○○路 123 號 5 樓" required></label>
         </div>
 
-        <!-- 付款方式 -->
         <div class="summary paybox">
           <div class="label"><b>付款方式</b></div>
           <div class="pay-opts">
-            <label class="pay-pill"><input type="radio" name="pay" value="LINEPAY" checked><span class="pay-line">LINE Pay</span></label>
-            <label class="pay-pill"><input type="radio" name="pay" value="BANK"><span class="pay-bank">匯款</span></label>
+            <label class="pay-pill line"><input type="radio" name="pay" value="LINEPAY" checked><span>LINE Pay</span></label>
+            <label class="pay-pill bank"><input type="radio" name="pay" value="BANK"><span>匯款</span></label>
           </div>
-          <div class="note">選「匯款」時，送出訂單後會顯示帳戶資料與步驟。</div>
+          <div class="note">選「匯款」：送出後顯示帳號與步驟。</div>
         </div>
 
         <!-- 條款 -->
-        <div class="label">物流與退貨說明</div>
         <details id="policy" class="policy">
-          <summary><b>請展開閱讀（需捲到底才可勾選同意）</b></summary>
+          <summary><b>物流與退貨說明（需捲到底勾選）</b></summary>
           <div class="policy-body">
             <ul>
-              <li>付款成功後 1–3 個工作天內出貨（旺季順延）。</li>
-              <li>宅配：新竹貨運（常溫）。到貨請「全程開箱錄影」，<b>24 小時內提供影片與照片</b>，協助理賠。</li>
-              <li>水果為天然農產，表皮不完美屬正常；批次甜度略有差異。</li>
-              <li>生鮮不適用 7 日無條件退貨；自然果斑、糖瓤等不列為退換。</li>
+              <li>付款後 1–3 個工作天出貨（旺季順延）。</li>
+              <li>宅配：新竹貨運（常溫）。到貨請全程開箱錄影。</li>
+              <li>天然農產表皮不完美；批次甜度略有差異。</li>
+              <li>生鮮不適用 7 日無條件退貨。</li>
             </ul>
-            <p class="note">把規則說清楚，理賠就能做到位：<b>怎麼做，我們就怎麼賠</b>。</p>
           </div>
         </details>
         <label class="agree"><input type="checkbox" id="agree" disabled> 我已詳閱並同意</label>
@@ -347,15 +379,14 @@
     </main>
   </aside>
 
-  <!-- 固定角落購物車（可愛橘子圓鈕） -->
+  <!-- 固定角落購物車 -->
   <button id="cartFab" class="cart-fab" aria-label="開啟購物車" onclick="toggleCart(true)">
     <span class="orange-dot">🍊</span><span>購物車</span><span id="fabCount" class="fab-badge">0</span>
   </button>
 
-  <!-- 低調的管理工具連結（不浮動） -->
   <footer class="footer">
     <div class="wrap">
-      <div class="muted">© 柑心果園｜公老坪椪柑・東勢茂谷｜台中市石岡區石岡街61號｜聯絡：0933-721-978</div>
+      <div class="muted">© 柑心果園｜台中市石岡區石岡街61號｜0933-721-978</div>
       <details class="admin-link">
         <summary>管理工具（RAW 轉換器）</summary>
         <div id="adminBody" class="admin-body"></div>
@@ -363,9 +394,7 @@
     </div>
   </footer>
 
-  <!-- Toast -->
   <div id="toast" class="toast" aria-live="polite"></div>
-
   <script defer src="./app.js"></script>
 </body>
 </html>
