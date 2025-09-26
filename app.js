@@ -1,4 +1,8 @@
-/* ===== 柑心果園 app.js ===== */
+/* =========================
+   柑心果園 app.js
+   互動 / 購物車 / 導覽 / LINE Pay / 輪播 / 量表
+   ========================= */
+
 const CONFIG = {
   BRAND: "柑心果園",
   GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbzT7yzMZXqjpJq_AvbcCKUrZaH3-N74YoRdsj3c4V2gfhD5Rbdnf3oucVvnextsrbhu/exec",
@@ -52,7 +56,7 @@ const VARIETIES = {
   }
 };
 
-// 常見尺寸直徑參考（可自行調整文字）
+// 參考：A 值（圓周公分）對應常見直徑範圍（推算）——批次/產地略有差異
 const SIZE_DIAMETER_CM = {
   "23A": "直徑約 6–7.5 cm",
   "25A": "直徑約 7–8 cm",
@@ -67,26 +71,35 @@ function raw(u){return !u?u:(u.includes('raw.githubusercontent.com')?u:u.replace
 const currency = n => "NT$ " + (n||0).toLocaleString();
 function $(sel, root=document){return root.querySelector(sel)}
 function $all(sel, root=document){return Array.from(root.querySelectorAll(sel))}
-function goScroll(e){e.preventDefault();const id=e.currentTarget.getAttribute('href').replace('#','');const el=document.getElementById(id);const y=el.getBoundingClientRect().top+window.scrollY-68;window.scrollTo({top:y,behavior:'smooth'})}
+function goScroll(e){
+  e.preventDefault();
+  const id = e.currentTarget.getAttribute('href').replace('#','');
+  const el = document.getElementById(id);
+  const y = el.getBoundingClientRect().top + window.scrollY - 68;
+  window.scrollTo({top:y,behavior:'smooth'});
+}
 
-/* ===== nav ===== */
+/* ===== nav actions ===== */
 $all('[data-scroll]').forEach(a=>a.addEventListener('click', goScroll));
-$('#btnCart')?.addEventListener('click', ()=>toggleCart(true));
+$('#btnQuery')?.addEventListener('click', ()=>toggleQuery(true));
 $('#btnAdmin')?.addEventListener('click', ()=>toggleAdmin(true));
+$('#btnCart')?.addEventListener('click', ()=>toggleCart(true));
 
-/* ===== init ===== */
+/* ===== Hero image ===== */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Hero 圖片已由 CSS :root 變數控制；產品卡固定 10斤圖
+  // hero 背景已在 inline style 設 var(--hero)
+  // 產品卡圖統一用 10斤產品圖
   $('#img-pongan').src = CONFIG.IMAGES.GENERIC10;
   $('#img-maogao').src = CONFIG.IMAGES.GENERIC10;
 
-  // Guide 預覽
+  // Guide 預覽填入水果近拍
   $('#g-preview').src = VARIETIES.PONGAN.preview();
 
-  // Gallery
+  // Gallery 預設
   $('#gal1').src = VARIETIES.PONGAN.preview();
-  $('#gal2').src = VARIETIES.MAOGAO.FRUIT || VARIETIES.MAOGAO.preview();
-  const v = $('#gal3'); v.src = CONFIG.IMAGES.VIDEO1; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
+  $('#gal2').src = VARIETIES.MAOGAO.preview();
+  const v = $('#gal3');
+  v.src = CONFIG.IMAGES.VIDEO1; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
   $('#gal4').src = CONFIG.IMAGES.GENERIC10;
 
   initSpecUI();
@@ -119,19 +132,25 @@ function initSpecUI(){
 function updateVarietyCard(kind){
   const conf = VARIETIES[kind];
   const size = SELECTED[kind];
+  // 打開樣式
   $all(`#spec-${kind.toLowerCase()} .spec`).forEach(b=>b.classList.toggle('on', b.dataset.size===size));
+  // 價格
   const price = CONFIG.PRICES[conf.section][conf.weight][size] || 0;
   $(`#price-${kind.toLowerCase()}`).textContent = currency(price);
+  // 庫存
   const pid = conf.id(size);
   const inv = CONFIG.INVENTORY[pid] || {sold:0,stock:0};
   $(`#inv-${kind.toLowerCase()}`).textContent = `已售出 ${inv.sold}　剩餘 ${inv.stock} 箱`;
+  // 尺寸
   $(`#sizecm-${kind.toLowerCase()}`).textContent = SIZE_DIAMETER_CM[size] || '';
+  // 甘心量表
   renderScale(`#scale-${kind.toLowerCase()}`, adjScale(conf.baseScale, size));
-  // 若指南目前預覽此品種，連動
+  // 同步到 Guide 預覽（若目前預覽的是此品種）
   if($('.guide-tabs .tab.on')?.dataset.preview===kind){ setGuideState(kind, size); }
 }
 
 function adjScale(base, size){
+  // 大果普遍成熟度較高，甜 +0.2；小果酸度略高，酸 +0.2（僅視覺參考）
   const s = {...base};
   if(size==="30A"){ s.sweet = Math.min(5, s.sweet + 0.2); s.acid = Math.max(1, s.acid - 0.1); }
   if(size==="23A"){ s.acid = Math.min(5, s.acid + 0.2); }
@@ -152,6 +171,7 @@ function renderScale(rootSel, scale){
 
 /* ===== Guide (interactive) ===== */
 function initGuideUI(){
+  // tabs
   const tabs = $all('.guide-tabs .tab');
   tabs.forEach(b=>b.addEventListener('click', ()=>{
     tabs.forEach(t=>t.classList.remove('on'));
@@ -159,15 +179,17 @@ function initGuideUI(){
     const kind = b.dataset.preview;
     setGuideState(kind, SELECTED[kind]);
   }));
+  // default = PONGAN
   tabs[0].classList.add('on');
   setGuideState('PONGAN', SELECTED['PONGAN']);
 
+  // quick size chips
   $all('.quick-sizes .chip').forEach(c=>{
     c.addEventListener('click', ()=>{
       const size = c.dataset.size;
       const kind = $('.guide-tabs .tab.on').dataset.preview;
       SELECTED[kind] = size;
-      updateVarietyCard(kind);
+      updateVarietyCard(kind);  // 也會刷新 guide
     });
   });
 }
@@ -181,11 +203,15 @@ function setGuideState(kind,size){
   $('#g-sweet-txt').textContent = textFor("甜度", adjScale(conf.baseScale, size).sweet);
   $('#g-acid-txt').textContent  = textFor("酸度", adjScale(conf.baseScale, size).acid);
   $('#g-aroma-txt').textContent = textFor("香氣", adjScale(conf.baseScale, size).aroma);
+  // mouthfeel + people
   $('#g-mouthfeel').innerHTML = conf.mouthfeel.map(t=>`<span class="chip">${t}</span>`).join('');
   $('#g-people').innerHTML = conf.people.map(t=>`<span class="chip">${t}</span>`).join('');
+  // size
   $('#g-sizecm').textContent = SIZE_DIAMETER_CM[size] || '—';
 }
-function fillDots(sel,val){ $(sel).innerHTML = Array.from({length:5}).map((_,i)=>`<span class="dot ${i<Math.round(val)?'on':''}"></span>`).join(''); }
+function fillDots(sel,val){
+  $(sel).innerHTML = Array.from({length:5}).map((_,i)=>`<span class="dot ${i<Math.round(val)?'on':''}"></span>`).join('');
+}
 function textFor(k,val){
   return k==="甜度" ? (val>=4.5?"濃甜":val>=4?"清甜":"微甜")
        : k==="酸度" ? (val<=2?"柔和":val<=3?"清新":"偏酸")
@@ -193,7 +219,10 @@ function textFor(k,val){
 }
 
 /* ===== Carousels ===== */
-function initCarousels(){ makeCarousel('#tipsTrack'); makeCarousel('#galTrack'); }
+function initCarousels(){
+  makeCarousel('#tipsTrack');
+  makeCarousel('#galTrack');
+}
 function makeCarousel(trackSel){
   const root = document.querySelector(trackSel);
   const wrap = root.parentElement;
@@ -204,23 +233,30 @@ function makeCarousel(trackSel){
   next?.addEventListener('click',()=> root.scrollBy({left: step(),behavior:'smooth'}));
 }
 
-/* ===== Flipbook ===== */
-function initFlipbook(){ /* scroll-snap 提供翻頁感 */ }
+/* ===== Flipbook (scroll-snap 已提供翻頁感) ===== */
+function initFlipbook(){ /* 無需額外 JS */ }
 
-/* ===== Reviews rail（小圓點五星、側邊緩速） ===== */
+/* ===== Reviews rail ===== */
 function initReviewsRail(){
   const namesLast = "陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
   const given = ["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","郁","妤","柔","軒","瑜","嘉","卉","容","翔","修","均","凱"];
-  const c5 = ["清甜多汁","香氣乾淨","回購第三次","皮薄好剝","冰過更好吃","送禮體面","甜度穩定","孩子超愛"];
-  const track = $('#rvTicker'); const rows=[];
+  const c5 = ["清甜多汁","香氣乾淨","回購第三次","皮薄好剝","冰過更好吃","送禮很體面","甜度穩定","孩子超愛"];
+  const track = $('#rvTicker');
+  const rows = [];
   for(let i=0;i<24;i++){
     const n = mask(randPick(namesLast)+randPick(given)+randPick(given));
     const t = randPick(c5);
-    rows.push(`<div class="rail-item"><div>🍊</div><div><b>${n}</b>：${t}<div class="rail-stars"><i></i><i></i><i></i><i></i><i></i></div></div></div>`);
+    rows.push(`<div class="rail-item"><div>🍊</div><div><b>${n}</b>：${t}<div class="rail-stars">★★★★★</div></div></div>`);
   }
   track.innerHTML = rows.join('') + rows.join('');
-  let pos=0; const single = track.scrollHeight/2;
-  function tick(){ pos += 0.35; if(pos>=single) pos=0; track.style.transform = `translateY(${-pos}px)`; requestAnimationFrame(tick); }
+  // 平滑滾動
+  let pos = 0; const single = track.scrollHeight/2;
+  function tick(){
+    pos += 0.35; // 速度微調（比原版慢，且側邊較小）
+    if(pos >= single) pos = 0;
+    track.style.transform = `translateY(${-pos}px)`;
+    requestAnimationFrame(tick);
+  }
   requestAnimationFrame(tick);
 }
 function mask(s){ return s.length<=2 ? s[0]+"○" : s[0]+"○".repeat(s.length-2)+s[s.length-1] }
@@ -324,7 +360,7 @@ async function submitOrder(ev){
   btn.disabled = true; btn.textContent = '處理中…'; res.textContent='';
 
   try{
-    // 建立訂單（沿用你的 GAS）
+    // 建立訂單
     const r1 = await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
     const d1 = await r1.json();
     if(!d1.ok) throw new Error(d1.msg||'建立訂單失敗');
@@ -351,7 +387,7 @@ async function submitOrder(ev){
 }
 
 async function goLinePay(orderNo, amount, items){
-  // 後端（GAS）持有 ChannelId/Secret，前端不曝光
+  // 交由 GAS 寫入 ChannelId/Secret 與 confirm 流程
   const body = { orderNo, amount, currency: CONFIG.CURRENCY, items };
   const r = await fetch(CONFIG.GAS_ENDPOINT + '?action=linepay_request', { method:'POST', body: JSON.stringify(body) });
   const d = await r.json();
@@ -391,11 +427,12 @@ $('#queryForm')?.addEventListener('submit', async (ev)=>{
   try{
     const r = await fetch(CONFIG.GAS_ENDPOINT + '?orderNo=' + encodeURIComponent(no));
     const data = await r.json();
-    const dateOnly = v => {
-      if(!v) return '—';
-      const d = new Date(v); return isNaN(d)? String(v).split(/[ T]/)[0] : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    };
     if(data.ok){
+      const dateOnly = v => {
+        if(!v) return '—';
+        const d = new Date(v);
+        return isNaN(d) ? String(v).split(/[ T]/)[0] : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      };
       const items = Array.isArray(data.items)? data.items.map(i=>`${i.title} × ${i.qty}`).join('、') : '—';
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
@@ -418,7 +455,7 @@ $('#queryForm')?.addEventListener('submit', async (ev)=>{
   }
 });
 
-/* ===== Policy enable（要捲到底） ===== */
+/* ===== Policy enable (must scroll to bottom) ===== */
 function initPolicy(){
   const det = $('#policy'); const agree = $('#agree');
   const enableIfBottom = ()=>{
@@ -427,10 +464,14 @@ function initPolicy(){
     if(sc >= need) agree.disabled = false;
   };
   det.addEventListener('scroll', enableIfBottom, {passive:true});
+  // 若使用者點「我已閱讀」但還沒開啟
   $('.agree input')?.addEventListener('click', (e)=>{ if(agree.disabled){ e.preventDefault(); det.open = true; det.scrollIntoView({behavior:'smooth',block:'center'}); }});
   loadForm();
 }
 
 /* ===== Toast ===== */
 let __toastTimer=null;
-function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(__toastTimer); __toastTimer = setTimeout(()=>t.classList.remove('show'), 1800); }
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(__toastTimer); __toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+}
