@@ -1,5 +1,5 @@
 /*****************
- * 設定
+ * 設定（換圖只改這裡）
  *****************/
 const CONFIG = {
   BRAND_TAG: "柑心果園",
@@ -28,14 +28,16 @@ const CONFIG = {
   }
 };
 
-// 商品
+/*****************
+ * 商品 / 指南
+ *****************/
 const PRODUCTS = {
   PONGAN: { section:'PONGAN', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(size)=>`PON10-${size}`, title:"椪柑" },
   MAOGAO: { section:'MAOGAO', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(size)=>`MAO10-${size}`, title:"茂谷" }
 };
 const SELECTED = { PONGAN:'25A', MAOGAO:'25A' };
 
-// 指南量表（品種×規格）
+// 品種×規格 → 量表與關鍵詞
 const GUIDE_META = {
   PONGAN: {
     "23A": { sweet:3.9, sour:2.3, aroma:3.0, chips:['脆','多汁','清爽'] },
@@ -45,28 +47,28 @@ const GUIDE_META = {
   },
   MAOGAO: {
     "23A": { sweet:4.2, sour:2.7, aroma:3.6, chips:['細嫩','爆汁','清香'] },
-    "25A": { sweet:4.4, sour:2.5, aroma:3.8, chips:['細嫩','爆汁','香甜'] },
-    "27A": { sweet:4.5, sour:2.3, aroma:4.0, chips:['細嫩','爆汁','香濃'] },
-    "30A": { sweet:4.6, sour:2.2, aroma:4.1, chips:['柔嫩','爆汁','香濃'] }
+    "25A": { sweet:4.4, sour:2.5, aroma:3.8, chips:['柔嫩','爆汁','香甜'] },
+    "27A": { sweet:4.5, sour:2.3, aroma:4.0, chips:['柔嫩','爆汁','香濃'] },
+    "30A": { sweet:4.6, sour:2.2, aroma:4.1, chips:['極嫩','爆汁','濃香'] }
   }
 };
 
 /*****************
- * 小工具
+ * 工具
  *****************/
 function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
 const currency = n => "NT$ "+(n||0).toLocaleString();
 const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size] ?? 0;
 function statusOf(id){ return CONFIG.STATUS[id] || 'normal'; }
-function go(e,id){ if(e) e.preventDefault(); const el=document.getElementById(id); if(!el) return; const navH=document.querySelector('.subnav')?.offsetHeight||0; const y=el.getBoundingClientRect().top+scrollY-navH-6; scrollTo({top:y,behavior:'smooth'}); }
+function go(e,id){ if(e) e.preventDefault(); const el=document.getElementById(id); if(!el) return; const navH=document.querySelector('.subnav.top')?.offsetHeight||0; const y=el.getBoundingClientRect().top+scrollY-navH-6; scrollTo({top:y,behavior:'smooth'}); }
 
 /*****************
- * Hero 圖片
+ * Hero
  *****************/
 function mountHero(){ document.getElementById('heroImg').src = CONFIG.IMAGES.HERO; }
 
 /*****************
- * 規格籤、價格、庫存
+ * 規格籤 / 價格 / 庫存
  *****************/
 function renderSpecChips(kind){
   const conf=PRODUCTS[kind]; const rail=document.getElementById('spec-'+kind.toLowerCase());
@@ -84,7 +86,7 @@ const LS = { cart:'gx_cart', form:'gx_form' };
 const cart = (()=>{ try{ const s=localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; } })();
 function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),1800); }
-function toggleCart(open){ const d=document.getElementById('cartDrawer'); d.classList.toggle('open', !!open); if(open){ d.querySelector('header button.btn')?.focus(); document.addEventListener('keydown',escCloseCart); } else { document.removeEventListener('keydown',escCloseCart); } }
+function toggleCart(open){ const d=document.getElementById('cartDrawer'); d.classList.toggle('open', !!open); if(open){ document.addEventListener('keydown',escCloseCart); } else { document.removeEventListener('keydown',escCloseCart); } }
 function escCloseCart(e){ if(e.key==='Escape') toggleCart(false); }
 function toggleQuery(open){ document.getElementById('queryDrawer').classList.toggle('open', !!open); }
 function bumpFab(){ const f=document.getElementById('cartFab'); f.style.transform='scale(1.05)'; setTimeout(()=>f.style.transform='',180); }
@@ -170,7 +172,6 @@ async function submitOrder(ev){
     const orderNo=d.order_no;
 
     if(pay==='LINEPAY'){
-      // LINE Pay 走 GAS
       const req={ orderNo, amount:payload.summary.total, currency:CONFIG.PAY.currency, items:payload.items };
       const r2=await fetch(CONFIG.GAS_ENDPOINT+'?action=linepay_request',{ method:'POST', body: JSON.stringify(req) });
       const d2=await r2.json();
@@ -263,7 +264,7 @@ async function queryOrder(ev){
 }
 
 /*****************
- * 好評浮動：左側小輪播
+ * 好評：小圓點五星輪播（更舒適）
  *****************/
 function maskName(name){ const s=String(name||'').trim(); if(s.length<=2) return s[0]+'○'; return s[0]+'○'.repeat(s.length-2)+s[s.length-1]; }
 function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
@@ -276,13 +277,12 @@ function genFloatReviews(n=40){
   for(let i=0;i<n;i++){ arr.push({ name:maskName(randPick(last)+randPick(given)+randPick(given)), spec:`10台斤｜${randPick(sizes)}`, date:seasonalDate(), txt:randPick(txt) }); }
   return arr;
 }
+function starDots(){ return `<span class="rvv-stars"><i></i><i></i><i></i><i></i><i></i></span>`; }
 function renderFloatReviews(){
   const track=document.getElementById('rvFloatTrack');
   const list=genFloatReviews(48);
-  const card=r=>`<div class="rvv-item"><span>🍊</span><b class="name">${r.name}</b><span class="stars">★★★★★</span><span class="muted">${r.spec}</span><span>${r.txt}</span></div>`;
-  const html=list.map(card).join("");
-  track.innerHTML = html + html;
-  // 行動裝置：開關
+  const row=r=>`<div class="rvv-item">${starDots()}<div><div class="rvv-text">${r.txt}</div><div class="rvv-meta">${r.name}・${r.spec}</div></div></div>`;
+  track.innerHTML = list.map(row).join("") + list.map(row).join("");
   const host=document.querySelector('.reviews-float'); const btn=document.querySelector('.rv-toggle');
   if(btn){ btn.addEventListener('click',()=>host.classList.toggle('open')); }
 }
@@ -306,7 +306,8 @@ function mountGuide(){
     bars[0].style.width=w(m.sweet);
     bars[1].style.width=w(m.sour);
     bars[2].style.width=w(m.aroma);
-    chipsHost.innerHTML = m.chips.map(t=>`<span class="chip-lg">${t}</span>`).join('');
+    const iconMap={ '柔嫩':'feather','細嫩':'feather','極嫩':'feather','爆汁':'drop','香甜':'aroma','香濃':'aroma','清香':'aroma','清爽':'drop','順口':'feather','脆':'feather' };
+    chipsHost.innerHTML = m.chips.map(t=>`<span class="chip-lg"><i class="icon ${iconMap[t]||'aroma'}"></i>${t}</span>`).join('');
   }
   kindPills.forEach(p=>p.addEventListener('click',()=>{ kind=p.dataset.kind; setUI(); }));
   sizePills.forEach(p=>p.addEventListener('click',()=>{ size=p.dataset.size; setUI(); }));
@@ -314,14 +315,14 @@ function mountGuide(){
 }
 
 /*****************
- * Admin RAW 轉換
+ * Admin（簡版 RAW 轉換）
  *****************/
 function renderAdmin(){
-  const box=document.getElementById('adminBody');
+  const box=document.getElementById('adminBody'); if(!box) return;
   box.innerHTML = `
     <div class="content">
       <p class="muted">貼上 <b>GitHub 檔案頁</b>，點【轉換】取得 RAW 連結。</p>
-      <div class="row" style="grid-template-columns:1fr auto auto;">
+      <div class="row" style="display:grid;grid-template-columns:1fr auto auto;gap:8px">
         <input id="rawInput" class="input" placeholder="https://github.com/user/repo/blob/main/img.jpg">
         <button class="btn-ghost" type="button" onclick="convertToRaw()">轉換</button>
         <button class="btn-ghost" type="button" onclick="copyRaw()">複製</button>
@@ -329,8 +330,8 @@ function renderAdmin(){
       <div id="rawOutput" class="card" style="display:none;padding:10px;margin-top:8px"></div>
     </div>`;
 }
-function convertToRaw(){ const input=document.getElementById('rawInput'); let url=(input.value||'').trim(); if(!url) return alert('請先貼上網址'); const raw=toRaw(url); const out=document.getElementById('rawOutput'); out.style.display='block'; out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>RAW 連結</b><button class="btn-ghost" onclick="copyRaw()">複製</button></div><div class="line"></div><div style="word-break:break-all">${raw}</div>`; input.value=raw; }
-async function copyRaw(){ const raw=(document.getElementById('rawInput').value||'').trim(); if(!raw) return alert('沒有可複製的連結'); try{ await navigator.clipboard.writeText(raw); alert('已複製 RAW 連結'); }catch(e){ alert('複製失敗：'+e.message); } }
+function convertToRaw(){ const input=document.getElementById('rawInput'); if(!input) return; let url=(input.value||'').trim(); if(!url) return alert('請先貼上網址'); const raw=toRaw(url); const out=document.getElementById('rawOutput'); out.style.display='block'; out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>RAW 連結</b><button class="btn-ghost" onclick="copyRaw()">複製</button></div><div class="line"></div><div style="word-break:break-all">${raw}</div>`; input.value=raw; }
+async function copyRaw(){ const input=document.getElementById('rawInput'); if(!input) return; const raw=(input.value||'').trim(); if(!raw) return alert('沒有可複製的連結'); try{ await navigator.clipboard.writeText(raw); alert('已複製 RAW 連結'); }catch(e){ alert('複製失敗：'+e.message); } }
 
 /*****************
  * 啟動
