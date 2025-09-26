@@ -37,7 +37,7 @@
 </head>
 <body>
 
-<!-- 左側「買過都說讚」膠囊 + 小面板 -->
+<!-- 迷你評價膠囊（取代星星），可點開 -->
 <button id="rvPill" class="rv-pill">🍊 買過都說讚</button>
 <div id="rvPanel" class="rv-panel" aria-hidden="true">
   <div class="rv-head">
@@ -47,7 +47,7 @@
   <div id="rvList" class="rv-list"></div>
 </div>
 
-<!-- 頂部導覽（含 Logo＋漢堡） -->
+<!-- 頂部導覽（Logo＋漢堡選單） -->
 <header class="site-top">
   <div class="wrap topbar">
     <a class="brand" href="#hero" onclick="go(event,'hero')">
@@ -84,7 +84,7 @@
   </div>
 </section>
 
-<!-- 品牌故事（可直接改文字） -->
+<!-- 品牌故事：純文字輪播 -->
 <section id="story" class="section">
   <div class="wrap">
     <div class="card content story-card">
@@ -98,7 +98,7 @@
   </div>
 </section>
 
-<!-- 三大信任點：滑入動畫 -->
+<!-- 三大信任點：側邊滑入 -->
 <section id="why" class="section">
   <div class="wrap kpis">
     <article class="card kpi reveal-l">
@@ -116,12 +116,12 @@
   </div>
 </section>
 
-<!-- 果實近拍：手機 1:1 大圖輪播 -->
+<!-- 果實近拍：1:1 輪播 -->
 <section id="gallery" class="section">
   <div class="wrap">
     <div class="card content">
       <h2 class="reveal-up">果實近拍</h2>
-      <p class="muted reveal-up" style="margin-top:-4px">切瓣近拍／整顆尺寸對比／裝箱實拍（手機 1:1，大圖可滑動）</p>
+      <p class="muted reveal-up" style="margin-top:-4px">切瓣近拍／整顆尺寸對比／裝箱實拍（手機 1:1 大圖）</p>
       <div class="gallery-shell reveal-up">
         <div class="gallery-rail" id="galleryRail" aria-label="果實近拍走馬燈"></div>
         <div class="slider-dots" id="galleryDots"></div>
@@ -130,15 +130,12 @@
   </div>
 </section>
 
-<!-- 選購 -->
+<!-- 商品選購 -->
 <section id="shop" class="section">
   <div class="wrap grid grid-2">
-
     <!-- 椪柑 -->
     <article class="product card reveal-up">
-      <div class="p-media">
-        <img id="img-pongan" alt="椪柑" src="">
-      </div>
+      <div class="p-media"><img id="img-pongan" alt="椪柑" src=""></div>
       <div class="p-body">
         <h2>公老坪椪柑</h2>
         <p class="muted">皮薄好剝、酸甜平衡、果香乾淨。手剝即食，冰過更清爽。</p>
@@ -154,9 +151,7 @@
 
     <!-- 茂谷 -->
     <article class="product card reveal-up">
-      <div class="p-media">
-        <img id="img-maogao" alt="茂谷柑" src="">
-      </div>
+      <div class="p-media"><img id="img-maogao" alt="茂谷柑" src=""></div>
       <div class="p-body">
         <h2>東勢茂谷</h2>
         <p class="muted">皮薄多汁、細嫩口感、橙黃亮麗。4 刀→6 塊不流汁。</p>
@@ -169,11 +164,10 @@
         <button class="btn btn-block" onclick="addSelected('MAOGAO')">立即預購</button>
       </div>
     </article>
-
   </div>
 </section>
 
-<!-- 選購指南（沿用原本理念） -->
+<!-- 選購指南（沿用原概念＋新增尺寸表） -->
 <section id="guide" class="section">
   <div class="wrap">
     <div class="card content">
@@ -183,7 +177,7 @@
   </div>
 </section>
 
-<!-- 產季時間軸（手機月份 1.5x） -->
+<!-- 產季時間軸（手機月份放大 1.5x） -->
 <section id="timeline" class="section">
   <div class="wrap">
     <div class="card content">
@@ -218,7 +212,7 @@
   </div>
 </section>
 
-<!-- 浮動購物車 -->
+<!-- 浮動購物車 FAB -->
 <button id="cartFab" class="fab" onclick="toggleCart(true)">🛒 購物車 <span id="fabCount" class="fab-badge">0</span></button>
 
 <!-- 購物車抽屜（橘色主題） -->
@@ -234,7 +228,6 @@
     <div id="cartList"></div>
     <div class="line"></div>
 
-    <!-- 取貨方式：宅配 / 自取 -->
     <div class="summary">
       <div class="label"><b>取貨方式</b></div>
       <div class="inline-btns">
@@ -243,7 +236,6 @@
       </div>
     </div>
 
-    <!-- 金額 -->
     <div class="summary">
       <div class="row2"><span>商品小計</span><strong id="subtotal">$0</strong></div>
       <div class="row2"><span id="shipLabel">運費（宅配）</span><strong id="shipping">$0</strong></div>
@@ -252,7 +244,6 @@
       <div class="note">宅配滿 <b id="freeShipText">NT$ 0</b> 免運；自取免運。</div>
     </div>
 
-    <!-- 表單 -->
     <form id="orderForm" onsubmit="submitOrder(event)" class="form">
       <div class="row">
         <div>
@@ -288,7 +279,6 @@
         <input class="input" name="pickupNote" placeholder="例：週六 14:00 後到園自取">
       </div>
 
-      <!-- 條款 -->
       <div class="label">物流與退貨說明</div>
       <details id="policy" class="card policy">
         <summary><b>請展開閱讀（需捲到最底才可勾選同意）</b></summary>
@@ -312,7 +302,7 @@
   </main>
 </aside>
 
-<!-- 訂單查詢抽屜（恢復） -->
+<!-- 訂單查詢抽屜 -->
 <aside id="queryDrawer" class="drawer" aria-hidden="true">
   <header>
     <strong>訂單查詢</strong>
