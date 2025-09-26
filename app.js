@@ -1,12 +1,12 @@
 /*****************
- * 設定與資料區  *
+ * 設定
  *****************/
 const CONFIG = {
   BRAND_TAG: "柑心果園",
   GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbzT7yzMZXqjpJq_AvbcCKUrZaH3-N74YoRdsj3c4V2gfhD5Rbdnf3oucVvnextsrbhu/exec",
   SHIPPING: 160,
   FREE_SHIP_THRESHOLD: 1800,
-  PAY: { currency: 'TWD' }, // LINE Pay 金鑰放在 GAS（前端不暴露）
+  PAY: { currency: 'TWD' }, // LINE Pay 金鑰在 GAS
   BANK: { name: "連線銀行(824)", holder: "張鈞泓", no: "11101-37823-13" },
   IMAGES: {
     HERO: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png"),
@@ -28,18 +28,31 @@ const CONFIG = {
   }
 };
 
-// 商品定義（只留 10 斤）
+// 商品
 const PRODUCTS = {
   PONGAN: { section:'PONGAN', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(size)=>`PON10-${size}`, title:"椪柑" },
   MAOGAO: { section:'MAOGAO', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(size)=>`MAO10-${size}`, title:"茂谷" }
 };
 const SELECTED = { PONGAN:'25A', MAOGAO:'25A' };
 
-// LocalStorage keys
-const LS = { cart:'gx_cart', form:'gx_form' };
+// 指南量表（品種×規格）
+const GUIDE_META = {
+  PONGAN: {
+    "23A": { sweet:3.9, sour:2.3, aroma:3.0, chips:['脆','多汁','清爽'] },
+    "25A": { sweet:4.1, sour:2.1, aroma:3.1, chips:['脆','多汁','清爽'] },
+    "27A": { sweet:4.3, sour:2.0, aroma:3.2, chips:['順口','多汁','清爽'] },
+    "30A": { sweet:4.5, sour:1.9, aroma:3.3, chips:['香甜','多汁','柔和'] }
+  },
+  MAOGAO: {
+    "23A": { sweet:4.2, sour:2.7, aroma:3.6, chips:['細嫩','爆汁','清香'] },
+    "25A": { sweet:4.4, sour:2.5, aroma:3.8, chips:['細嫩','爆汁','香甜'] },
+    "27A": { sweet:4.5, sour:2.3, aroma:4.0, chips:['細嫩','爆汁','香濃'] },
+    "30A": { sweet:4.6, sour:2.2, aroma:4.1, chips:['柔嫩','爆汁','香濃'] }
+  }
+};
 
 /*****************
- * 初始化圖片與 UI *
+ * 小工具
  *****************/
 function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
 const currency = n => "NT$ "+(n||0).toLocaleString();
@@ -47,16 +60,13 @@ const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size]
 function statusOf(id){ return CONFIG.STATUS[id] || 'normal'; }
 function go(e,id){ if(e) e.preventDefault(); const el=document.getElementById(id); if(!el) return; const navH=document.querySelector('.subnav')?.offsetHeight||0; const y=el.getBoundingClientRect().top+scrollY-navH-6; scrollTo({top:y,behavior:'smooth'}); }
 
-function mountImages(){
-  document.getElementById('hero').style.backgroundImage = `url('${CONFIG.IMAGES.HERO}')`;
-  document.getElementById('img-pongan').src = CONFIG.IMAGES.PRODUCT10;
-  document.getElementById('img-maogao').src = CONFIG.IMAGES.PRODUCT10;
-  document.getElementById('img-fruit-pongan').src = CONFIG.IMAGES.FRUIT_PONGAN;
-  document.getElementById('img-fruit-maogao').src = CONFIG.IMAGES.FRUIT_MAOGAO;
-}
+/*****************
+ * Hero 圖片
+ *****************/
+function mountHero(){ document.getElementById('heroImg').src = CONFIG.IMAGES.HERO; }
 
 /*****************
- * 規格籤 & 價格  *
+ * 規格籤、價格、庫存
  *****************/
 function renderSpecChips(kind){
   const conf=PRODUCTS[kind]; const rail=document.getElementById('spec-'+kind.toLowerCase());
@@ -66,40 +76,11 @@ function renderSpecChips(kind){
   document.getElementById('inv-'+kind.toLowerCase()).textContent = `已售出 ${inv.sold}　剩餘 ${inv.stock} 箱`;
 }
 function selectSpec(kind,size){ SELECTED[kind]=size; renderSpecChips(kind); }
-function addSelected(kind){
-  const c=PRODUCTS[kind], size=SELECTED[kind], pid=c.getId(size), price=priceOf(c.section,c.weight,size);
-  const title=c.title+`｜${c.weight}｜${size}`;
-  addToCart(pid,title,price,c.weight,size,c.section);
-}
 
 /*****************
- * 跑馬燈：小卡慢速 *
+ * 購物車（僅宅配）
  *****************/
-function maskName(name){ const s=String(name||'').trim(); if(s.length<=2) return s[0]+'○'; return s[0]+'○'.repeat(s.length-2)+s[s.length-1]; }
-function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function seasonalDate(){ const now=new Date(); const y=now.getFullYear(); const start=(now.getMonth()+1)>=11?y:y-1; const a=new Date(start,10,1).getTime(), b=Math.min(now.getTime(), new Date(start+1,2,31).getTime()); const t=a+Math.random()*(b-a); const d=new Date(t); const mm=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${d.getFullYear()}-${mm}-${dd}`; }
-function genTopReviews(n=30){
-  const last="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
-  const given=["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","郁","妤","柔","軒","瑜","嘉","卉","翔","修","均","凱"];
-  const txt=["好甜又多汁","剝皮就香","冰過更好吃","大顆又穩定","小孩超愛","送禮體面","回購了！","香氣清新"];
-  const sizes=["23A","25A","27A","30A"]; const arr=[];
-  for(let i=0;i<n;i++){ arr.push({ name:maskName(randPick(last)+randPick(given)+randPick(given)), spec:`10台斤｜${randPick(sizes)}`, date:seasonalDate(), txt:randPick(txt) }); }
-  return arr;
-}
-function renderTopReviews(){
-  const track=document.getElementById('rvTicker');
-  const list=genTopReviews(36);
-  const card=r=>`<div class="rv"><span>🍊</span><span class="name">${r.name}</span><span class="stars">★★★★★</span><span class="muted">${r.spec}</span><span>${r.txt}</span></div>`;
-  const html=list.map(card).join("");
-  track.innerHTML = html + html; // 雙份接龍
-  track.classList.add('anim');
-  // 速度（越大越慢）
-  track.style.setProperty('--rv-speed','60s');
-}
-
-/*****************
- * 購物車（僅宅配） *
- *****************/
+const LS = { cart:'gx_cart', form:'gx_form' };
 const cart = (()=>{ try{ const s=localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; } })();
 function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),1800); }
@@ -115,15 +96,14 @@ function addToCart(pid,title,price,weight,size,section){
   else cart.push({ id:pid, title, price, qty:1, weight, size, section });
   saveCart(); renderCart(); bumpFab(); showToast('已加入購物車');
 }
+function addSelected(kind){
+  const c=PRODUCTS[kind], size=SELECTED[kind], pid=c.getId(size), price=priceOf(c.section,c.weight,size);
+  const title=c.title+`｜${c.weight}｜${size}`;
+  addToCart(pid,title,price,c.weight,size,c.section);
+}
 function mutateQty(i,delta){ cart[i].qty+=delta; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
 function clearCart(){ if(!cart.length) return; if(confirm('確定要清空購物車？')){ cart.length=0; saveCart(); renderCart(); } }
-
-function calc(){
-  const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const shipping=(subtotal>=CONFIG.FREE_SHIP_THRESHOLD || cart.length===0) ? 0 : CONFIG.SHIPPING;
-  return {subtotal,shipping,total:subtotal+shipping};
-}
-
+function calc(){ const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0); const shipping=(subtotal>=CONFIG.FREE_SHIP_THRESHOLD || cart.length===0) ? 0 : CONFIG.SHIPPING; return {subtotal,shipping,total:subtotal+shipping}; }
 function renderCart(){
   const list=document.getElementById('cartList');
   if(!cart.length){
@@ -153,7 +133,7 @@ function renderCart(){
 }
 
 /*****************
- * 下單與付款     *
+ * 下單 / 付款
  *****************/
 function saveForm(){ const f=document.getElementById('orderForm'); const obj=Object.fromEntries(new FormData(f)); localStorage.setItem(LS.form, JSON.stringify(obj)); }
 function loadForm(){ try{ const s=localStorage.getItem(LS.form); if(!s) return; const obj=JSON.parse(s); const f=document.getElementById('orderForm'); for(const k in obj){ if(f[k]) f[k].value=obj[k]; } }catch{} }
@@ -183,24 +163,24 @@ async function submitOrder(ev){
   btn.disabled=true; btn.textContent='處理中…'; res.textContent='';
 
   try{
-    // 1) 建立訂單（GAS）
+    // 建立訂單（GAS）
     const r=await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
     const d=await r.json();
     if(!d.ok) throw new Error(d.msg||'建立訂單失敗');
     const orderNo=d.order_no;
 
     if(pay==='LINEPAY'){
-      // 2) 走 LINE Pay（由 GAS 帶金鑰建立交易）
+      // LINE Pay 走 GAS
       const req={ orderNo, amount:payload.summary.total, currency:CONFIG.PAY.currency, items:payload.items };
       const r2=await fetch(CONFIG.GAS_ENDPOINT+'?action=linepay_request',{ method:'POST', body: JSON.stringify(req) });
       const d2=await r2.json();
       if(!d2.ok) throw new Error(d2.msg||'LINE Pay 建立交易失敗');
       localStorage.setItem('gx_lp_orderNo', orderNo);
       localStorage.setItem('gx_lp_amount', String(payload.summary.total));
-      location.href = d2.paymentUrl; // 導轉至 LINE Pay
+      location.href = d2.paymentUrl;
       return;
     }else{
-      // 匯款：成功頁顯示帳戶資訊
+      // 匯款：顯示資訊
       res.innerHTML = `✅ 訂單已建立（編號：<b>${orderNo}</b>）。<br>
         請於 24 小時內完成匯款並回報後五碼，我們立即安排出貨。
         <div class="card" style="padding:10px;margin-top:8px">
@@ -237,7 +217,7 @@ async function submitOrder(ev){
 })();
 
 /*****************
- * 條款勾選：捲到底 *
+ * 條款同意：需捲底
  *****************/
 (function policyAgree(){
   const det=document.getElementById('policy'); const agree=document.getElementById('agree');
@@ -247,7 +227,7 @@ async function submitOrder(ev){
 })();
 
 /*****************
- * 訂單查詢       *
+ * 訂單查詢
  *****************/
 function dateOnly(val){ if(!val) return '—'; try{ const d=new Date(val); if(!isNaN(d)){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const da=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${da}`; } }catch(e){} return String(val).split(/[ T]/)[0]; }
 async function queryOrder(ev){
@@ -283,68 +263,90 @@ async function queryOrder(ev){
 }
 
 /*****************
- * 低調管理工具   *
+ * 好評浮動：左側小輪播
+ *****************/
+function maskName(name){ const s=String(name||'').trim(); if(s.length<=2) return s[0]+'○'; return s[0]+'○'.repeat(s.length-2)+s[s.length-1]; }
+function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function seasonalDate(){ const now=new Date(); const y=now.getFullYear(); const start=(now.getMonth()+1)>=11?y:y-1; const a=new Date(start,10,1).getTime(), b=Math.min(now.getTime(), new Date(start+1,2,31).getTime()); const t=a+Math.random()*(b-a); const d=new Date(t); const mm=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${d.getFullYear()}-${mm}-${dd}`; }
+function genFloatReviews(n=40){
+  const last="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
+  const given=["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","郁","妤","柔","軒","瑜","嘉","卉","翔","修","均","凱"];
+  const txt=["好甜又多汁","剝皮就香","冰過更好吃","大顆穩定","小孩超愛","送禮體面","回購了","清爽不膩"];
+  const sizes=["23A","25A","27A","30A"]; const arr=[];
+  for(let i=0;i<n;i++){ arr.push({ name:maskName(randPick(last)+randPick(given)+randPick(given)), spec:`10台斤｜${randPick(sizes)}`, date:seasonalDate(), txt:randPick(txt) }); }
+  return arr;
+}
+function renderFloatReviews(){
+  const track=document.getElementById('rvFloatTrack');
+  const list=genFloatReviews(48);
+  const card=r=>`<div class="rvv-item"><span>🍊</span><b class="name">${r.name}</b><span class="stars">★★★★★</span><span class="muted">${r.spec}</span><span>${r.txt}</span></div>`;
+  const html=list.map(card).join("");
+  track.innerHTML = html + html;
+  // 行動裝置：開關
+  const host=document.querySelector('.reviews-float'); const btn=document.querySelector('.rv-toggle');
+  if(btn){ btn.addEventListener('click',()=>host.classList.toggle('open')); }
+}
+
+/*****************
+ * 指南互動（品種＋規格）
+ *****************/
+function mountGuide(){
+  const kindPills=[...document.querySelectorAll('.guide-switch .pill')];
+  const sizePills=[...document.querySelectorAll('.size-switch .pill')];
+  const bars=[...document.querySelectorAll('.gauge .bar i')];
+  const chipsHost=document.getElementById('chipHost');
+
+  let kind='PONGAN', size='23A';
+
+  function setUI(){
+    kindPills.forEach(p=>p.classList.toggle('active', p.dataset.kind===kind));
+    sizePills.forEach(p=>p.classList.toggle('active', p.dataset.size===size));
+    const m=GUIDE_META[kind][size];
+    const max=5, w=v=> (v/max*100)+'%';
+    bars[0].style.width=w(m.sweet);
+    bars[1].style.width=w(m.sour);
+    bars[2].style.width=w(m.aroma);
+    chipsHost.innerHTML = m.chips.map(t=>`<span class="chip-lg">${t}</span>`).join('');
+  }
+  kindPills.forEach(p=>p.addEventListener('click',()=>{ kind=p.dataset.kind; setUI(); }));
+  sizePills.forEach(p=>p.addEventListener('click',()=>{ size=p.dataset.size; setUI(); }));
+  setUI();
+}
+
+/*****************
+ * Admin RAW 轉換
  *****************/
 function renderAdmin(){
   const box=document.getElementById('adminBody');
   box.innerHTML = `
     <div class="content">
-      <p class="muted">貼上 <b>GitHub 檔案頁</b>網址（如 <code>https://github.com/user/repo/blob/main/img.jpg</code>），點【轉換】獲得 RAW 連結。</p>
+      <p class="muted">貼上 <b>GitHub 檔案頁</b>，點【轉換】取得 RAW 連結。</p>
       <div class="row" style="grid-template-columns:1fr auto auto;">
-        <input id="rawInput" class="input" placeholder="貼上 GitHub 檔案頁網址">
+        <input id="rawInput" class="input" placeholder="https://github.com/user/repo/blob/main/img.jpg">
         <button class="btn-ghost" type="button" onclick="convertToRaw()">轉換</button>
         <button class="btn-ghost" type="button" onclick="copyRaw()">複製</button>
       </div>
       <div id="rawOutput" class="card" style="display:none;padding:10px;margin-top:8px"></div>
     </div>`;
 }
-function convertToRaw(){
-  const input=document.getElementById('rawInput'); let url=(input.value||'').trim();
-  if(!url) return alert('請先貼上網址');
-  const raw=toRaw(url); const out=document.getElementById('rawOutput');
-  out.style.display='block'; out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>RAW 連結</b><button class="btn-ghost" onclick="copyRaw()">複製</button></div><div class="line"></div><div style="word-break:break-all">${raw}</div>`;
-  input.value=raw;
-}
-async function copyRaw(){
-  const raw=(document.getElementById('rawInput').value||'').trim();
-  if(!raw) return alert('沒有可複製的連結');
-  try{ await navigator.clipboard.writeText(raw); alert('已複製 RAW 連結'); }catch(e){ alert('複製失敗：'+e.message); }
-}
+function convertToRaw(){ const input=document.getElementById('rawInput'); let url=(input.value||'').trim(); if(!url) return alert('請先貼上網址'); const raw=toRaw(url); const out=document.getElementById('rawOutput'); out.style.display='block'; out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>RAW 連結</b><button class="btn-ghost" onclick="copyRaw()">複製</button></div><div class="line"></div><div style="word-break:break-all">${raw}</div>`; input.value=raw; }
+async function copyRaw(){ const raw=(document.getElementById('rawInput').value||'').trim(); if(!raw) return alert('沒有可複製的連結'); try{ await navigator.clipboard.writeText(raw); alert('已複製 RAW 連結'); }catch(e){ alert('複製失敗：'+e.message); } }
 
 /*****************
- * 互動指南：數值 *
+ * 啟動
  *****************/
-const GUIDE_META = {
-  PONGAN: { sweet:4, sour:2, aroma:3, chips:['脆','多汁','清爽'] },
-  MAOGAO: { sweet:4.5, sour:2.5, aroma:4, chips:['細嫩','爆汁','香甜'] }
-};
-function mountGuide(){
-  const pills=[...document.querySelectorAll('.guide-switch .pill')];
-  const bars=[...document.querySelectorAll('.gauge .bar i')];
-  const chipsWrap=document.querySelector('.chips');
-  function set(kind){
-    pills.forEach(p=>p.classList.toggle('active', p.dataset.kind===kind));
-    const m=GUIDE_META[kind];
-    const max=5;
-    const w = (v)=> (v/max*100)+'%';
-    bars[0].style.width=w(m.sweet);
-    bars[1].style.width=w(m.sour);
-    bars[2].style.width=w(m.aroma);
-    chipsWrap.innerHTML = m.chips.map(t=>`<span class="chip-lg">${t}</span>`).join('');
-  }
-  pills.forEach(p=>p.addEventListener('click',()=>set(p.dataset.kind)));
-  set('PONGAN');
+function mountImages(){
+  document.getElementById('img-pongan').src = CONFIG.IMAGES.PRODUCT10;
+  document.getElementById('img-maogao').src = CONFIG.IMAGES.PRODUCT10;
+  document.getElementById('img-fruit-pongan').src = CONFIG.IMAGES.FRUIT_PONGAN;
+  document.getElementById('img-fruit-maogao').src = CONFIG.IMAGES.FRUIT_MAOGAO;
 }
-
-/*****************
- * 啟動           *
- *****************/
 function init(){
-  mountImages();
+  mountHero(); mountImages();
   renderSpecChips('PONGAN'); renderSpecChips('MAOGAO');
-  renderTopReviews();
-  renderCart();
-  loadForm();
+  renderCart(); loadForm();
+  renderFloatReviews();
+  mountGuide();
   renderAdmin();
 }
 document.addEventListener('DOMContentLoaded', init);
