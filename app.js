@@ -1,19 +1,18 @@
 /*****************
- * 設定與資料
+ * 設定（換圖只改這裡）
  *****************/
 const CONFIG = {
   BRAND_TAG: "柑心果園",
   GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbzT7yzMZXqjpJq_AvbcCKUrZaH3-N74YoRdsj3c4V2gfhD5Rbdnf3oucVvnextsrbhu/exec",
   SHIPPING: 160,
   FREE_SHIP_THRESHOLD: 1800,
-  PAY: { currency: 'TWD' },
+  PAY: { currency: 'TWD' }, // LINE Pay 金鑰在 GAS
   BANK: { name: "連線銀行(824)", holder: "張鈞泓", no: "11101-37823-13" },
   IMAGES: {
     HERO: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png"),
-    LOGO: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%9F%91%E5%BF%83%E6%9E%9C%E5%9C%92LOGO.png"),
     PRODUCT10: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/10%E6%96%A4%E7%94%A2%E5%93%81%E5%9C%96%E7%89%87.png"),
-    PONGAN_CLOSE: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%A4%AA%E6%9F%91%E6%9E%9C%E5%AF%A6.jpg"),
-    MAOGAO_CLOSE: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E8%8C%82%E8%B0%B7%E6%9F%91.png")
+    FRUIT_PONGAN: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%A4%AA%E6%9F%91%E6%9E%9C%E5%AF%A6.jpg"),
+    FRUIT_MAOGAO: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E8%8C%82%E8%B0%B7%E6%9F%91.png")
   },
   PRICES: {
     PONGAN: { "10台斤": { "23A": 750, "25A": 780, "27A": 820, "30A": 880 } },
@@ -26,311 +25,169 @@ const CONFIG = {
   STATUS: {
     "PON10-23A":"preorder","PON10-25A":"preorder","PON10-27A":"preorder","PON10-30A":"preorder",
     "MAO10-23A":"preorder","MAO10-25A":"preorder","MAO10-27A":"preorder","MAO10-30A":"preorder"
-  },
-  DIAMETER_CM: { "23A":"約 7.8–8.4 cm", "25A":"約 7.5–7.8 cm", "27A":"約 7.2–7.5 cm", "30A":"約 6.8–7.2 cm" }
+  }
 };
-function toRaw(u){return !u?u:(u.includes('raw.githubusercontent.com')?u:u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
+
+/*****************
+ * 商品 / 指南
+ *****************/
+const PRODUCTS = {
+  PONGAN: { section:'PONGAN', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(size)=>`PON10-${size}`, title:"椪柑" },
+  MAOGAO: { section:'MAOGAO', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(size)=>`MAO10-${size}`, title:"茂谷" }
+};
+const SELECTED = { PONGAN:'25A', MAOGAO:'25A' };
+
+// 品種×規格 → 量表與關鍵詞（可依實際再微調）
+const GUIDE_META = {
+  PONGAN: {
+    "23A": { sweet:3.9, sour:2.3, aroma:3.0, chips:['脆','多汁','清爽'] },
+    "25A": { sweet:4.1, sour:2.1, aroma:3.1, chips:['脆','多汁','清爽'] },
+    "27A": { sweet:4.3, sour:2.0, aroma:3.2, chips:['順口','多汁','清爽'] },
+    "30A": { sweet:4.5, sour:1.9, aroma:3.3, chips:['香甜','多汁','柔和'] }
+  },
+  MAOGAO: {
+    "23A": { sweet:4.2, sour:2.7, aroma:3.6, chips:['細嫩','爆汁','清香'] },
+    "25A": { sweet:4.4, sour:2.5, aroma:3.8, chips:['柔嫩','爆汁','香甜'] },
+    "27A": { sweet:4.5, sour:2.3, aroma:4.0, chips:['柔嫩','爆汁','香濃'] },
+    "30A": { sweet:4.6, sour:2.2, aroma:4.1, chips:['極嫩','爆汁','濃香'] }
+  }
+};
+
+/*****************
+ * 工具
+ *****************/
+function toRaw(u){ return !u ? u : (u.includes('raw.githubusercontent.com') ? u : u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/')); }
 const currency = n => "NT$ "+(n||0).toLocaleString();
 const priceOf = (section,weight,size)=> CONFIG.PRICES[section]?.[weight]?.[size] ?? 0;
 function statusOf(id){ return CONFIG.STATUS[id] || 'normal'; }
+function go(e,id){ if(e) e.preventDefault(); const el=document.getElementById(id); if(!el) return; const navH=document.querySelector('.subnav.top')?.offsetHeight||0; const y=el.getBoundingClientRect().top+scrollY-navH-6; scrollTo({top:y,behavior:'smooth'}); }
 
 /*****************
- * 導覽與 Hero
+ * Hero & 圖片
  *****************/
-document.querySelector('.brand-logo').src = CONFIG.IMAGES.LOGO;
-document.getElementById('heroLogo').src = CONFIG.IMAGES.LOGO;
-document.querySelector('.hero-bg').style.backgroundImage = `url('${CONFIG.IMAGES.HERO}')`;
-
-const hamburger = document.getElementById('hamburger');
-const siteNav = document.getElementById('siteNav');
-hamburger.addEventListener('click', ()=> siteNav.classList.toggle('open'));
-
-/*****************
- * 品牌故事輪播
- *****************/
-const STORY_TEXTS = [
-  {title:"從山坡到你家", body:"我們在公老坪與東勢，跟著老欉的節奏採收。每一箱，都能追溯到批次與採收日。"},
-  {title:"簡單做，慢慢來", body:"堅持手工分級、只做必要處理。讓果皮不完美，換來更完整的風味。"},
-  {title:"把理賠講清楚", body:"到貨請開箱錄影，若有運損 24 小時內回報。怎麼做，我們就怎麼賠。"}
-];
-const sc = document.getElementById('storyCarousel');
-const sd = document.getElementById('storyDots');
-let storyIndex = 0;
-function renderStory(){
-  sc.innerHTML = STORY_TEXTS.map((s,i)=>`
-    <div class="story-slide ${i===storyIndex?'active':''}">
-      <h3>${s.title}</h3>
-      <p class="muted">${s.body}</p>
-    </div>`).join('');
-  sd.innerHTML = STORY_TEXTS.map((_,i)=>`<button class="story-dot ${i===storyIndex?'active':''}" onclick="setStory(${i})"></button>`).join('');
+function mountHero(){ document.getElementById('heroImg').src = CONFIG.IMAGES.HERO; }
+function mountImages(){
+  document.getElementById('img-pongan').src = CONFIG.IMAGES.PRODUCT10;
+  document.getElementById('img-maogao').src = CONFIG.IMAGES.PRODUCT10;
+  document.getElementById('img-fruit-pongan').src = CONFIG.IMAGES.FRUIT_PONGAN;
+  document.getElementById('img-fruit-maogao').src = CONFIG.IMAGES.FRUIT_MAOGAO;
 }
-function setStory(i){ storyIndex = i; renderStory(); }
-setInterval(()=>{storyIndex=(storyIndex+1)%STORY_TEXTS.length; renderStory();}, 4500);
-renderStory();
 
 /*****************
- * 側邊滑出 KPI：進入視窗範圍時顯示
+ * 規格籤 / 價格 / 庫存
  *****************/
-const floating = document.getElementById('floatingKpis');
-const observer = new IntersectionObserver((ents)=>{
-  ents.forEach(e=>{ if(e.isIntersecting) floating.classList.add('show'); });
-},{threshold:.2});
-observer.observe(document.getElementById('shop'));
-
-/*****************
- * 產品規格與渲染
- *****************/
-const PRODUCTS = {
-  PONGAN: { section:'PONGAN', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:s=>`PON10-${s}` },
-  MAOGAO: { section:'MAOGAO', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:s=>`MAO10-${s}` }
-};
-const SELECTED = { PONGAN:"25A", MAOGAO:"25A" };
-
-document.getElementById('img-pongan').src = CONFIG.IMAGES.PRODUCT10;
-document.getElementById('img-maogao').src = CONFIG.IMAGES.PRODUCT10;
-
-function dotBar(n){
-  let s=''; for(let i=0;i<5;i++) s+=`<span class="dot ${i<n?'on':''}"></span>`; return s;
+function renderSpecChips(kind){
+  const conf=PRODUCTS[kind]; const rail=document.getElementById('spec-'+kind.toLowerCase());
+  rail.innerHTML = conf.sizes.map(s=>`<button class="spec ${SELECTED[kind]===s?'active':''}" onclick="selectSpec('${kind}','${s}')">${conf.weight}｜${s}</button>`).join('');
+  document.getElementById('price-'+kind.toLowerCase()).textContent = currency(priceOf(conf.section, conf.weight, SELECTED[kind]));
+  const pid = conf.getId(SELECTED[kind]); const inv = CONFIG.INVENTORY[pid]||{sold:0,stock:0};
+  document.getElementById('inv-'+kind.toLowerCase()).textContent = `已售出 ${inv.sold}　剩餘 ${inv.stock} 箱`;
 }
-function renderMeter(target, kind){
-  // 椪柑：甜4、酸2、香3；茂谷：甜4.5、酸2.5、香4 → 四捨五入顯示
-  const spec = (kind==='PONGAN') ? {甜:4, 酸:2, 香:3} : {甜:5, 酸:3, 香:4};
-  target.innerHTML = Object.entries(spec).map(([k,v])=>`
-    <span class="tag">${k}</span><span class="dots">${dotBar(Math.round(v))}</span>
-  `).join('');
-}
-function renderSpec(kind){
-  const conf = PRODUCTS[kind];
-  const rail = document.getElementById('spec-'+kind.toLowerCase());
-  rail.innerHTML = conf.sizes.map(s=>`
-    <button class="chip ${SELECTED[kind]===s?'on':''}" onclick="selectSpec('${kind}','${s}')">${conf.weight}｜${s}</button>
-  `).join('');
-  document.getElementById('size-'+kind.toLowerCase()).textContent = `尺寸：${CONFIG.DIAMETER_CM[SELECTED[kind]] || "—"}`;
-  document.getElementById('price-'+kind.toLowerCase()).textContent =
-    currency(priceOf(conf.section, conf.weight, SELECTED[kind]));
-  const pid = conf.getId(SELECTED[kind]);
-  const inv = CONFIG.INVENTORY[pid] || {sold:0, stock:0};
-  document.getElementById('inv-'+kind.toLowerCase()).textContent = `已售出 ${inv.sold}｜剩餘 ${inv.stock}`;
-}
-function selectSpec(kind,size){ SELECTED[kind]=size; renderSpec(kind); }
-renderMeter(document.getElementById('meter-pongan'),'PONGAN');
-renderMeter(document.getElementById('meter-maogao'),'MAOGAO');
-renderSpec('PONGAN'); renderSpec('MAOGAO');
+function selectSpec(kind,size){ SELECTED[kind]=size; renderSpecChips(kind); }
 
 /*****************
- * 果實近拍：1:1 卡片式輪播
+ * 購物車（僅宅配）
  *****************/
-const gallery = [
-  CONFIG.IMAGES.PONGAN_CLOSE,
-  CONFIG.IMAGES.MAOGAO_CLOSE,
-  CONFIG.IMAGES.PRODUCT10
-];
-const gRail = document.getElementById('galleryRail');
-gRail.innerHTML = gallery.map(src=>`
-  <div class="g-item"><img src="${src}" alt="果實近拍"></div>
-`).join('');
-
-/*****************
- * 產季時間軸
- *****************/
-const months = [
-  {m:'10',t:'青皮椪柑'}, {m:'11',t:'椪柑高峰'}, {m:'12',t:'橙皮始｜茂谷'},
-  {m:'1',t:'橙皮穩定'}, {m:'2',t:'橙皮甜香'}, {m:'3',t:'橙皮尾聲'}, {m:'4',t:'儲藏柑'}
-];
-document.getElementById('timelineMonths').innerHTML = months.map(x=>`
-  <div class="month"><b>${x.m} 月</b><div class="muted">${x.t}</div></div>
-`).join('');
-
-/*****************
- * 流程：小圓按鈕 → 詳細卡
- *****************/
-const FLOW_TEXT = {
-  1:"1. 下單預購：選規格加入購物車，付款 LINE Pay / 匯款 / 自取現金。",
-  2:"2. 現採分級裝箱：依成熟度與等級上架，堅持手工分級。",
-  3:"3. 出貨通知：簡訊/Email/LINE 通知出貨與追蹤碼。",
-  4:"4. 到貨開箱：請全程錄影保障理賠，冷藏更清甜。"
-};
-const flowDetail = document.getElementById('flowDetail');
-document.querySelectorAll('.circle').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const s=btn.dataset.step; flowDetail.innerHTML = `<div class="flow-card">${FLOW_TEXT[s]}</div>`;
-  });
-});
-
-/*****************
- * 好評：膠囊條
- *****************/
-function genNames(n=40){
-  const last="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
-  const given=["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","妤","柔","軒","瑜","嘉","翔","修","均","凱"];
-  const pick=a=>a[Math.floor(Math.random()*a.length)];
-  const mask = s => s.length<=2 ? s[0]+'○' : s[0]+'○'.repeat(s.length-2)+s[s.length-1];
-  return Array.from({length:n},()=> mask(pick(last)+pick(given)+pick(given)));
-}
-const rvRail = document.getElementById('rvRail');
-rvRail.innerHTML = genNames(36).map(n=>`<div class="rv">🍊 ${n}：買過都說讚</div>`).join('');
-
-/*****************
- * 購物車邏輯
- *****************/
-const LS = { cart:'gx_cart2', ship:'gx_ship2', form:'gx_form2' };
-const cart = (()=>{ try{const s=localStorage.getItem(LS.cart); return s?JSON.parse(s):[];}catch{return [];} })();
+const LS = { cart:'gx_cart', form:'gx_form' };
+const cart = (()=>{ try{ const s=localStorage.getItem(LS.cart); return s? JSON.parse(s):[]; }catch{ return []; } })();
 function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
-function bumpFab(){ const f=document.getElementById('cartFab'); f.classList.remove('bump'); void f.offsetWidth; f.classList.add('bump'); }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),1800); }
+function toggleCart(open){ const d=document.getElementById('cartDrawer'); d.classList.toggle('open', !!open); if(open){ document.addEventListener('keydown',escCloseCart); } else { document.removeEventListener('keydown',escCloseCart); } }
+function escCloseCart(e){ if(e.key==='Escape') toggleCart(false); }
+function toggleQuery(open){ document.getElementById('queryDrawer').classList.toggle('open', !!open); }
+function bumpFab(){ const f=document.getElementById('cartFab'); f.style.transform='scale(1.05)'; setTimeout(()=>f.style.transform='',180); }
+
 function addToCart(pid,title,price,weight,size,section){
-  if(statusOf(pid)==='soldout'){ toast('此品項已售完'); return; }
-  const existed=cart.find(x=>x.id===pid);
+  if(statusOf(pid)==='soldout'){ showToast('此品項已售完'); return; }
+  const existed = cart.find(x=>x.id===pid);
   if(existed) existed.qty++;
-  else cart.push({id:pid,title,price,qty:1,weight,size,section});
-  saveCart(); renderCart(); bumpFab(); toast('已加入購物車');
+  else cart.push({ id:pid, title, price, qty:1, weight, size, section });
+  saveCart(); renderCart(); bumpFab(); showToast('已加入購物車');
 }
 function addSelected(kind){
-  const conf=PRODUCTS[kind]; const size=SELECTED[kind];
-  const pid = conf.getId(size);
-  const price = priceOf(conf.section, conf.weight, size);
-  const title = (kind==='PONGAN'?'椪柑':'茂谷')+`｜${conf.weight}｜${size}`;
-  addToCart(pid,title,price,conf.weight,size,conf.section);
+  const c=PRODUCTS[kind], size=SELECTED[kind], pid=c.getId(size), price=priceOf(c.section,c.weight,size);
+  const title=c.title+`｜${c.weight}｜${size}`;
+  addToCart(pid,title,price,c.weight,size,c.section);
 }
 function mutateQty(i,delta){ cart[i].qty+=delta; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
 function clearCart(){ if(!cart.length) return; if(confirm('確定要清空購物車？')){ cart.length=0; saveCart(); renderCart(); } }
-function toggleCart(open){ document.getElementById('cartDrawer').classList.toggle('open', !!open); }
-
-function getShipMethod(){ return localStorage.getItem(LS.ship)||'HOME'; }
-function setShipMethod(m){
-  localStorage.setItem(LS.ship,m);
-  document.getElementById('shipHomeBtn').classList.toggle('on', m==='HOME');
-  document.getElementById('shipPickupBtn').classList.toggle('on', m==='PICKUP');
-  document.getElementById('shipDoorBtn').classList.toggle('on', m==='DOOR');
-  const shipSel=document.querySelector('select[name="ship"]');
-  if(shipSel){
-    shipSel.value = (m==='HOME'?'宅配': m==='PICKUP'?'自取（現金）':'到門服務（台中≥5箱）');
-  }
-  renderCart();
-}
-
-function boxesCount(){ return cart.reduce((s,i)=> s + (i.weight==='10台斤'? i.qty: 0), 0); }
-
-function calc(){
-  const method=getShipMethod();
-  const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  let shipping=0;
-  if(method==='HOME'){
-    shipping = (subtotal>=CONFIG.FREE_SHIP_THRESHOLD||cart.length===0)?0:CONFIG.SHIPPING;
-  }else if(method==='PICKUP'){
-    shipping = 0;
-  }else if(method==='DOOR'){
-    // 台中 ≥5 箱免運；不足不得選
-    shipping = 0;
-  }
-  return {subtotal, shipping, total: subtotal+shipping};
-}
-
+function calc(){ const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0); const shipping=(subtotal>=CONFIG.FREE_SHIP_THRESHOLD || cart.length===0) ? 0 : CONFIG.SHIPPING; return {subtotal,shipping,total:subtotal+shipping}; }
 function renderCart(){
   const list=document.getElementById('cartList');
-  if(!cart.length){ list.innerHTML = `<div class="muted">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>`; }
-  else{
+  if(!cart.length){
+    list.innerHTML = `<div class="card" style="padding:12px;display:flex;gap:10px;align-items:center;justify-content:center">
+      <div class="cart-thumb">🍊</div><div class="muted">購物車是空的，去挑幾顆最頂的橘子吧</div></div>`;
+  }else{
     list.innerHTML = cart.map((c,i)=>`
-      <div class="cart-row">
+      <div class="cart-item">
+        <div class="cart-thumb">🍊</div>
         <div>
           <div><strong>${c.title}</strong></div>
-          <div class="note">${currency(c.price)} × ${c.qty}</div>
+          <div class="muted">${currency(c.price)} × ${c.qty}</div>
         </div>
         <div class="qty">
-          <button onclick="mutateQty(${i},-1)">–</button>
+          <button aria-label="減少" onclick="mutateQty(${i},-1)">–</button>
           <span>${c.qty}</span>
-          <button onclick="mutateQty(${i},1)">＋</button>
+          <button aria-label="增加" onclick="mutateQty(${i},1)">＋</button>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
   const {subtotal,shipping,total}=calc();
-  el('subtotal').textContent=currency(subtotal);
-  el('shipping').textContent=currency(shipping);
-  el('total').textContent=currency(total);
-  el('fabCount').textContent=cart.reduce((s,i)=>s+i.qty,0);
-
-  const method=getShipMethod();
-  el('shipLabel').textContent = (method==='HOME')? '運費（宅配）' : (method==='PICKUP')? '運費（自取）' : '運費（到門）';
-  el('homeFields').style.display = (method==='HOME' || method==='DOOR') ? 'block':'none';
-  el('pickupHint').style.display = (method==='PICKUP') ? 'block' : 'none';
-
-  // 到門服務檢查
-  const note = (method==='DOOR' && boxesCount()<5) ? '（到門需台中市且 ≥5 箱，未達請改選宅配/自取）' : '';
-  el('shipNote').innerHTML = `宅配：滿 <b id="freeShipText">NT$ ${CONFIG.FREE_SHIP_THRESHOLD.toLocaleString()}</b> 免運；自取/到門免運。<span class="muted">${note}</span>`;
+  document.getElementById('subtotal').textContent=currency(subtotal);
+  document.getElementById('shipping').textContent=currency(shipping);
+  document.getElementById('total').textContent=currency(total);
+  document.getElementById('fabCount').textContent=cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('freeShipText').textContent='NT$ '+CONFIG.FREE_SHIP_THRESHOLD.toLocaleString();
 }
-function el(id){ return document.getElementById(id); }
-renderCart(); setShipMethod(getShipMethod());
 
 /*****************
- * 條款滾到底啟用
+ * 下單 / 付款（LINE Pay 綠色樣式用 CSS）
  *****************/
-(function setupPolicy(){
-  const det = document.getElementById('policy');
-  const agree = document.getElementById('agree');
-  const enableIfBottom = ()=>{
-    const sc = det.scrollTop + det.clientHeight;
-    const need = det.scrollHeight - 10;
-    if(sc >= need){ agree.disabled = false; }
-  };
-  det.addEventListener('toggle', ()=>{ if(det.open){ det.focus(); }});
-  det.addEventListener('scroll', enableIfBottom, {passive:true});
-})();
-
-/*****************
- * 送單 + 付款
- *****************/
-function saveForm(){ const f=document.getElementById('orderForm'); const obj=Object.fromEntries(new FormData(f)); obj.shipMethod=getShipMethod(); localStorage.setItem(LS.form, JSON.stringify(obj)); }
-function loadForm(){ try{ const s=localStorage.getItem(LS.form); if(!s) return; const obj=JSON.parse(s); const f=document.getElementById('orderForm'); for(const k in obj){ if(f[k]) f[k].value=obj[k]; } setShipMethod(obj.shipMethod||'HOME'); }catch{} }
-loadForm();
+function saveForm(){ const f=document.getElementById('orderForm'); const obj=Object.fromEntries(new FormData(f)); localStorage.setItem(LS.form, JSON.stringify(obj)); }
+function loadForm(){ try{ const s=localStorage.getItem(LS.form); if(!s) return; const obj=JSON.parse(s); const f=document.getElementById('orderForm'); for(const k in obj){ if(f[k]) f[k].value=obj[k]; } }catch{} }
 
 async function submitOrder(ev){
   ev.preventDefault();
-  if(!cart.length) return alert('購物車是空的');
-  if(!document.getElementById('agree').checked) return alert('請先閱讀並勾選同意');
+  if(!cart.length){ alert('購物車是空的'); return; }
+  const agree=document.getElementById('agree'); if(!agree.checked){ alert('請先閱讀條款並勾選同意'); return; }
 
   const f=new FormData(ev.target);
-  const method=getShipMethod();
-  const shipText = (method==='HOME')? '宅配' : (method==='PICKUP')? '自取（現金）' : '到門服務（台中≥5箱）';
+  for(const key of ['name','phone','email','addr']) if(!f.get(key)) return alert('請完整填寫訂單資料');
 
-  if(method==='DOOR' && boxesCount()<5){
-    alert('到門服務限台中市且 ≥5 箱（10台斤/箱）'); return;
-  }
-  if((method==='HOME' || method==='DOOR') && !f.get('addr')){
-    alert('請填寫收件地址'); return;
-  }
-
-  const payload = {
-    ts: new Date().toISOString(),
-    name: f.get('name'), phone: f.get('phone'), email: f.get('email'),
-    addr: (method==='PICKUP') ? '自取（台中市石岡區石岡街61號）' : (f.get('addr')||''),
-    ship: shipText,
-    remark: f.get('remark')||'',
+  const payload={
+    ts:new Date().toISOString(),
+    name:f.get('name'), phone:f.get('phone'), email:f.get('email'),
+    addr:f.get('addr'),
+    ship:'宅配',
+    remark:f.get('remark')||'',
     items: cart.map(c=>({title:c.title, section:c.section, weight:c.weight, size:c.size, price:c.price, qty:c.qty})),
     summary: calc(),
     brand: CONFIG.BRAND_TAG,
-    shipMeta: { method }
+    shipMeta:{ method:'HOME' }
   };
 
-  const payMethod = (document.querySelector('input[name="pay"]:checked')?.value) || 'LINEPAY';
-  const btn = el('submitBtn'); const res = el('result');
+  const pay = (document.querySelector('input[name="pay"]:checked')?.value) || 'LINEPAY';
+  const btn=document.getElementById('submitBtn'); const res=document.getElementById('result');
   btn.disabled=true; btn.textContent='處理中…'; res.textContent='';
 
   try{
-    // 建立訂單（沿用你的 GAS）
-    const r = await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
-    const d = await r.json();
+    // 建立訂單（GAS）
+    const r=await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
+    const d=await r.json();
     if(!d.ok) throw new Error(d.msg||'建立訂單失敗');
-    const orderNo = d.order_no;
+    const orderNo=d.order_no;
 
-    if(payMethod==='LINEPAY'){
-      // 導轉前簡易提示
-      res.innerHTML = `<div class="summary" style="background:#ECFDF5;border-color:#D1FAE5">
-        <b style="color:#065F46">即將前往 <span class="lp-badge">LINE Pay</span> 完成付款</b>
-      </div>`;
-      await goLinePay(orderNo, payload);
+    if(pay==='LINEPAY'){
+      const req={ orderNo, amount:payload.summary.total, currency:CONFIG.PAY.currency, items:payload.items };
+      const r2=await fetch(CONFIG.GAS_ENDPOINT+'?action=linepay_request',{ method:'POST', body: JSON.stringify(req) });
+      const d2=await r2.json();
+      if(!d2.ok) throw new Error(d2.msg||'LINE Pay 建立交易失敗');
+      localStorage.setItem('gx_lp_orderNo', orderNo);
+      localStorage.setItem('gx_lp_amount', String(payload.summary.total));
+      location.href = d2.paymentUrl; // 由 GAS 帶你去 LINE Pay 官方頁（綠色 UI）
       return;
     }else{
-      // 匯款：顯示帳戶資料
+      // 匯款：顯示資訊
       res.innerHTML = `✅ 訂單已建立（編號：<b>${orderNo}</b>）。<br>
         請於 24 小時內完成匯款並回報後五碼，我們立即安排出貨。
         <div class="card" style="padding:10px;margin-top:8px">
@@ -340,29 +197,168 @@ async function submitOrder(ev){
         </div>`;
       cart.length=0; saveCart(); renderCart(); ev.target.reset(); saveForm();
     }
-  }catch(e){
-    res.textContent = '送出失敗：'+e.message;
-  }finally{
-    btn.disabled=false; btn.textContent='送出訂單';
-  }
+  }catch(e){ res.textContent='送出失敗：'+e.message; }
+  finally{ btn.disabled=false; btn.textContent='送出訂單'; }
 }
 
-async function goLinePay(orderNo, payload){
-  const amount = payload.summary.total;
-  const body = { orderNo, amount, currency:CONFIG.PAY.currency, items:payload.items };
-  const r = await fetch(CONFIG.GAS_ENDPOINT + '?action=linepay_request', { method:'POST', body: JSON.stringify(body) });
-  const d = await r.json();
-  if(!d.ok) throw new Error(d.msg||'LINE Pay 建立交易失敗');
-  localStorage.setItem('gx_lp_orderNo', orderNo);
-  localStorage.setItem('gx_lp_amount', String(amount));
-  location.href = d.paymentUrl; // 導轉到 LINE Pay
+// LINE Pay 回跳確認
+(async function handleLinePayReturn(){
+  const q=new URLSearchParams(location.search);
+  if(q.get('lp')==='return'){
+    const orderNo=localStorage.getItem('gx_lp_orderNo');
+    const amount=Number(localStorage.getItem('gx_lp_amount')||'0');
+    const transactionId=q.get('transactionId');
+    if(orderNo && transactionId){
+      try{
+        const body={ orderNo, transactionId, amount, currency:CONFIG.PAY.currency };
+        const r=await fetch(CONFIG.GAS_ENDPOINT+'?action=linepay_confirm',{ method:'POST', body: JSON.stringify(body) });
+        const d=await r.json();
+        if(d.ok){
+          showToast('付款成功，感謝支持！');
+          cart.length=0; saveCart(); renderCart();
+          localStorage.removeItem('gx_lp_orderNo'); localStorage.removeItem('gx_lp_amount');
+        }else alert('付款確認失敗：'+(d.msg||''));
+      }catch(e){ alert('付款確認錯誤：'+e.message); }
+    }
+  }
+})();
+
+/*****************
+ * 條款同意：需捲底
+ *****************/
+(function policyAgree(){
+  const det=document.getElementById('policy'); const agree=document.getElementById('agree');
+  const enableIfBottom=()=>{ const sc=det.scrollTop+det.clientHeight; const need=det.scrollHeight-10; if(sc>=need) agree.disabled=false; };
+  det.addEventListener('toggle',()=>{ if(det.open){ det.focus(); }});
+  det.addEventListener('scroll',enableIfBottom,{passive:true});
+})();
+
+/*****************
+ * 訂單查詢（抽屜）
+ *****************/
+function dateOnly(val){ if(!val) return '—'; try{ const d=new Date(val); if(!isNaN(d)){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const da=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${da}`; } }catch(e){} return String(val).split(/[ T]/)[0]; }
+async function queryOrder(ev){
+  ev.preventDefault();
+  const f=new FormData(ev.target); const no=(f.get('orderNo')||'').trim();
+  const card=document.getElementById('queryCard'); const printBtn=document.getElementById('printBtn');
+  card.style.display='block'; card.innerHTML='查詢中…'; printBtn.style.display='none';
+  try{
+    const r=await fetch(CONFIG.GAS_ENDPOINT+'?orderNo='+encodeURIComponent(no));
+    const data=await r.json();
+    if(data.ok){
+      const s=data.status||'（未提供狀態）';
+      const total=data.total?`NT$ ${(data.total||0).toLocaleString()}`:'—';
+      const shipDate=data.shipDate?dateOnly(data.shipDate):'—';
+      const trackNo=data.trackingNo||'—';
+      const hctLink=`<a href="https://www.hct.com.tw/search/searchgoods_n.aspx" target="_blank" rel="noopener">新竹貨運查詢</a>`;
+      const items=Array.isArray(data.items)? data.items.map(i=>`${i.title} × ${i.qty}`).join('、') : '—';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <h3 style="margin:0">訂單查詢結果</h3><div class="muted">${new Date().toLocaleString()}</div>
+        </div>
+        <div class="line"></div>
+        <div><b>訂單編號：</b>${no}</div>
+        <div><b>目前狀態：</b>${s}</div>
+        <div><b>出貨日期：</b>${shipDate}</div>
+        <div><b>物流單號：</b>${trackNo}</div>
+        <div><b>物流查詢：</b>${hctLink}</div>
+        <div><b>金額：</b>${total}</div>
+        <div><b>品項：</b>${items}</div>`;
+      printBtn.style.display='inline-flex';
+    }else card.innerHTML='查無此訂單編號';
+  }catch(e){ card.innerHTML='查詢失敗：'+e.message; }
 }
 
 /*****************
- * 工具
+ * 好評：小圓點輪播（左側浮出）
  *****************/
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(window.__t); window.__t=setTimeout(()=> t.classList.remove('show'), 1600);
+function maskName(name){ const s=String(name||'').trim(); if(s.length<=2) return s[0]+'○'; return s[0]+'○'.repeat(s.length-2)+s[s.length-1]; }
+function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function seasonalDate(){ const now=new Date(); const y=now.getFullYear(); const start=(now.getMonth()+1)>=11?y:y-1; const a=new Date(start,10,1).getTime(), b=Math.min(now.getTime(), new Date(start+1,2,31).getTime()); const t=a+Math.random()*(b-a); const d=new Date(t); const mm=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${d.getFullYear()}-${mm}-${dd}`; }
+function genFloatReviews(n=40){
+  const last="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
+  const given=["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","郁","妤","柔","軒","瑜","嘉","卉","翔","修","均","凱"];
+  const txt=["買過都說讚","好甜又多汁","剝皮就香","冰過更好吃","大顆穩定","小孩超愛","送禮體面","已回購"];
+  const sizes=["23A","25A","27A","30A"]; const arr=[];
+  for(let i=0;i<n;i++){ arr.push({ name:maskName(randPick(last)+randPick(given)+randPick(given)), spec:`10台斤｜${randPick(sizes)}`, date:seasonalDate(), txt:randPick(txt) }); }
+  return arr;
 }
+function starDots(){ return `<span class="rvv-stars"><i></i><i></i><i></i><i></i><i></i></span>`; }
+function renderFloatReviews(){
+  const track=document.getElementById('rvFloatTrack'); if(!track) return;
+  const list=genFloatReviews(48);
+  const row=r=>`<div class="rvv-item">${starDots()}<div><div class="rvv-text">${r.txt}</div><div class="rvv-meta">${r.name}・${r.spec}</div></div></div>`;
+  track.innerHTML = list.map(row).join("") + list.map(row).join("");
+  const host=document.querySelector('.reviews-float'); const btn=document.querySelector('.rv-toggle');
+  if(btn){ btn.addEventListener('click',()=>host.classList.toggle('open')); }
+}
+
+/*****************
+ * 品牌故事文字輪播
+ *****************/
+function mountBrandCarousel(){
+  const track=document.getElementById('brandTrack'); if(!track) return;
+  const prev=document.querySelector('.bc-prev'); const next=document.querySelector('.bc-next');
+  const items=[...track.children]; let idx=0;
+  function move(i){ idx=(i+items.length)%items.length; track.style.transform=`translateX(-${idx*100}%)`; }
+  prev.addEventListener('click',()=>move(idx-1));
+  next.addEventListener('click',()=>move(idx+1));
+  setInterval(()=>move(idx+1), 6000);
+}
+
+/*****************
+ * 指南互動（品種＋規格）
+ *****************/
+function mountGuide(){
+  const kindPills=[...document.querySelectorAll('.guide-switch .pill')];
+  const sizePills=[...document.querySelectorAll('.size-switch .pill')];
+  const bars=[...document.querySelectorAll('.gauge .bar i')];
+  const chipsHost=document.getElementById('chipHost');
+  let kind='PONGAN', size='23A';
+  function setUI(){
+    kindPills.forEach(p=>p.classList.toggle('active', p.dataset.kind===kind));
+    sizePills.forEach(p=>p.classList.toggle('active', p.dataset.size===size));
+    const m=GUIDE_META[kind][size];
+    const max=5, w=v=> (v/max*100)+'%';
+    bars[0].style.width=w(m.sweet);
+    bars[1].style.width=w(m.sour);
+    bars[2].style.width=w(m.aroma);
+    const iconMap={ '柔嫩':'feather','細嫩':'feather','極嫩':'feather','爆汁':'drop','香甜':'aroma','香濃':'aroma','清香':'aroma','清爽':'drop','順口':'feather','脆':'feather' };
+    chipsHost.innerHTML = m.chips.map(t=>`<span class="chip-lg"><i class="icon ${iconMap[t]||'aroma'}"></i>${t}</span>`).join('');
+  }
+  kindPills.forEach(p=>p.addEventListener('click',()=>{ kind=p.dataset.kind; setUI(); }));
+  sizePills.forEach(p=>p.addEventListener('click',()=>{ size=p.dataset.size; setUI(); }));
+  setUI();
+}
+
+/*****************
+ * Admin 簡版 RAW 轉換（保留）
+ *****************/
+function renderAdmin(){
+  const box=document.getElementById('adminBody'); if(!box) return;
+  box.innerHTML = `
+    <div class="content">
+      <p class="muted">貼上 <b>GitHub 檔案頁</b>，點【轉換】取得 RAW 連結。</p>
+      <div class="row" style="display:grid;grid-template-columns:1fr auto auto;gap:8px">
+        <input id="rawInput" class="input" placeholder="https://github.com/user/repo/blob/main/img.jpg">
+        <button class="btn-ghost" type="button" onclick="convertToRaw()">轉換</button>
+        <button class="btn-ghost" type="button" onclick="copyRaw()">複製</button>
+      </div>
+      <div id="rawOutput" class="card" style="display:none;padding:10px;margin-top:8px"></div>
+    </div>`;
+}
+function convertToRaw(){ const input=document.getElementById('rawInput'); if(!input) return; let url=(input.value||'').trim(); if(!url) return alert('請先貼上網址'); const raw=toRaw(url); const out=document.getElementById('rawOutput'); out.style.display='block'; out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>RAW 連結</b><button class="btn-ghost" onclick="copyRaw()">複製</button></div><div class="line"></div><div style="word-break:break-all">${raw}</div>`; input.value=raw; }
+async function copyRaw(){ const input=document.getElementById('rawInput'); if(!input) return; const raw=(input.value||'').trim(); if(!raw) return alert('沒有可複製的連結'); try{ await navigator.clipboard.writeText(raw); alert('已複製 RAW 連結'); }catch(e){ alert('複製失敗：'+e.message); } }
+
+/*****************
+ * 啟動
+ *****************/
+function init(){
+  mountHero(); mountImages();
+  renderSpecChips('PONGAN'); renderSpecChips('MAOGAO');
+  renderCart(); loadForm();
+  renderFloatReviews();        // 小圓點好評（左側跟隨）
+  mountBrandCarousel();        // 品牌故事輪播
+  mountGuide();                // 指南互動
+}
+document.addEventListener('DOMContentLoaded', init);
