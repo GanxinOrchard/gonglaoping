@@ -1,4 +1,4 @@
-/* ===== 柑心果園 app.js ===== */
+/* ===== 基本設定 ===== */
 const CONFIG = {
   BRAND: "柑心果園",
   GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbzT7yzMZXqjpJq_AvbcCKUrZaH3-N74YoRdsj3c4V2gfhD5Rbdnf3oucVvnextsrbhu/exec",
@@ -6,7 +6,6 @@ const CONFIG = {
   FREE_SHIP_THRESHOLD: 1800,
   CURRENCY: "TWD",
   IMAGES: {
-    HERO: raw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png"),
     GENERIC10: raw("https://github.com/GanxinOrchard/gonglaoping/blob/main/10%E6%96%A4%E7%94%A2%E5%93%81%E5%9C%96%E7%89%87.png"),
     PONGAN_FRUIT: raw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%A4%AA%E6%9F%91%E6%9E%9C%E5%AF%A6.jpg"),
     MAOGAO_FRUIT: raw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E8%8C%82%E8%B0%B7%E6%9F%91.png"),
@@ -27,66 +26,56 @@ const CONFIG = {
   BANK: { name: "連線銀行(824)", holder: "張鈞泓", no: "11101-37823-13" },
 };
 
+/* 常見尺寸直徑（cm）：23A/25A/27A/30A */
+const SIZE_DIAMETER_CM = {
+  "23A": "約 6.3–7.0 cm",
+  "25A": "約 7.0–7.5 cm",
+  "27A": "約 7.5–8.0 cm",
+  "30A": "約 8.0–9.0 cm",
+};
+
+/* 品種設定 */
 const VARIETIES = {
   PONGAN: {
-    title: "椪柑",
-    section: "PONGAN",
-    weight: "10台斤",
-    sizes: ["23A","25A","27A","30A"],
-    id: s => `PON10-${s}`,
+    title: "椪柑", section: "PONGAN", weight: "10台斤",
+    sizes: ["23A","25A","27A","30A"], id: s => `PON10-${s}`,
     baseScale: { sweet: 4.0, acid: 2.0, aroma: 3.0 },
-    mouthfeel: ["脆","多汁","清爽"],
-    people: ["長輩","送禮"],
     preview: () => CONFIG.IMAGES.PONGAN_FRUIT
   },
   MAOGAO: {
-    title: "茂谷",
-    section: "MAOGAO",
-    weight: "10台斤",
-    sizes: ["23A","25A","27A","30A"],
-    id: s => `MAO10-${s}`,
+    title: "茂谷", section: "MAOGAO", weight: "10台斤",
+    sizes: ["23A","25A","27A","30A"], id: s => `MAO10-${s}`,
     baseScale: { sweet: 4.5, acid: 2.5, aroma: 4.0 },
-    mouthfeel: ["細嫩","爆汁","香甜"],
-    people: ["孩子","怕澀者"],
     preview: () => CONFIG.IMAGES.MAOGAO_FRUIT
   }
 };
 
-// 常見尺寸直徑參考（可自行調整文字）
-const SIZE_DIAMETER_CM = {
-  "23A": "直徑約 6–7.5 cm",
-  "25A": "直徑約 7–8 cm",
-  "27A": "直徑約 7.5–8.5 cm",
-  "30A": "直徑約 8.5–9.5 cm",
-};
-
 const LS = { CART:"gx_cart", FORM:"gx_form" };
 
-/* ===== utils ===== */
+/* ==== Helper ==== */
 function raw(u){return !u?u:(u.includes('raw.githubusercontent.com')?u:u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/'))}
 const currency = n => "NT$ " + (n||0).toLocaleString();
-function $(sel, root=document){return root.querySelector(sel)}
-function $all(sel, root=document){return Array.from(root.querySelectorAll(sel))}
+const $ = (s,r=document)=>r.querySelector(s);
+const $all = (s,r=document)=>Array.from(r.querySelectorAll(s));
 function goScroll(e){e.preventDefault();const id=e.currentTarget.getAttribute('href').replace('#','');const el=document.getElementById(id);const y=el.getBoundingClientRect().top+window.scrollY-68;window.scrollTo({top:y,behavior:'smooth'})}
 
-/* ===== nav ===== */
+/* ==== Nav ==== */
 $all('[data-scroll]').forEach(a=>a.addEventListener('click', goScroll));
+$('#btnMenu')?.addEventListener('click', ()=> $('#topNav').classList.toggle('open'));
 $('#btnCart')?.addEventListener('click', ()=>toggleCart(true));
 $('#btnAdmin')?.addEventListener('click', ()=>toggleAdmin(true));
 
-/* ===== init ===== */
+/* ==== Init ==== */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Hero 圖片已由 CSS :root 變數控制；產品卡固定 10斤圖
+  // 產品卡圖：固定 10斤圖，置中顯示
   $('#img-pongan').src = CONFIG.IMAGES.GENERIC10;
   $('#img-maogao').src = CONFIG.IMAGES.GENERIC10;
-
-  // Guide 預覽
+  // 指南預覽
   $('#g-preview').src = VARIETIES.PONGAN.preview();
-
   // Gallery
   $('#gal1').src = VARIETIES.PONGAN.preview();
-  $('#gal2').src = VARIETIES.MAOGAO.FRUIT || VARIETIES.MAOGAO.preview();
-  const v = $('#gal3'); v.src = CONFIG.IMAGES.VIDEO1; v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
+  $('#gal2').src = VARIETIES.MAOGAO_FRUIT || VARIETIES.MAOGAO.preview();
+  const vid = $('#gal3'); vid.src = CONFIG.IMAGES.VIDEO1; vid.muted = true; vid.loop = true; vid.autoplay = true; vid.playsInline = true;
   $('#gal4').src = CONFIG.IMAGES.GENERIC10;
 
   initSpecUI();
@@ -95,11 +84,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initPolicy();
   initReviewsRail();
   initCarousels();
-  initFlipbook();
+  initStorySlider();
   $('#freeShipText').textContent = currency(CONFIG.FREE_SHIP_THRESHOLD).replace('NT$ ','NT$ ');
 });
 
-/* ===== spec chips, price, scale ===== */
+/* ==== 選規格/價格/量表 ==== */
 const SELECTED = { PONGAN:"25A", MAOGAO:"25A" };
 
 function initSpecUI(){
@@ -125,9 +114,9 @@ function updateVarietyCard(kind){
   const pid = conf.id(size);
   const inv = CONFIG.INVENTORY[pid] || {sold:0,stock:0};
   $(`#inv-${kind.toLowerCase()}`).textContent = `已售出 ${inv.sold}　剩餘 ${inv.stock} 箱`;
-  $(`#sizecm-${kind.toLowerCase()}`).textContent = SIZE_DIAMETER_CM[size] || '';
+  // 甜/酸/香 渲染
   renderScale(`#scale-${kind.toLowerCase()}`, adjScale(conf.baseScale, size));
-  // 若指南目前預覽此品種，連動
+  // 指南同步
   if($('.guide-tabs .tab.on')?.dataset.preview===kind){ setGuideState(kind, size); }
 }
 
@@ -137,7 +126,6 @@ function adjScale(base, size){
   if(size==="23A"){ s.acid = Math.min(5, s.acid + 0.2); }
   return s;
 }
-
 function renderScale(rootSel, scale){
   const root = $(rootSel);
   root.innerHTML = ["甜度","酸度","香氣"].map((k,i)=>{
@@ -150,14 +138,12 @@ function renderScale(rootSel, scale){
   }).join('');
 }
 
-/* ===== Guide (interactive) ===== */
+/* ==== 選購指南（含尺寸列） ==== */
 function initGuideUI(){
   const tabs = $all('.guide-tabs .tab');
   tabs.forEach(b=>b.addEventListener('click', ()=>{
-    tabs.forEach(t=>t.classList.remove('on'));
-    b.classList.add('on');
-    const kind = b.dataset.preview;
-    setGuideState(kind, SELECTED[kind]);
+    tabs.forEach(t=>t.classList.remove('on')); b.classList.add('on');
+    const kind = b.dataset.preview; setGuideState(kind, SELECTED[kind]);
   }));
   tabs[0].classList.add('on');
   setGuideState('PONGAN', SELECTED['PONGAN']);
@@ -171,19 +157,17 @@ function initGuideUI(){
     });
   });
 }
-
 function setGuideState(kind,size){
   const conf = VARIETIES[kind];
   $('#g-preview').src = conf.preview();
-  fillDots('#g-sweet', adjScale(conf.baseScale, size).sweet);
-  fillDots('#g-acid', adjScale(conf.baseScale, size).acid);
-  fillDots('#g-aroma', adjScale(conf.baseScale, size).aroma);
-  $('#g-sweet-txt').textContent = textFor("甜度", adjScale(conf.baseScale, size).sweet);
-  $('#g-acid-txt').textContent  = textFor("酸度", adjScale(conf.baseScale, size).acid);
-  $('#g-aroma-txt').textContent = textFor("香氣", adjScale(conf.baseScale, size).aroma);
-  $('#g-mouthfeel').innerHTML = conf.mouthfeel.map(t=>`<span class="chip">${t}</span>`).join('');
-  $('#g-people').innerHTML = conf.people.map(t=>`<span class="chip">${t}</span>`).join('');
-  $('#g-sizecm').textContent = SIZE_DIAMETER_CM[size] || '—';
+  const sc = adjScale(conf.baseScale, size);
+  fillDots('#g-sweet', sc.sweet); $('#g-sweet-txt').textContent = textFor("甜度", sc.sweet);
+  fillDots('#g-acid',  sc.acid ); $('#g-acid-txt').textContent  = textFor("酸度", sc.acid );
+  fillDots('#g-aroma', sc.aroma); $('#g-aroma-txt').textContent = textFor("香氣", sc.aroma);
+  // 尺寸列（用 5 格長短來表示，也顯示文字）
+  const sizeMap = { "23A":2, "25A":3, "27A":4, "30A":5 };
+  $('#g-size').innerHTML = Array.from({length:5}).map((_,i)=>`<span class="dot ${i<sizeMap[size]?'on':''}"></span>`).join('');
+  $('#g-size-txt').textContent = SIZE_DIAMETER_CM[size] || '—';
 }
 function fillDots(sel,val){ $(sel).innerHTML = Array.from({length:5}).map((_,i)=>`<span class="dot ${i<Math.round(val)?'on':''}"></span>`).join(''); }
 function textFor(k,val){
@@ -192,8 +176,8 @@ function textFor(k,val){
        : (val>=4?"香濃":val>=3?"清香":"淡雅");
 }
 
-/* ===== Carousels ===== */
-function initCarousels(){ makeCarousel('#tipsTrack'); makeCarousel('#galTrack'); }
+/* ==== Carousels（Gallery 手機一張、Tips 通用） ==== */
+function initCarousels(){ makeCarousel('#tipsTrack'); mobileSingleGallery('#galTrack'); }
 function makeCarousel(trackSel){
   const root = document.querySelector(trackSel);
   const wrap = root.parentElement;
@@ -203,48 +187,65 @@ function makeCarousel(trackSel){
   prev?.addEventListener('click',()=> root.scrollBy({left:-step(),behavior:'smooth'}));
   next?.addEventListener('click',()=> root.scrollBy({left: step(),behavior:'smooth'}));
 }
+function mobileSingleGallery(sel){
+  const track = $(sel);
+  const items = $all('.gal-item', track);
+  let idx = 0;
+  const prev = track.parentElement.querySelector('.prev');
+  const next = track.parentElement.querySelector('.next');
+  const apply = ()=> items.forEach((el,i)=> el.classList.toggle('on', i===idx));
+  apply();
+  prev.addEventListener('click',()=>{ idx=(idx-1+items.length)%items.length; apply(); });
+  next.addEventListener('click',()=>{ idx=(idx+1)%items.length; apply(); });
+}
 
-/* ===== Flipbook ===== */
-function initFlipbook(){ /* scroll-snap 提供翻頁感 */ }
+/* ==== Story slider ==== */
+function initStorySlider(){
+  const track = $('#storyTrack');
+  const cards = $all('.story', track);
+  let i=0; const apply=()=> cards.forEach((c,idx)=> c.style.transform=`translateX(${(idx-i)* (cards[0].offsetWidth+12)}px)`);
+  apply();
+  const prev = track.parentElement.querySelector('.prev');
+  const next = track.parentElement.querySelector('.next');
+  prev.addEventListener('click', ()=>{ i = (i-1+cards.length)%cards.length; apply(); });
+  next.addEventListener('click', ()=>{ i = (i+1)%cards.length; apply(); });
+  window.addEventListener('resize', apply);
+}
 
-/* ===== Reviews rail（小圓點五星、側邊緩速） ===== */
+/* ==== 左側：買過都說讚（不顯示星星，用膠囊） ==== */
 function initReviewsRail(){
-  const namesLast = "陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
+  const last = "陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
   const given = ["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","郁","妤","柔","軒","瑜","嘉","卉","容","翔","修","均","凱"];
-  const c5 = ["清甜多汁","香氣乾淨","回購第三次","皮薄好剝","冰過更好吃","送禮體面","甜度穩定","孩子超愛"];
+  const comments = ["買過都說讚","回購第三次","皮薄好剝","清甜多汁","香氣乾淨","孩子很愛"];
   const track = $('#rvTicker'); const rows=[];
   for(let i=0;i<24;i++){
-    const n = mask(randPick(namesLast)+randPick(given)+randPick(given));
-    const t = randPick(c5);
-    rows.push(`<div class="rail-item"><div>🍊</div><div><b>${n}</b>：${t}<div class="rail-stars"><i></i><i></i><i></i><i></i><i></i></div></div></div>`);
+    const n = mask(rand(last)+rand(given)+rand(given));
+    rows.push(`<div class="rail-item"><div>🍊</div><div><b>${n}</b> <span class="badge-like">${rand(comments)}</span></div></div>`);
   }
   track.innerHTML = rows.join('') + rows.join('');
   let pos=0; const single = track.scrollHeight/2;
-  function tick(){ pos += 0.35; if(pos>=single) pos=0; track.style.transform = `translateY(${-pos}px)`; requestAnimationFrame(tick); }
+  function tick(){ pos += 0.4; if(pos>=single) pos=0; track.style.transform = `translateY(${-pos}px)`; requestAnimationFrame(tick); }
   requestAnimationFrame(tick);
 }
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)] }
 function mask(s){ return s.length<=2 ? s[0]+"○" : s[0]+"○".repeat(s.length-2)+s[s.length-1] }
-function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
 
-/* ===== Cart ===== */
+/* ==== Cart ==== */
 const cart = loadCart();
 function loadCart(){ try{const s=localStorage.getItem(LS.CART); return s?JSON.parse(s):[]}catch{return []} }
 function saveCart(){ localStorage.setItem(LS.CART, JSON.stringify(cart)); }
 function refreshCartCount(){ $('#cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0); }
 
 function addSelected(kind){
-  const conf = VARIETIES[kind];
-  const size = SELECTED[kind];
-  const pid = conf.id(size);
-  const price = CONFIG.PRICES[conf.section][conf.weight][size];
+  const conf = VARIETIES[kind]; const size = SELECTED[kind];
+  const pid = conf.id(size); const price = CONFIG.PRICES[conf.section][conf.weight][size];
   const title = `${conf.title}｜${conf.weight}｜${size}`;
   addToCart(pid,title,price,conf.weight,size,conf.section);
 }
 function addToCart(id,title,price,weight,size,section){
   if(CONFIG.STATUS[id]==='soldout'){ toast('此品項已售完'); return; }
   const ex = cart.find(i=>i.id===id);
-  if(ex) ex.qty++;
-  else cart.push({id,title,price,qty:1,weight,size,section});
+  if(ex) ex.qty++; else cart.push({id,title,price,qty:1,weight,size,section});
   saveCart(); renderCart(); bumpCart(); toast('已加入購物車');
 }
 function bumpCart(){ const el=$('#btnCart'); el.style.transform='scale(1.05)'; setTimeout(()=>el.style.transform='',180); }
@@ -257,20 +258,12 @@ function toggleAdmin(open){ $('#adminDrawer').classList.toggle('open', !!open); 
 function renderCart(){
   refreshCartCount();
   const list = $('#cartList');
-  if(!cart.length){
-    list.innerHTML = `<div class="note">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>`;
-  }else{
+  if(!cart.length){ list.innerHTML = `<div class="note">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>`; }
+  else{
     list.innerHTML = cart.map((c,i)=>`
       <div class="item">
-        <div>
-          <div><b>${c.title}</b></div>
-          <div class="note">${currency(c.price)} × ${c.qty}</div>
-        </div>
-        <div class="qty">
-          <button aria-label="減少" onclick="mutateQty(${i},-1)">–</button>
-          <span>${c.qty}</span>
-          <button aria-label="增加" onclick="mutateQty(${i},1)">＋</button>
-        </div>
+        <div><div><b>${c.title}</b></div><div class="note">${currency(c.price)} × ${c.qty}</div></div>
+        <div class="qty"><button aria-label="減少" onclick="mutateQty(${i},-1)">–</button><span>${c.qty}</span><button aria-label="增加" onclick="mutateQty(${i},1)">＋</button></div>
       </div>
     `).join('');
   }
@@ -285,7 +278,7 @@ function calc(){
   return {subtotal,shipping,total:subtotal+shipping};
 }
 
-/* ===== Order & Payment ===== */
+/* ==== Order & Payment（radio 簡潔） ==== */
 $('#orderForm')?.addEventListener('submit', submitOrder);
 $('#orderForm')?.addEventListener('input', saveForm);
 
@@ -295,12 +288,8 @@ function saveForm(){
   localStorage.setItem(LS.FORM, JSON.stringify(obj));
 }
 function loadForm(){
-  try{
-    const s = localStorage.getItem(LS.FORM);
-    if(!s) return;
-    const obj = JSON.parse(s);
-    const f = $('#orderForm');
-    for(const k in obj){ if(f[k]) f[k].value = obj[k]; }
+  try{ const s = localStorage.getItem(LS.FORM); if(!s) return;
+    const obj = JSON.parse(s); const f = $('#orderForm'); for(const k in obj){ if(f[k]) f[k].value = obj[k]; }
   }catch{}
 }
 
@@ -324,7 +313,6 @@ async function submitOrder(ev){
   btn.disabled = true; btn.textContent = '處理中…'; res.textContent='';
 
   try{
-    // 建立訂單（沿用你的 GAS）
     const r1 = await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
     const d1 = await r1.json();
     if(!d1.ok) throw new Error(d1.msg||'建立訂單失敗');
@@ -351,7 +339,6 @@ async function submitOrder(ev){
 }
 
 async function goLinePay(orderNo, amount, items){
-  // 後端（GAS）持有 ChannelId/Secret，前端不曝光
   const body = { orderNo, amount, currency: CONFIG.CURRENCY, items };
   const r = await fetch(CONFIG.GAS_ENDPOINT + '?action=linepay_request', { method:'POST', body: JSON.stringify(body) });
   const d = await r.json();
@@ -381,7 +368,7 @@ async function goLinePay(orderNo, amount, items){
   }
 })();
 
-/* ===== Query order ===== */
+/* ==== 訂單查詢（保留） ==== */
 $('#queryForm')?.addEventListener('submit', async (ev)=>{
   ev.preventDefault();
   const f = new FormData(ev.target);
@@ -391,18 +378,13 @@ $('#queryForm')?.addEventListener('submit', async (ev)=>{
   try{
     const r = await fetch(CONFIG.GAS_ENDPOINT + '?orderNo=' + encodeURIComponent(no));
     const data = await r.json();
-    const dateOnly = v => {
-      if(!v) return '—';
-      const d = new Date(v); return isNaN(d)? String(v).split(/[ T]/)[0] : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    };
+    const dateOnly = v => { if(!v) return '—'; const d = new Date(v); return isNaN(d)? String(v).split(/[ T]/)[0] : `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
     if(data.ok){
       const items = Array.isArray(data.items)? data.items.map(i=>`${i.title} × ${i.qty}`).join('、') : '—';
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <h3 style="margin:0">訂單查詢結果</h3>
-          <div class="note">${new Date().toLocaleString()}</div>
-        </div>
-        <div class="line"></div>
+          <h3 style="margin:0">訂單查詢結果</h3><div class="note">${new Date().toLocaleString()}</div>
+        </div><div class="line"></div>
         <div><b>訂單編號：</b>${no}</div>
         <div><b>目前狀態：</b>${data.status||'—'}</div>
         <div><b>出貨日期：</b>${data.shipDate?dateOnly(data.shipDate):'—'}</div>
@@ -410,27 +392,18 @@ $('#queryForm')?.addEventListener('submit', async (ev)=>{
         <div><b>金額：</b>${data.total?currency(data.total):'—'}</div>
         <div><b>品項：</b>${items}</div>`;
       btn.style.display='inline-flex';
-    }else{
-      card.textContent = '查無此訂單編號';
-    }
-  }catch(e){
-    card.textContent = '查詢失敗：' + e.message;
-  }
+    }else{ card.textContent = '查無此訂單編號'; }
+  }catch(e){ card.textContent = '查詢失敗：' + e.message; }
 });
 
-/* ===== Policy enable（要捲到底） ===== */
+/* ==== 條款需捲底 ==== */
 function initPolicy(){
   const det = $('#policy'); const agree = $('#agree');
-  const enableIfBottom = ()=>{
-    const sc = det.scrollTop + det.clientHeight;
-    const need = det.scrollHeight - 10;
-    if(sc >= need) agree.disabled = false;
-  };
+  const enableIfBottom = ()=>{ const sc=det.scrollTop+det.clientHeight; const need=det.scrollHeight-10; if(sc>=need) agree.disabled=false; };
   det.addEventListener('scroll', enableIfBottom, {passive:true});
-  $('.agree input')?.addEventListener('click', (e)=>{ if(agree.disabled){ e.preventDefault(); det.open = true; det.scrollIntoView({behavior:'smooth',block:'center'}); }});
   loadForm();
 }
 
-/* ===== Toast ===== */
+/* ==== Toast ==== */
 let __toastTimer=null;
-function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(__toastTimer); __toastTimer = setTimeout(()=>t.classList.remove('show'), 1800); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(__toastTimer); __toastTimer=setTimeout(()=>t.classList.remove('show'),1800); }
