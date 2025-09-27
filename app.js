@@ -372,3 +372,41 @@ function init(){
   document.querySelectorAll('[data-cart-close]').forEach(btn=>btn.addEventListener('click',()=>toggleCart(false)));
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+/* ==== GX Mobile 微調：只在手機下安全套用，不改 HTML ==== */
+(function(){
+  const onReady = (fn)=> (document.readyState!=='loading') ? fn() : document.addEventListener('DOMContentLoaded', fn);
+  onReady(()=>{
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (!isMobile) return;
+
+    // 1) 打開「可愛風」作用範圍（讓 CSS 只在手機生效）
+    document.body.classList.add('gx-mobile');
+
+    // 2) 置中品牌標誌（不動你的 header）
+    if (!document.querySelector('.gx-brand-overlay')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'gx-brand-overlay';
+      wrap.innerHTML = `
+        <img src="https://raw.githubusercontent.com/s9000721-cloud/gonglaoping/main/%E6%9F%91%E5%BF%83%E6%9E%9C%E5%9C%92LOGO.png" alt="柑心果園 LOGO">
+        <div class="name">柑心果園</div>`;
+      document.body.appendChild(wrap);
+    }
+
+    // 3) 封面白卡（如果有）就藏掉，避免壓到大圖
+    const hero = document.querySelector('#hero') || document.querySelector('.hero');
+    if (hero) {
+      hero.querySelectorAll('.hero-card,.white-card').forEach(el => { el.style.display = 'none'; });
+    }
+
+    // 4) 產品圖片：確保等比例呈現（只處理 #shop 節點範圍）
+    const shop = document.querySelector('#shop');
+    if (shop) {
+      shop.querySelectorAll('.product-card .img-wrap img, [class*="product"] .img-wrap img').forEach(img=>{
+        img.style.objectFit = 'contain';
+        img.style.width = '100%';
+        img.style.height = '100%';
+      });
+    }
+  });
+})();
