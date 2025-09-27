@@ -142,3 +142,111 @@ input,textarea,select{font-size:16px}
 .dot.green{background:#86efac;border:1px solid #22c55e}
 .dot.orange{background:#fdba74;border:1px solid #f97316}
 .dot.gray{background:#e5e7eb;border:1px solid #cbd5e1}
+
+/* === 可愛風字體（只加，不影響桌機） === */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;800&display=swap');
+
+/* 全站預設字型（桌機維持原樣，手機覆蓋在 media query 內） */
+:root{
+  --cute-heading: 'Baloo 2','Nunito','Noto Sans TC',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --cute-body: 'Nunito','Noto Sans TC',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+/* ======= 手機版微調：<=768px ======= */
+@media (max-width: 768px){
+
+  /* 全站字型（可愛風） */
+  body, p, li, button, input, select, textarea, small, .text, [class*="desc"]{
+    font-family: var(--cute-body) !important;
+    -webkit-text-size-adjust: 100%;
+  }
+  h1,h2,h3,h4,.title,[class*="heading"],[class*="ttl"],[data-heading]{
+    font-family: var(--cute-heading) !important;
+    letter-spacing: .4px;
+  }
+
+  /* 導覽按鈕做成單行橫滑（如果有） */
+  .top-chips, .nav-chips, [class*="chips"]{
+    display:flex; gap:8px; overflow-x:auto; white-space:nowrap; padding:6px 10px;
+  }
+  .top-chips > *, .nav-chips > *{
+    flex:0 0 auto;
+  }
+
+  /* 封面 Hero：隱藏白色卡片，只留大圖 */
+  .hero .white-card, .hero .info-card, .hero [class*="card"]:has(.hero-copy){
+    display: none !important;
+  }
+
+  /* 封面 Hero 高度與背景保留（避免裁切感太強） */
+  .hero, #hero{
+    min-height: 64vh;
+    background-position: center center !important;
+    background-size: cover !important;
+  }
+
+  /* 品牌標誌＋品牌名置中（不改 HTML，用選擇器就地置中） */
+  /* 嘗試匹配常見寫法：.brand / .logo / header img 等 */
+  header .brand, .brand, .brand-bar, .site-brand, .hero .brand {
+    position: absolute;
+    top: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 3; text-align: center;
+  }
+  header .brand img, .brand img, .site-brand img, .hero .brand img{
+    width: 72px; height: 72px; object-fit: contain; border-radius: 12px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.18));
+  }
+  header .brand .name, .brand .name, .site-brand .name, .hero .brand .name{
+    margin-top: 6px; font-weight: 800; color: #fff; font-size: 16px; line-height: 1;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
+    letter-spacing: .5px;
+  }
+
+  /* 如果封面標題文字存在，縮小行距避免壓到 */
+  .hero .headline, .hero h1, #hero h1{
+    color: #fff; font-size: 22px; line-height: 1.25; margin-top: 18vh;
+    padding: 0 16px; text-shadow: 0 2px 8px rgba(0,0,0,.35);
+  }
+  .hero .sub, .hero p.lead{
+    color: #fff; opacity: .95; font-size: 13px; line-height: 1.4; padding: 0 16px;
+  }
+
+  /* 產品卡（手機微調） */
+  .product-card, [class*="product-card"], .card.product{
+    border-radius: 16px; padding: 14px; 
+  }
+  /* 圖片容器置中＋不裁切（等比例） */
+  .product-card .img-wrap, [class*="product"] .img-wrap, .card.product .img-wrap{
+    display:flex; align-items:center; justify-content:center;
+    width: 100%; max-height: 56vw; min-height: 40vw; overflow:hidden;
+    background: #fff; border-radius: 14px;
+  }
+  .product-card .img-wrap img, [class*="product"] .img-wrap img, .card.product .img-wrap img{
+    width: 100%; height: 100%; object-fit: contain; object-position: center;
+  }
+
+  /* 產品內文留白縮小、資訊更緊湊 */
+  .product-card .content, .card.product .content{ padding-top: 10px; }
+  .product-card h3, .card.product h3{ font-size: 18px; margin: 2px 0 6px; }
+  .product-card .desc, .card.product .desc{ font-size: 14px; line-height: 1.5; }
+
+  /* 條狀量表小一點（若有 .meter） */
+  .meter{ height: 6px; border-radius: 999px; }
+  .meter > i{ height: 100%; }
+
+  /* 價格 / 剩餘併排（若站上有這些 class） */
+  .price-qty-row, .meta-grid{
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px;
+  }
+  .price-qty-row .price, .meta-grid .price{ font-size: 18px; font-weight: 800; }
+  .price-qty-row .stock, .meta-grid .stock{ font-size: 12px; opacity: .75; }
+
+  /* CTA 滿版不改大小，只讓它較穩定居中 */
+  .product-card .cta, .card.product .cta{
+    display:block; text-align:center; width:100%; margin-top:10px;
+  }
+
+  /* 區塊之間的間距微縮（避免空白太多導致捲動頻繁） */
+  section{ padding: 28px 0 !important; }
+}
