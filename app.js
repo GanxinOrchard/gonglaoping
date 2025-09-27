@@ -1,19 +1,22 @@
-/***********************
- * 柑心果園 - 前端腳本 *
- ***********************/
+/*****************
+ * 基本設定
+ *****************/
 const CONFIG = {
   BRAND: "柑心果園",
   GAS_ENDPOINT: "https://script.google.com/macros/s/AKfycbw2Cd6Zw_aaYBxFKY0CkHXlSDQSHWj5sBwTlBtYMuYbN5HZIuRlCPnok83Jy0TIjmfA/exec",
   SHIPPING: 160,
   FREE_SHIP: 1800,
+  COUPONS: {
+    GX200OFF: { type: 'flat', amount: 200, validUntil: '2026-04-30' },
+    GX90:     { type: 'percent', pct: 10, validUntil: '2026-04-30' }
+  },
   IMAGES: {
-    HERO: "https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png",
-    BOX:  "https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/10%E6%96%A4%E7%94%A2%E5%93%81%E5%9C%96%E7%89%87.png",
-    LOGO: "https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E6%9F%91%E5%BF%83%E6%9E%9C%E5%9C%92LOGO.png",
-    CLOSEUPS: [
-      "https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E6%9E%9C%E5%AF%A6%E9%80%B2%E6%8B%8D1.jpg",
-      "https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E8%8C%82%E8%B0%B7%E6%9F%91.png",
-      "https://raw.githubusercontent.com/GanxinOrchard/gonglaoping/main/%E6%A4%AA%E6%9F%91%E6%9E%9C%E5%AF%A6.jpg"
+    HERO: toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E5%B0%81%E9%9D%A2%E5%9C%96.png"),
+    BOX:  toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/10%E6%96%A4%E7%94%A2%E5%93%81%E5%9C%96%E7%89%87.png"),
+    FRUITS: [
+      toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%9E%9C%E5%AF%A6%E9%80%B2%E6%8B%8D1.jpg"),
+      toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%9E%9C%E5%AF%A6%E9%80%B2%E6%8B%8D2.jpg"),
+      toRaw("https://github.com/GanxinOrchard/gonglaoping/blob/main/%E6%9E%9C%E5%AF%A6%E9%80%B2%E6%8B%8D3.jpg"),
     ]
   },
   PRICES: {
@@ -24,318 +27,395 @@ const CONFIG = {
     "PON10-23A":{sold:50, stock:200}, "PON10-25A":{sold:122, stock:678}, "PON10-27A":{sold:66, stock:734}, "PON10-30A":{sold:55, stock:745},
     "MAO10-23A":{sold:72, stock:178}, "MAO10-25A":{sold:355, stock:545}, "MAO10-27A":{sold:102, stock:698}, "MAO10-30A":{sold:78, stock:722}
   },
-  DIAMETER_CM: {
-    "23A":"約 7.3–7.5 cm", "25A":"約 7.6–7.8 cm", "27A":"約 7.9–8.1 cm", "30A":"約 8.2–8.5 cm"
+  STATUS: {
+    "PON10-23A":"preorder","PON10-25A":"preorder","PON10-27A":"preorder","PON10-30A":"preorder",
+    "MAO10-23A":"preorder","MAO10-25A":"preorder","MAO10-27A":"preorder","MAO10-30A":"preorder"
   },
-  // 折扣碼（可設定到期）
-  COUPONS: [
-    { code:"GXO-200",   type:"fixed", value:200,  expires:"2026-12-31" },
-    { code:"GXO-90OFF", type:"rate",  value:0.9,  expires:"2026-12-31" }
-  ]
+  DIAMETER_CM: { // 估值（A數越小越大顆）
+    "23A":"約 8.0–8.5 cm",
+    "25A":"約 7.5–8.0 cm",
+    "27A":"約 7.0–7.5 cm",
+    "30A":"約 6.5–7.0 cm"
+  }
 };
 
-// 產品定義
 const PRODUCTS = {
-  PONGAN:{ idPrefix:'PON10', section:'PONGAN', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:s=>`PON10-${s}` },
-  MAOGAO:{ idPrefix:'MAO10', section:'MAOGAO', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:s=>`MAO10-${s}` }
+  PONGAN: { idPrefix:'PON10', section:'PONGAN', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(s)=>`PON10-${s}` },
+  MAOGAO: { idPrefix:'MAO10', section:'MAOGAO', weight:'10台斤', sizes:["23A","25A","27A","30A"], getId:(s)=>`MAO10-${s}` }
 };
 const SELECTED = { PONGAN:'25A', MAOGAO:'25A' };
 
-// 本地儲存鍵
-const LS = { cart:'gx_cart', form:'gx_form', coupon:'gx_coupon' };
+const LS = { cart:'gx_cart', form:'gx_form', ship:'gx_ship', coupon:'gx_coupon' };
 
-// 工具
+/*****************
+ * 工具
+ *****************/
+function toRaw(u){ return u.replace('https://github.com/','https://raw.githubusercontent.com/').replace('/blob/','/'); }
 const currency = n => "NT$ "+(n||0).toLocaleString();
-const isMobile = ()=> /iPhone|Android|iPad/i.test(navigator.userAgent);
+const priceOf = (sec,weight,size)=> CONFIG.PRICES[sec]?.[weight]?.[size] ?? 0;
+function statusOf(id){ return CONFIG.STATUS[id]||'normal'; }
+function showToast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),1800); }
+const $ = sel => document.querySelector(sel);
 
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>t.classList.remove('show'),1800); }
+/*****************
+ * 初始化：圖片與卡片
+ *****************/
+document.addEventListener('DOMContentLoaded', () => {
+  // Hero 背景（已在 CSS 以 --hero 設定）
+  // 產品圖片
+  $('#img-pongan').src = CONFIG.IMAGES.BOX;
+  $('#img-maogao').src = CONFIG.IMAGES.BOX;
 
-// === 導覽＆輪播 ===
+  // 規格籤
+  renderSpec('PONGAN'); renderSpec('MAOGAO');
+
+  // 輪播啟動
+  initCarousels();
+
+  // 產季時間軸
+  buildMonths();
+
+  // 載入購物車
+  renderCart();
+
+  // 表單記憶
+  loadForm();
+
+  // 觀察 policy 捲到底才可勾選
+  guardPolicy();
+
+  // FAB 綁定
+  $('#cartFab').onclick = ()=>toggleCart(true);
+  $('#queryFab').onclick = ()=>toggleQuery(true);
+  $('#reviewFab').onclick = ()=>toggleReview(true);
+
+  // 生成 100 則不重複評價
+  buildReviews();
+});
+
+/*****************
+ * 輪播
+ *****************/
 function initCarousels(){
   document.querySelectorAll('.carousel').forEach(car=>{
     const track = car.querySelector('.car-track');
-    const slides = [...track.children];
-    let idx = 0, timer = null;
-    const go = (i)=>{ idx=(i+slides.length)%slides.length; track.style.transform=`translateX(-${idx*100}%)`; };
-    car.querySelector('.prev')?.addEventListener('click',()=>go(idx-1));
-    car.querySelector('.next')?.addEventListener('click',()=>go(idx+1));
-    slides.forEach(s=> s.style.flex = '0 0 100%');
-    const ap = Number(car.dataset.autoplay||0);
-    if(ap>0){ timer=setInterval(()=>go(idx+1), ap); car.addEventListener('mouseenter',()=>clearInterval(timer)); car.addEventListener('mouseleave',()=>timer=setInterval(()=>go(idx+1), ap)); }
-    go(0);
+    const prev = car.querySelector('.car-btn.prev');
+    const next = car.querySelector('.car-btn.next');
+    const step = ()=> track.scrollBy({left:track.clientWidth,behavior:'smooth'});
+    const back = ()=> track.scrollBy({left:-track.clientWidth,behavior:'smooth'});
+    prev && (prev.onclick=back);
+    next && (next.onclick=step);
+    const ms = Number(car.dataset.autoplay||0);
+    if(ms>0){
+      let timer = setInterval(step, ms);
+      car.addEventListener('pointerenter',()=>clearInterval(timer));
+      car.addEventListener('pointerleave',()=> timer=setInterval(step, ms));
+    }
   });
 }
 
-// === 產季時間軸 ===
-function renderTimeline(){
-  const tie = (wrap, months, fillRange)=>{
-    wrap.innerHTML = months.map((m,i)=>{
-      const fill = fillRange.includes(i);
-      const label = ["10月","11月","12月","1月","2月","3月","4月"][i]||"";
-      const desc = ["青皮初熟","高峰","轉橙","穩定","甜香","尾聲","儲藏"][i]||"";
-      return `<div class="dot"><div class="orange ${fill?'fill':''}"></div><small>${label}<br>${desc}</small></div>`;
-    }).join('');
-  };
-  tie(document.getElementById('line-pongan'), [0,1,2,3,4,5,6], [0,1,2,3,4,5,6]); // 10-4
-  tie(document.getElementById('line-maogao'), [0,1,2,3,4,5,6], [2,3,4,5]);       // 12-3
+/*****************
+ * 產季時間軸
+ *****************/
+function buildMonths(){
+  const p = [
+    {m:10,t:'青皮'}, {m:11,t:'高峰'}, {m:12,t:'橙皮始'}, {m:1,t:'橙皮穩'}, {m:2,t:'橙皮甜'}, {m:3,t:'尾聲'}, {m:4,t:'儲藏'}
+  ];
+  const m = [
+    {m:12,t:'開採'}, {m:1,t:'穩定'}, {m:2,t:'香甜'}, {m:3,t:'收尾'}
+  ];
+  const mp = $('#months-pongan'); const mm = $('#months-maogao');
+  mp.innerHTML = p.map((x,i)=>monthHtml(x.m, x.t, i)).join('');
+  mm.innerHTML = m.map((x,i)=>monthHtml(x.m, x.t, i)).join('');
+}
+function monthHtml(m, note, idx){
+  // 綠 → 橘 漸變
+  const g = Math.max(0, 180 - idx*35);
+  const color = idx===0 ? '#6ee7b7' : `hsl(${30+idx*12}, 90%, 60%)`;
+  return `<div class="month">
+    <div class="ball" style="background:${idx===0?'#34d399':color}"></div>
+    <b>${m} 月</b>
+    <div class="note">${note}</div>
+  </div>`;
 }
 
-// === 規格籤＆量表＆尺寸 ===
-function priceOf(section,weight,size){ return CONFIG.PRICES[section]?.[weight]?.[size] ?? 0; }
-function renderSpecChips(kind){
-  const conf=PRODUCTS[kind]; const rail=document.getElementById('spec-'+kind.toLowerCase());
-  rail.innerHTML = conf.sizes.map(s=>`<button class="spec ${SELECTED[kind]===s?'active':''}" onclick="selectSpec('${kind}','${s}')">${s}</button>`).join('');
-  // 價格
+/*****************
+ * 規格與價格
+ *****************/
+function renderSpec(kind){
+  const conf=PRODUCTS[kind];
+  const rail = document.getElementById('spec-'+kind.toLowerCase());
+  rail.innerHTML = conf.sizes.map(s=>`<button class="spec ${SELECTED[kind]===s?'active':''}" onclick="selectSpec('${kind}','${s}')">${conf.weight}｜${s}</button>`).join('');
+  updatePriceInv(kind);
+}
+function selectSpec(kind,size){ SELECTED[kind]=size; updatePriceInv(kind); }
+function updatePriceInv(kind){
+  const conf=PRODUCTS[kind];
   const price = priceOf(conf.section, conf.weight, SELECTED[kind]);
-  document.getElementById('price-'+kind.toLowerCase()).textContent = currency(price);
-  // 庫存
+  $('#price-'+kind.toLowerCase()).textContent = currency(price);
   const pid = conf.getId(SELECTED[kind]);
   const inv = CONFIG.INVENTORY[pid]||{sold:0,stock:0};
-  document.getElementById('inv-'+kind.toLowerCase()).textContent = `已售 ${inv.sold}｜剩 ${inv.stock}`;
-  // 尺寸
-  const sizeStr = CONFIG.DIAMETER_CM[SELECTED[kind]] || '—';
-  document.getElementById((kind==='PONGAN'?'size-pongan':'size-maogao')).textContent = sizeStr;
-}
-function selectSpec(kind,size){ SELECTED[kind]=size; renderSpecChips(kind); updateBars(kind); }
-function updateBars(kind){
-  // 以固定甜酸香數據，不同規格不變（若要依規格微調可延伸）
-  if(kind==='PONGAN'){ setBar('p',80,40,60); }
-  else{ setBar('m',90,50,80); }
-}
-function setBar(prefix,sweet,acid,aroma){
-  document.getElementById(`bar-${prefix}-sweet`).style.width = sweet+'%';
-  document.getElementById(`bar-${prefix}-acid`).style.width  = acid+'%';
-  document.getElementById(`bar-${prefix}-aroma`).style.width = aroma+'%';
+  $('#inv-'+kind.toLowerCase()).textContent = `已售出 ${inv.sold}　剩餘 ${inv.stock}`;
+  // 尺寸直徑顯示
+  const sizeText = CONFIG.DIAMETER_CM[SELECTED[kind]] || '—';
+  $('#size-'+kind.toLowerCase()).textContent = sizeText;
 }
 
-// === 購物車 ===
-const cart = (()=>{ try{ return JSON.parse(localStorage.getItem(LS.cart)||'[]'); }catch{ return []; } })();
+/*****************
+ * 購物車
+ *****************/
+const cart = (()=>{ try{ return JSON.parse(localStorage.getItem(LS.cart)||'[]'); }catch{return []} })();
 function saveCart(){ localStorage.setItem(LS.cart, JSON.stringify(cart)); }
-function bumpFab(){ const f=document.getElementById('cartFab'); f.classList.remove('bump'); void f.offsetWidth; f.classList.add('bump'); }
-function addToCart(pid,title,price,weight,size,section){
-  const existed = cart.find(x=>x.id===pid);
-  if(existed) existed.qty++;
-  else cart.push({ id:pid, title, price, qty:1, weight, size, section });
-  saveCart(); renderCart(); bumpFab(); showToast('已加入預購清單');
-}
+function bumpFab(){ const f=$('#cartFab'); f.style.transform='scale(1.06)'; setTimeout(()=>f.style.transform='',180); }
 function addSelected(kind){
-  const c=PRODUCTS[kind], s=SELECTED[kind], pid=c.getId(s), price=priceOf(c.section,c.weight,s);
-  const title=(kind==='PONGAN'?'椪柑':'茂谷')+`｜${c.weight}｜${s}`;
-  addToCart(pid,title,price,c.weight,s,c.section);
+  const conf=PRODUCTS[kind]; const size=SELECTED[kind]; const pid=conf.getId(size);
+  const price=priceOf(conf.section, conf.weight, size);
+  const title=(kind==='PONGAN'?'椪柑':'茂谷')+`｜${conf.weight}｜${size}`;
+  if(statusOf(pid)==='soldout'){ showToast('此品項已售完'); return; }
+  const existed=cart.find(x=>x.id===pid);
+  if(existed) existed.qty++;
+  else cart.push({id:pid,title,price,qty:1,weight:conf.weight,size,section:conf.section});
+  saveCart(); renderCart(); bumpFab();
+  showToast('已加入預購清單');
 }
-function mutateQty(i,delta){ cart[i].qty+=delta; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
-function clearCart(){ if(!cart.length) return; if(confirm('確定清空購物車？')){ cart.length=0; saveCart(); renderCart(); } }
-function toggleCart(open){ document.getElementById('cartDrawer').classList.toggle('open', !!open); }
-function toggleQuery(open){ document.getElementById('queryDrawer').classList.toggle('open', !!open); }
-function toggleReviews(open){ document.getElementById('reviewsDrawer').classList.toggle('open', !!open); }
+function mutateQty(i,d){ cart[i].qty+=d; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
+function clearCart(){ if(!cart.length) return; if(confirm('確定要清空購物車？')){ cart.length=0; saveCart(); renderCart(); } }
+function toggleCart(open){ $('#cartDrawer').classList.toggle('open', !!open); }
+function toggleQuery(open){ $('#queryDrawer').classList.toggle('open', !!open); }
+function toggleReview(open){ $('#reviewDrawer').classList.toggle('open', !!open); }
 
-function calc(){
-  let subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  let discount = calcCoupon(subtotal);
-  let shipping = (subtotal-discount)>=CONFIG.FREE_SHIP || cart.length===0 ? 0 : CONFIG.SHIPPING;
-  return {subtotal, discount, shipping, total: Math.max(0, subtotal - discount + shipping) };
-}
-
-function calcCoupon(subtotal){
-  const code = (localStorage.getItem(LS.coupon)||'').trim();
-  if(!code) return 0;
-  const now = new Date().toISOString().slice(0,10);
-  const hit = CONFIG.COUPONS.find(c=>c.code.toUpperCase()===code.toUpperCase() && (!c.expires || now<=c.expires));
-  if(!hit) return 0;
-  if(hit.type==='fixed') return Math.min(hit.value, subtotal);
-  if(hit.type==='rate')  return Math.round(subtotal*(1-hit.value));
-  return 0;
-}
-function applyCoupon(){
-  const code = (document.getElementById('coupon').value||'').trim();
-  const now = new Date().toISOString().slice(0,10);
-  const hit = CONFIG.COUPONS.find(c=>c.code.toUpperCase()===code.toUpperCase());
-  const msg = document.getElementById('couponMsg');
-  if(!hit){ msg.textContent='折扣碼無效'; localStorage.removeItem(LS.coupon); renderCart(); return; }
-  if(hit.expires && now>hit.expires){ msg.textContent='折扣碼已過期'; localStorage.removeItem(LS.coupon); renderCart(); return; }
-  localStorage.setItem(LS.coupon, hit.code);
-  msg.textContent = hit.type==='fixed' ? `已套用：折抵 NT$${hit.value}` : `已套用：${Math.round(hit.value*100)} 折`;
+function getShipMethod(){ return localStorage.getItem(LS.ship)||'HOME'; }
+function setShipMethod(m){
+  localStorage.setItem(LS.ship,m);
+  $('#shipHomeBtn').className = (m==='HOME') ? 'btn mini' : 'btn mini ghost';
+  $('#shipPickupBtn').className= (m==='PICKUP') ? 'btn mini' : 'btn mini ghost';
+  $('#homeFields').style.display = (m==='HOME')?'block':'none';
+  $('#pickupFields').style.display= (m==='PICKUP')?'block':'none';
   renderCart();
 }
-
-function renderCart(){
-  const list=document.getElementById('cartList');
-  if(!cart.length){ list.innerHTML='<div class="muted center">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>'; }
-  else{
-    list.innerHTML = cart.map((c,i)=>`
-      <div class="row2" style="margin:8px 0">
-        <div>
-          <div><b>${c.title}</b></div>
-          <div class="muted">${currency(c.price)} × ${c.qty}</div>
-        </div>
-        <div>
-          <button class="btn-ghost" onclick="mutateQty(${i},-1)">–</button>
-          <button class="btn-ghost" onclick="mutateQty(${i},1)">＋</button>
-        </div>
-      </div>`).join('');
+function calc(){
+  const subtotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const m=getShipMethod();
+  const shipping = m==='PICKUP' ? 0 : (subtotal>=CONFIG.FREE_SHIP||!cart.length?0:CONFIG.SHIPPING);
+  const coupon = getCoupon();
+  let discount = 0;
+  if(coupon){
+    if(coupon.type==='flat') discount = Math.min(coupon.amount, subtotal);
+    if(coupon.type==='percent') discount = Math.floor(subtotal * (coupon.pct/100));
   }
-  const {subtotal,discount,shipping,total}=calc();
-  document.getElementById('subtotal').textContent=currency(subtotal);
-  document.getElementById('shipping').textContent=currency(shipping);
-  document.getElementById('total').textContent=currency(total);
-  document.getElementById('fabCount').textContent=cart.reduce((s,i)=>s+i.qty,0);
+  const total = Math.max(0, subtotal + shipping - discount);
+  return {subtotal, shipping, discount, total};
+}
+function renderCart(){
+  // 列表
+  const list = $('#cartList');
+  if(!cart.length){
+    list.innerHTML = '<div class="note">購物車是空的，去挑幾顆最頂的橘子吧 🍊</div>';
+  }else{
+    list.innerHTML = cart.map((c,i)=>`
+      <div class="cart-row">
+        <div>
+          <div><strong>${c.title}</strong></div>
+          <div class="note">${currency(c.price)} × ${c.qty}</div>
+        </div>
+        <div class="qty">
+          <button aria-label="減少" onclick="mutateQty(${i},-1)">–</button>
+          <span>${c.qty}</span>
+          <button aria-label="增加" onclick="mutateQty(${i},1)">＋</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  const {subtotal,shipping,discount,total} = calc();
+  $('#subtotal').textContent = currency(subtotal);
+  $('#shipping').textContent = currency(shipping);
+  $('#discount').textContent = discount? ('− '+currency(discount)) : '− NT$ 0';
+  $('#total').textContent = currency(total);
+
+  const m=getShipMethod();
+  $('#shipLabel').textContent = m==='PICKUP' ? '運費（自取免運）' : '運費（宅配）';
+
+  // 同步付款方式：自取預設現金
+  const pay = document.querySelector('input[name="pay"][value="CASH"]');
+  if(m==='PICKUP' && pay) pay.checked = true;
 }
 
-function saveForm(){ 
-  const f=document.getElementById('orderForm'); 
-  const obj=Object.fromEntries(new FormData(f)); 
-  localStorage.setItem(LS.form, JSON.stringify(obj)); 
+function applyCoupon(){
+  const code = ($('#couponInput').value||'').trim().toUpperCase();
+  const def = CONFIG.COUPONS[code];
+  const box = $('#couponMsg');
+  if(!def){ localStorage.removeItem(LS.coupon); box.textContent='折扣碼無效'; renderCart(); return; }
+  if(def.validUntil && new Date() > new Date(def.validUntil+'T23:59:59')){ box.textContent='折扣碼已過期'; localStorage.removeItem(LS.coupon); renderCart(); return; }
+  localStorage.setItem(LS.coupon, code);
+  box.textContent = '已套用：'+code;
+  renderCart();
+}
+function getCoupon(){
+  const code = localStorage.getItem(LS.coupon);
+  if(!code) return null;
+  const def = CONFIG.COUPONS[code];
+  if(!def) return null;
+  if(def.validUntil && new Date() > new Date(def.validUntil+'T23:59:59')) return null;
+  return def;
+}
+
+/*****************
+ * 表單記憶＆Policy鎖
+ *****************/
+function saveForm(){
+  const f=$('#orderForm');
+  const obj=Object.fromEntries(new FormData(f));
+  obj.ship = getShipMethod();
+  localStorage.setItem(LS.form, JSON.stringify(obj));
 }
 function loadForm(){
   try{
     const s=localStorage.getItem(LS.form); if(!s) return;
-    const obj=JSON.parse(s); const f=document.getElementById('orderForm');
-    for(const k in obj){ if(f[k]) f[k].value=obj[k]; }
+    const obj=JSON.parse(s);
+    const f=$('#orderForm');
+    Object.keys(obj).forEach(k=>{ if(f[k]) f[k].value=obj[k]; });
+    setShipMethod(obj.ship||'HOME');
   }catch{}
 }
+function guardPolicy(){
+  const box=$('#policy'); const agree=$('#agree');
+  const content=box.querySelector('.content');
+  box.addEventListener('toggle', ()=>{ if(box.open) content.scrollTop=0; });
+  content.addEventListener('scroll', ()=>{
+    const nearBottom = content.scrollTop + content.clientHeight + 10 >= content.scrollHeight;
+    agree.disabled = !nearBottom;
+  });
+  document.getElementById('orderForm').addEventListener('input', saveForm);
+}
 
-/*** 送單 ***/
+/*****************
+ * 送單＆LINE Pay
+ *****************/
 async function submitOrder(ev){
   ev.preventDefault();
   if(!cart.length){ alert('購物車是空的'); return; }
+  if($('#agree').disabled || !$('#agree').checked){ alert('請先展開「物流與退貨說明」並捲到最底勾選同意'); return; }
 
-  const agree=document.getElementById('agree'); if(!agree.checked){ alert('請先閱讀「物流與退貨說明」並勾選同意'); return; }
+  const f = new FormData(ev.target);
+  const shipMethod = getShipMethod();
+  if(shipMethod==='HOME' && !f.get('addr')){ alert('請填寫宅配地址'); return; }
 
-  const f=new FormData(ev.target);
-  const payMethod = (f.get('pay')||'LINEPAY');
-  const btn=document.getElementById('submitBtn');
-  const resBox=document.getElementById('result');
-  btn.disabled=true; btn.textContent='送出訂單中，請稍候…'; resBox.textContent='';
+  const items = cart.map(c=>({title:c.title, section:c.section, weight:c.weight, size:c.size, price:c.price, qty:c.qty}));
+  const summary = calc();
+
+  const payload = {
+    ts:new Date().toISOString(),
+    name:f.get('name'), phone:f.get('phone'), email:f.get('email'),
+    addr: shipMethod==='PICKUP' ? '自取（台中市石岡區石岡街61號）' : f.get('addr'),
+    ship: shipMethod==='PICKUP' ? '自取' : '宅配',
+    remark:f.get('remark')||'',
+    items, summary, brand: CONFIG.BRAND,
+    payMethod: (f.get('pay')||'LINEPAY').toLowerCase()==='linepay' ? 'linepay' : 'bank'
+  };
+
+  const btn=$('#submitBtn'); const res=$('#result');
+  btn.disabled=true; btn.textContent='送出訂單中，請稍候…'; res.textContent='';
 
   try{
-    const {subtotal,discount,shipping,total}=calc();
-    const payload={
-      ts:new Date().toISOString(),
-      name:f.get('name'), phone:f.get('phone'), email:f.get('email'),
-      addr:f.get('addr'), ship:'宅配', remark:f.get('remark')||'',
-      items: cart.map(c=>({title:c.title, section:c.section, weight:c.weight, size:c.size, price:c.price, qty:c.qty})),
-      summary: {subtotal, discount, shipping, total},
-      brand: CONFIG.BRAND, payMethod: payMethod.toLowerCase()
-    };
-
-    // 呼叫 GAS
     const r=await fetch(CONFIG.GAS_ENDPOINT, { method:'POST', body: JSON.stringify(payload) });
     const d=await r.json();
     if(!d.ok) throw new Error(d.msg||'建立訂單失敗');
 
-    const orderNo=d.order_no;
-
-    if(payMethod==='LINEPAY'){
-      const lp = d.linepay || {};
-      const url = isMobile() ? (lp.appUrl||lp.webUrl) : lp.webUrl;
-      if(!url) throw new Error('LINE Pay 連線失敗，請改用匯款或稍後再試。');
-      // 不清除購物車，待回來後再確認；這是避免失敗導致遺失
-      location.href = url;
-      return;
+    const paySel = (f.get('pay')||'LINEPAY').toUpperCase();
+    if(paySel==='LINEPAY'){
+      const web = d?.linepay?.webUrl, app = d?.linepay?.appUrl;
+      if(app && /Android|iPhone|iPad/i.test(navigator.userAgent)) location.href = app;
+      else if(web) location.href = web;
+      else throw new Error('LINE Pay 付款連結取得失敗');
+      // 不在這裡清空，等返回成功頁再處理（後端）
     }else{
-      // 匯款：顯示銀行資訊（GAS 也會寄信）
-      resBox.innerHTML = `✅ 訂單已建立（編號：<b>${orderNo}</b>）。請於 24 小時內完成匯款並回報後五碼，我們立即安排出貨。`;
-      cart.length=0; saveCart(); renderCart(); ev.target.reset(); saveForm();
+      // 匯款 / 自取
+      res.innerHTML = `✅ 訂單已建立（編號：<b>${d.order_no||''}</b>）。我們將盡快為您安排。`;
+      cart.length=0; saveCart(); renderCart();
+      ev.target.reset(); saveForm();
     }
   }catch(e){
-    resBox.textContent='送出失敗：'+e.message;
+    res.textContent = '送出失敗：'+e.message;
   }finally{
     btn.disabled=false; btn.textContent='送出訂單';
   }
 }
 
-/*** 訂單查詢 ***/
-function dateOnly(val){ if(!val) return '—'; try{ const d=new Date(val); if(!isNaN(d)){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const da=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${da}`; } }catch(e){} return String(val).split(/[ T]/)[0]; }
+/*****************
+ * 訂單查詢
+ *****************/
 async function queryOrder(ev){
   ev.preventDefault();
-  const f=new FormData(ev.target); const no=(f.get('orderNo')||'').trim();
-  const card=document.getElementById('queryCard'); card.style.display='block'; card.innerHTML='查詢中…';
+  const f=new FormData(ev.target);
+  const no=(f.get('orderNo')||'').trim();
+  const card=$('#queryCard'); card.style.display='block'; card.innerHTML='查詢中…';
   try{
-    const url=CONFIG.GAS_ENDPOINT+'?orderNo='+encodeURIComponent(no);
-    const r=await fetch(url); const data=await r.json();
+    const r=await fetch(CONFIG.GAS_ENDPOINT+'?orderNo='+encodeURIComponent(no));
+    const data=await r.json();
     if(data.ok){
-      const total=data.total?`NT$ ${(data.total||0).toLocaleString()}`:'—';
-      const shipDate=data.shipDate?dateOnly(data.shipDate):'—';
-      const trackNo=data.trackingNo||'—';
-      const items=Array.isArray(data.items)? data.items.map(i=>`${i.title} × ${i.qty}`).join('、') : '—';
-      card.innerHTML=`<div class="row2"><h3 style="margin:0">訂單 ${no}</h3><span class="muted">${new Date().toLocaleString()}</span></div>
-      <div class="line"></div>
-      <div><b>狀態：</b>${data.shipStatus||'—'}</div>
-      <div><b>出貨日：</b>${shipDate}</div>
-      <div><b>物流單號：</b>${trackNo}</div>
-      <div><b>金額：</b>${total}</div>
-      <div><b>品項：</b>${items}</div>`;
+      const items = (data.items||[]).map(i=>`${i.title} × ${i.qty}`).join('、') || '—';
+      const total = data.total ? currency(data.total) : '—';
+      const shipDate = data.shipDate || '—';
+      const trackNo = data.trackingNo || '—';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">訂單 ${no}</h3><div class="note">${new Date().toLocaleString()}</div></div>
+        <div class="line"></div>
+        <div><b>狀態：</b>${data.status||'—'}</div>
+        <div><b>出貨日期：</b>${shipDate}</div>
+        <div><b>物流單號：</b>${trackNo}</div>
+        <div><b>金額：</b>${total}</div>
+        <div><b>品項：</b>${items}</div>`;
     }else{
-      card.innerHTML='查無此訂單編號';
+      card.textContent='查無此訂單編號';
     }
-  }catch(e){ card.innerHTML='查詢失敗：'+e.message; }
+  }catch(e){ card.textContent='查詢失敗：'+e.message; }
 }
 
-/*** 評論（100 則、季節範圍、內容不重複） ***/
-function genReviews(n=100){
-  const last="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍顧龔柯殷唐程金石".split("");
-  const given="家怡庭志雅柏鈞恩安宥沛玟杰宗祺郁妤柔軒瑜嘉卉熒容翔修均凱瀚勛榕彤瑄妤萱睿萱淳語".split("");
-  const sayings=[
-    "沒吃過這麼清爽的甜度","顆顆飽滿，家人一直拿","好剝不沾手，小孩超愛",
-    "香氣乾淨不膩口","收到兩天就吃光","細嫩爆汁，真的好吃",
-    "價格實在，品質穩定","冰過更好吃","回購第三年了","今年這批特別好"
-  ];
-  const mmRange=[10,11,12,1,2,3,4]; // 產季月份
-  const year=new Date().getMonth()+1>=8? new Date().getFullYear(): new Date().getFullYear()-1;
-  function randomDate(){ const m=mmRange[Math.floor(Math.random()*mmRange.length)]; const y = (m>=8?year:year+1); const d = 1+Math.floor(Math.random()*26); return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
-  let arr=[];
-  for(let i=0;i<n;i++){
-    const name = last[i%last.length]+given[(i*7)%given.length];
-    let stars = 5; if(i%47===0 || i%53===0) stars=3; // 2 則 3星
-    const text = sayings[(i*13)%sayings.length];
-    const spec = ["23A","25A","27A","30A"][(i*5)%4];
-    arr.push({name, date:randomDate(), stars, text, spec});
+/*****************
+ * 評價生成（100 則、產季日期）
+ *****************/
+function buildReviews(){
+  const last="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾周賴徐葉簡鍾宋邱蘇潘彭游傅顏魏高藍".split("");
+  const given=["家","怡","庭","志","雅","柏","鈞","恩","安","宥","沛","玟","杰","宗","祺","郁","妤","柔","軒","瑜","嘉","卉","熒","容","翔","修","均","凱"];
+  const pos = ["甜度高又多汁","清爽不膩口","香氣自然不刺鼻","小孩也愛吃","回購好幾次","顆顆飽滿","冰過更讚","價位實在"];
+  const pos2 = ["送禮體面","剝皮方便","口感細嫩","果香乾淨","品質穩定","不用挑就好吃","家人都稱讚","今年這批特別好"];
+  const three = ["稍微酸一點但很開胃","有幾顆較小顆但整體不錯"];
+  const sizes=["23A","25A","27A","30A"];
+  const list=[];
+  const year = new Date().getMonth()+1>=10 ? new Date().getFullYear() : new Date().getFullYear()-1; // 產季跨年
+  function rand(a){return a[Math.floor(Math.random()*a.length)];}
+  function dateInSeason(){
+    // 10~12 與 次年 1~3
+    const pools = [];
+    for(let m=10;m<=12;m++) pools.push([year,m]);
+    for(let m=1;m<=3;m++) pools.push([year+1,m]);
+    const [yy,mm]=rand(pools); const dd=String(1+Math.floor(Math.random()*26)).padStart(2,'0');
+    return `${yy}-${String(mm).padStart(2,'0')}-${dd}`;
   }
-  arr.sort((a,b)=> a.date<b.date?1:-1);
-  return arr;
+  for(let i=0;i<100;i++){
+    const name = rand(last)+rand(given)+rand(given).replace(/(.).*/,'$1');
+    let star=5, text=rand(pos)+'，'+rand(pos2), spec=`10台斤｜${rand(sizes)}`;
+    if(i===7 || i===53){ star=3; text=rand(three); }
+    list.push({ name: maskName(name), date: dateInSeason(), spec, stars: star, text });
+  }
+  const track = $('#reviewsTrack');
+  track.innerHTML = list.map(r=>reviewCard(r)).join('');
+  initCarousels();
 }
-function renderReviews(){
-  const track=document.getElementById('reviewsTrack'); const list=genReviews(100);
-  track.innerHTML = list.map(r=>`
-    <div class="review-card">
-      <div class="review-head">🍊 ${r.name}</div>
-      <div class="review-meta">日期：${r.date}｜購買：10台斤・${r.spec}｜評分：${r.stars} / 5</div>
-      <p style="margin:.35rem 0 0">${r.text}</p>
-    </div>`).join('');
+function maskName(s){ const t=String(s||''); if(t.length<=2) return t[0]+'○'; return t[0]+'○'.repeat(t.length-2)+t.slice(-1); }
+function reviewCard(r){
+  const chips = r.stars===3 ? '🟠🟠🟠' : r.stars===4 ? '🟠🟠🟠🟠' : '🟠🟠🟠🟠🟠';
+  return `<article class="story-card">
+    <div style="display:flex;align-items:center;gap:10px"><span>🍊</span><b>${r.name}</b><span class="note">${r.date}</span></div>
+    <div class="note">購買：${r.spec}　評價：${chips}</div>
+    <p style="margin:6px 0 0">${r.text}</p>
+  </article>`;
 }
 
-/*** 互動：政策需捲到底才可勾選 ***/
-function enableAgreeWhenScrolled(){
-  const policy=document.getElementById('policy');
-  policy?.addEventListener('scroll',()=>{
-    const el=policy; if(el.scrollTop+el.clientHeight>=el.scrollHeight-10) document.getElementById('agree').disabled=false;
-  });
-}
+/*****************
+ * 小工具
+ *****************/
+function $(sel){ return document.querySelector(sel); }
 
-/*** 初始 ***/
-document.addEventListener('DOMContentLoaded', ()=>{
-  // Hero 圖
-  document.getElementById('hero').style.backgroundImage = `url('${CONFIG.IMAGES.HERO}')`;
-
-  // 規格與量表
-  renderSpecChips('PONGAN'); updateBars('PONGAN');
-  renderSpecChips('MAOGAO'); updateBars('MAOGAO');
-
-  // 圖片（產品箱子）
-  document.getElementById('img-pongan').src = CONFIG.IMAGES.BOX;
-  document.getElementById('img-maogao').src = CONFIG.IMAGES.BOX;
-
-  // 輪播/時間軸
-  initCarousels(); renderTimeline();
-
-  // 購物車初始
-  renderCart(); loadForm(); enableAgreeWhenScrolled();
-
-  // 浮動按鈕
-  document.getElementById('cartFab').onclick = ()=>toggleCart(true);
-  document.getElementById('queryFab').onclick = ()=>toggleQuery(true);
-  document.getElementById('reviewsFab').onclick = ()=>toggleReviews(true);
-
-  // 表單記憶
-  document.getElementById('orderForm')?.addEventListener('input', saveForm, {passive:true});
-});
+/* 讓 policy 內容高度變化時也能監聽（保險） */
+new ResizeObserver(()=>{}).observe(document.body);
