@@ -147,3 +147,42 @@ a{text-decoration:none;color:#0ea5e9}
   .story-card{min-width:60%}
   .closeup{min-width:46%}
 }
+
+/* 1) 避免 Hero 漸層層蓋到按鈕 */
+.hero::after { pointer-events: none; }
+
+/* 2) 讓浮動按鈕與抽屜在最上層 */
+.fab { z-index: 1050; }
+.drawer { z-index: 1100; }
+
+/* 3) 抽屜收闔動畫與顯示狀態（若你已經有一套，確認 class 名稱一致） */
+.drawer { position: fixed; right: 0; top: 0; bottom: 0; width: min(480px, 96%); transform: translateX(105%); transition: transform .28s ease; }
+.drawer.open { transform: translateX(0); }
+
+/* 4) Sticky 子導覽避免壓到點擊區 */
+.subnav { position: sticky; top: 0; z-index: 1000; }
+
+/* === Cart Mobile Fullscreen & Scroll Lock (drop-in fix) === */
+.panel{ position:fixed; z-index:99; }
+.panel .panel-head{ position:sticky; top:0; z-index:2; }
+.panel .panel-body{
+  flex:1; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+}
+
+/* 桌機維持原尺寸；手機改「覆蓋式全螢幕橘色購物車」 */
+@media (max-width: 820px){
+  .panel.cart{
+    left:0; right:0; top:0; bottom:0;
+    width:100vw; height:100dvh;
+    border-radius:0;
+  }
+}
+
+/* 打開購物車時鎖住背景頁面，避免整頁跟著移動 */
+body.modal-open{
+  position:fixed; width:100%; overflow:hidden;
+}
+
+/* 輸入欄位 16px，避免 iOS 自動放大造成版面位移 */
+input, textarea, select{ font-size:16px; }
